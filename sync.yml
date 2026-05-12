@@ -1,0 +1,44 @@
+name: Sync Pipefy Data
+
+# Este workflow roda como FALLBACK 2x/dia para garantir consistência.
+# Busca apenas cards ATIVOS (não finalizados) — cards finalizados são
+# preservados do data.json existente sem chamar a API do Pipefy.
+# Atualizações em tempo real são feitas diretamente pelo Cloudflare Worker.
+on:
+  schedule:
+    - cron: '0 11 * * 1-5'   # 08h Brasília (UTC-3), seg-sex
+    - cron: '0 17 * * 1-5'   # 14h Brasília (UTC-3), seg-sex
+  workflow_dispatch:           # trigger manual quando necessário
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Buscar dados do Pipefy
+        env:
+          PIPEFY_TOKEN:      ${{ secrets.PIPEFY_TOKEN }}
+          PIPE_COTACOES_ID:  ${{ secrets.PIPE_COTACOES_ID }}
+          PIPE_COMPRAS_ID:   ${{ secrets.PIPE_COMPRAS_ID }}
+          PIPE_LOGISTICA_ID: ${{ secrets.PIPE_LOGISTICA_ID }}
+        run: node fetch-data.js
+
+      - name: Commit e push do data.json
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git diff --staged --quiet \
+            && echo "Sem mudancas, nenhum commit necessario." \
+            || (git commit -m "chore: sync Pipefy $(date -u '+%Y-%m-%d %H:%M UTC')" && git push)
