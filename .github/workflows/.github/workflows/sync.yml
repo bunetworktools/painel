@@ -1,0 +1,33 @@
+name: Sync Pipefy Data
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Buscar dados do Pipefy
+        env:
+          PIPEFY_TOKEN:      ${{ secrets.PIPEFY_TOKEN }}
+          PIPE_COTACOES_ID:  ${{ secrets.PIPE_COTACOES_ID }}
+          PIPE_COMPRAS_ID:   ${{ secrets.PIPE_COMPRAS_ID }}
+          PIPE_LOGISTICA_ID: ${{ secrets.PIPE_LOGISTICA_ID }}
+        run: node fetch-data.js
+
+      - name: Commit e push do data.json
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git diff --staged --quiet && echo "Sem mudancas." || git commit -m "chore: sync Pipefy $(date -u '+%Y-%m-%d %H:%M UTC')" && git push
