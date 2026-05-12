@@ -238,6 +238,16 @@ input[type=file]{display:none}
         </div>
         <div class="form-group"></div>
       </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Pipe ID – CRM (Oportunidades)</label>
+          <input class="form-input" type="text" id="cfgPipeCrm" placeholder="Ex: 302349">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pipe ID – Reativação de Clientes</label>
+          <input class="form-input" type="text" id="cfgPipeReativacao" placeholder="Ex: 302350">
+        </div>
+      </div>
       <div class="form-group" style="text-align:center">
         <button class="btn btn-secondary btn-sm" onclick="discoverPipes()">🔍 Descobrir Pipes Automaticamente</button>
       </div>
@@ -334,6 +344,7 @@ input[type=file]{display:none}
     <div class="tab" onclick="switchTab('compras')">🛒 Compras</div>
     <div class="tab" onclick="switchTab('logistica')">🚚 Logística</div>
     <div class="tab" onclick="switchTab('clientes')">👥 Clientes Inativos</div>
+    <div class="tab" onclick="switchTab('crm')">📊 CRM & Reativação</div>
   </div>
 
   <!-- PERIOD FILTER BAR -->
@@ -716,6 +727,99 @@ input[type=file]{display:none}
     </div>
   </div>
 
+  <!-- TAB: CRM & REATIVAÇÃO -->
+  <div class="tab-panel" id="tab-crm">
+
+    <!-- ── CRM: Oportunidades ── -->
+    <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+      📊 CRM — Pipeline de Oportunidades
+      <span id="crmEmptyBadge" class="tag tag-yellow" style="font-size:11px;text-transform:none;letter-spacing:0;display:none">Configure o Pipe CRM nas configurações</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+      <div class="metric" style="border-left:3px solid var(--blue)">
+        <div class="metric-label">💼 Pipeline em Aberto (R$)</div>
+        <div class="metric-value" id="crmPipeline" style="font-size:24px">—</div>
+        <div class="metric-delta" id="crmAbertoDelta">oportunidades abertas</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--green)">
+        <div class="metric-label">✅ Taxa de Conversão</div>
+        <div class="metric-value" id="crmConversao" style="font-size:24px">—</div>
+        <div class="metric-delta" id="crmConvDelta">ganhas / finalizadas</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--purple)">
+        <div class="metric-label">🏆 Oportunidades Ganhas</div>
+        <div class="metric-value" id="crmGanhas" style="font-size:24px">—</div>
+        <div class="metric-delta" id="crmGanhasDelta">no período</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--yellow)">
+        <div class="metric-label">⏳ Em Negociação</div>
+        <div class="metric-value" id="crmAberto" style="font-size:24px">—</div>
+        <div class="metric-delta">oportunidades abertas agora</div>
+      </div>
+    </div>
+    <div class="charts" style="grid-template-columns:1fr 1fr;margin-bottom:32px">
+      <div class="chart-card">
+        <div class="chart-title">🏗️ Funil de Oportunidades
+          <span class="chart-subtitle">Qtd. por fase</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartCRMFunil"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">💰 Valor do Pipeline por Fase
+          <span class="chart-subtitle">R$ em aberto por etapa</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartCRMValor"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ── Reativação de Clientes ── -->
+    <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:24px">
+      🔄 Reativação de Clientes
+      <span id="reatEmptyBadge" class="tag tag-yellow" style="font-size:11px;text-transform:none;letter-spacing:0;display:none">Configure o Pipe de Reativação nas configurações</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px">
+      <div class="metric" style="border-left:3px solid var(--green)">
+        <div class="metric-label">🔄 Taxa de Reativação</div>
+        <div class="metric-value" id="reatTaxa" style="font-size:28px">—</div>
+        <div class="metric-delta" id="reatTaxaDelta">reativados / finalizados</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--blue)">
+        <div class="metric-label">💰 Valor Recuperado (R$)</div>
+        <div class="metric-value" id="reatValor" style="font-size:24px">—</div>
+        <div class="metric-delta" id="reatValorDelta">de clientes reativados</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--purple)">
+        <div class="metric-label">⚡ Clientes em Progresso</div>
+        <div class="metric-value" id="reatProgresso" style="font-size:28px">—</div>
+        <div class="metric-delta">sendo trabalhados ativamente</div>
+      </div>
+    </div>
+    <div class="charts" style="grid-template-columns:1fr 2fr;margin-bottom:20px">
+      <div class="chart-card">
+        <div class="chart-title">📊 Status por Fase
+          <span class="chart-subtitle">Distribuição dos cards</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartReatStatus"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">📈 Reativações por Mês
+          <span class="chart-subtitle">Concluídas vs em progresso</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartReatMensal"></canvas></div>
+      </div>
+    </div>
+    <div class="table-card">
+      <div class="table-header">⚡ Clientes em Progresso — Reativação</div>
+      <table><thead><tr>
+        <th>Cliente</th>
+        <th>Fase Atual</th>
+        <th>Última Atualização</th>
+        <th>Dias em Aberto</th>
+        <th>Valor Estimado</th>
+      </tr></thead><tbody id="reatProgressoBody"></tbody></table>
+    </div>
+  </div>
+
 </div><!-- /main -->
 
 <script>
@@ -759,6 +863,8 @@ let state = {
   cotacoes:      [],
   compras:       [],
   logistica:     [],
+  crm:           [],
+  reativacao:    [],
   omie:          [],   // legacy / file import
   omieNFes:      [],   // NF-e emitidas (faturamento real)
   omieClientes:  [],   // cadastro de clientes
@@ -770,6 +876,8 @@ let cfg = {
   pipeCotacoesId: '',
   pipeComprasId: '',
   pipeLogisticaId: '',
+  pipeCrmId: '',
+  pipeReativacaoId: '',
   omieKey: '',
   omieSecret: '',
   metaAnual: 0,
@@ -889,10 +997,12 @@ function allMonthBuckets(items, getDate, getValue = () => 1) {
 //  PERSISTENCE
 // ============================================================
 function saveConfig() {
-  cfg.pipefyToken   = document.getElementById('cfgPipefyToken').value.trim();
-  cfg.pipeCotacoesId= document.getElementById('cfgPipeCotacoes').value.trim();
-  cfg.pipeComprasId = document.getElementById('cfgPipeCompras').value.trim();
-  cfg.pipeLogisticaId=document.getElementById('cfgPipeLogistica').value.trim();
+  cfg.pipefyToken     = document.getElementById('cfgPipefyToken').value.trim();
+  cfg.pipeCotacoesId  = document.getElementById('cfgPipeCotacoes').value.trim();
+  cfg.pipeComprasId   = document.getElementById('cfgPipeCompras').value.trim();
+  cfg.pipeLogisticaId = document.getElementById('cfgPipeLogistica').value.trim();
+  cfg.pipeCrmId       = document.getElementById('cfgPipeCrm').value.trim();
+  cfg.pipeReativacaoId= document.getElementById('cfgPipeReativacao').value.trim();
   cfg.omieKey       = document.getElementById('cfgOmieKey').value.trim();
   cfg.omieSecret    = document.getElementById('cfgOmieSecret').value.trim();
   cfg.metaAnual     = parseFloat(document.getElementById('cfgMetaAnual').value) || 0;
@@ -908,10 +1018,12 @@ function loadConfig() {
     const stored = localStorage.getItem('beyou_cfg');
     if (stored) { cfg = { ...cfg, ...JSON.parse(stored) }; }
   } catch(e) {}
-  document.getElementById('cfgPipefyToken').value   = cfg.pipefyToken;
-  document.getElementById('cfgPipeCotacoes').value  = cfg.pipeCotacoesId;
-  document.getElementById('cfgPipeCompras').value   = cfg.pipeComprasId;
-  document.getElementById('cfgPipeLogistica').value = cfg.pipeLogisticaId;
+  document.getElementById('cfgPipefyToken').value    = cfg.pipefyToken;
+  document.getElementById('cfgPipeCotacoes').value   = cfg.pipeCotacoesId;
+  document.getElementById('cfgPipeCompras').value    = cfg.pipeComprasId;
+  document.getElementById('cfgPipeLogistica').value  = cfg.pipeLogisticaId;
+  document.getElementById('cfgPipeCrm').value        = cfg.pipeCrmId || '';
+  document.getElementById('cfgPipeReativacao').value = cfg.pipeReativacaoId || '';
   document.getElementById('cfgOmieKey').value       = cfg.omieKey;
   document.getElementById('cfgOmieSecret').value    = cfg.omieSecret;
   document.getElementById('cfgMetaAnual').value     = cfg.metaAnual || '';
@@ -1000,6 +1112,8 @@ async function discoverPipes() {
           <option value="cotacoes">Cotações</option>
           <option value="compras">Compras</option>
           <option value="logistica">Logística</option>
+          <option value="crm">CRM (Oportunidades)</option>
+          <option value="reativacao">Reativação de Clientes</option>
         </select>`;
       el.appendChild(div);
     });
@@ -1009,9 +1123,11 @@ async function discoverPipes() {
 }
 
 function assignPipe(id, type) {
-  if (type === 'cotacoes') { document.getElementById('cfgPipeCotacoes').value = id; cfg.pipeCotacoesId = id; }
-  if (type === 'compras')  { document.getElementById('cfgPipeCompras').value = id;  cfg.pipeComprasId = id; }
-  if (type === 'logistica'){ document.getElementById('cfgPipeLogistica').value = id; cfg.pipeLogisticaId = id; }
+  if (type === 'cotacoes')  { document.getElementById('cfgPipeCotacoes').value = id;   cfg.pipeCotacoesId = id; }
+  if (type === 'compras')   { document.getElementById('cfgPipeCompras').value = id;    cfg.pipeComprasId = id; }
+  if (type === 'logistica') { document.getElementById('cfgPipeLogistica').value = id;  cfg.pipeLogisticaId = id; }
+  if (type === 'crm')       { document.getElementById('cfgPipeCrm').value = id;        cfg.pipeCrmId = id; }
+  if (type === 'reativacao'){ document.getElementById('cfgPipeReativacao').value = id; cfg.pipeReativacaoId = id; }
 }
 
 // ============================================================
@@ -1035,6 +1151,14 @@ async function syncAll() {
     if (cfg.pipeLogisticaId) {
       setLoading(true, 'Buscando logística do Pipefy…');
       state.logistica = await fetchAllCards(cfg.pipeLogisticaId);
+    }
+    if (cfg.pipeCrmId) {
+      setLoading(true, 'Buscando oportunidades CRM do Pipefy…');
+      state.crm = await fetchAllCards(cfg.pipeCrmId);
+    }
+    if (cfg.pipeReativacaoId) {
+      setLoading(true, 'Buscando reativações do Pipefy…');
+      state.reativacao = await fetchAllCards(cfg.pipeReativacaoId);
     }
     if (cfg.omieKey && cfg.omieSecret) {
       setLoading(true, 'Buscando NF-e do Omie…');
@@ -1202,6 +1326,143 @@ function logisticaData() {
   });
 }
 
+function crmData() {
+  return state.crm.map(c => {
+    const valor = toNum(
+      fieldVal(c,'valor da oportunidade') || fieldVal(c,'valor estimado') ||
+      fieldVal(c,'valor') || fieldVal(c,'budget') || fieldVal(c,'valor total') || 0
+    );
+    const fase = c.current_phase?.name || '';
+    const faseL = fase.toLowerCase();
+    const ganho   = faseL.includes('ganho') || faseL.includes('won') ||
+                    faseL.includes('fechado') || faseL.includes('aprovad') ||
+                    faseL.includes('concluíd') || faseL.includes('concluida');
+    const perdido = faseL.includes('perdido') || faseL.includes('lost') ||
+                    faseL.includes('recusado') || faseL.includes('cancelad') ||
+                    faseL.includes('sem sucesso');
+    const m = monthOf(c.created_at);
+    return { ...c, valor, fase, ganho, perdido, mes: m };
+  });
+}
+
+function reativacaoData() {
+  return state.reativacao.map(c => {
+    const valor = toNum(
+      fieldVal(c,'valor recuperado') || fieldVal(c,'valor da venda') ||
+      fieldVal(c,'valor') || fieldVal(c,'valor total') || 0
+    );
+    const fase = c.current_phase?.name || '';
+    const faseL = fase.toLowerCase();
+    const reativado  = faseL.includes('reativad') || faseL.includes('concluíd') ||
+                       faseL.includes('concluida') || faseL.includes('ganho') ||
+                       faseL.includes('fechado') || faseL.includes('sucesso');
+    const perdido    = faseL.includes('perdido') || faseL.includes('sem sucesso') ||
+                       faseL.includes('desistiu') || faseL.includes('cancelad') ||
+                       faseL.includes('inativo');
+    const emProgresso = !reativado && !perdido;
+    const m = monthOf(c.created_at);
+    return { ...c, valor, fase, reativado, perdido, emProgresso, mes: m };
+  });
+}
+
+// ============================================================
+//  RENDER CRM & REATIVAÇÃO
+// ============================================================
+function renderCRM() {
+  const crm   = crmData();
+  const reat  = reativacaoData();
+  const crmP  = filteredByPeriod(crm,  c => c.created_at ? new Date(c.created_at) : null);
+  const reatP = filteredByPeriod(reat, c => c.created_at ? new Date(c.created_at) : null);
+
+  // ── CRM metrics ──
+  const crmEmpty    = crm.length === 0;
+  const abertas     = crmP.filter(c => !c.ganho && !c.perdido);
+  const finalizadas = crmP.filter(c => c.ganho || c.perdido);
+  const ganhas      = crmP.filter(c => c.ganho);
+  const pipelineVal = abertas.reduce((s,c) => s + c.valor, 0);
+  const taxaConv    = finalizadas.length > 0 ? ganhas.length / finalizadas.length : 0;
+
+  const crmBadge = document.getElementById('crmEmptyBadge');
+  if (crmBadge) crmBadge.style.display = crmEmpty ? 'inline-flex' : 'none';
+
+  if (el('crmPipeline'))  el('crmPipeline').textContent  = crmEmpty ? '—' : fmtBRL(pipelineVal);
+  if (el('crmConversao')) el('crmConversao').textContent  = crmEmpty ? '—' : fmtPct(taxaConv);
+  if (el('crmGanhas'))    el('crmGanhas').textContent     = crmEmpty ? '—' : ganhas.length;
+  if (el('crmAberto'))    el('crmAberto').textContent     = crmEmpty ? '—' : abertas.length;
+  if (el('crmConvDelta')) el('crmConvDelta').textContent  = crmEmpty ? '—' : ganhas.length + ' ganhas / ' + finalizadas.length + ' finalizadas';
+  if (el('crmGanhasDelta'))el('crmGanhasDelta').textContent = crmEmpty ? '—' : fmtBRL(ganhas.reduce((s,c)=>s+c.valor,0));
+
+  // CRM charts — group by phase
+  if (!crmEmpty && crmP.length > 0) {
+    const faseCount = {}, faseValor = {};
+    crmP.forEach(c => {
+      faseCount[c.fase] = (faseCount[c.fase] || 0) + 1;
+      faseValor[c.fase] = (faseValor[c.fase] || 0) + c.valor;
+    });
+    const labels = Object.keys(faseCount);
+    mkBar('chartCRMFunil', labels, Object.values(faseCount), { label:'Oportunidades', color:'rgba(37,99,235,0.8)' });
+    mkBar('chartCRMValor', labels, Object.values(faseValor), { label:'Valor (R$)', color:'rgba(16,185,129,0.8)' });
+  }
+
+  // ── Reativação metrics ──
+  const reatEmpty   = reat.length === 0;
+  const reativados  = reatP.filter(c => c.reativado);
+  const emProgresso = reatP.filter(c => c.emProgresso);
+  const finReat     = reatP.filter(c => c.reativado || c.perdido);
+  const taxaReat    = finReat.length > 0 ? reativados.length / finReat.length : 0;
+  const valRecup    = reativados.reduce((s,c) => s + c.valor, 0);
+
+  const reatBadge = document.getElementById('reatEmptyBadge');
+  if (reatBadge) reatBadge.style.display = reatEmpty ? 'inline-flex' : 'none';
+
+  if (el('reatTaxa'))      el('reatTaxa').textContent      = reatEmpty ? '—' : fmtPct(taxaReat);
+  if (el('reatValor'))     el('reatValor').textContent     = reatEmpty ? '—' : fmtBRL(valRecup);
+  if (el('reatProgresso')) el('reatProgresso').textContent = reatEmpty ? '—' : emProgresso.length;
+  if (el('reatTaxaDelta')) el('reatTaxaDelta').textContent = reatEmpty ? '—' : reativados.length + ' reativados / ' + finReat.length + ' finalizados';
+  if (el('reatValorDelta'))el('reatValorDelta').textContent= reatEmpty ? 'configure o pipe de reativação' : 'de clientes reativados';
+
+  // Reativação status chart (doughnut)
+  if (!reatEmpty && reatP.length > 0) {
+    const rFaseMap = {};
+    reatP.forEach(c => { rFaseMap[c.fase] = (rFaseMap[c.fase] || 0) + 1; });
+    mkDoughnut('chartReatStatus', Object.keys(rFaseMap), Object.values(rFaseMap));
+
+    // Mensal: concluídos vs em progresso por mês
+    const mReativ = monthBuckets(reatP, c => c.created_at ? new Date(c.created_at) : null, c => c.reativado ? 1 : 0);
+    const mProgr  = monthBuckets(reatP, c => c.created_at ? new Date(c.created_at) : null, c => c.emProgresso ? 1 : 0);
+    mkStackedBar('chartReatMensal', MONTHS, [
+      { label:'Reativados',    data: mReativ, color:'rgba(16,185,129,0.8)' },
+      { label:'Em Progresso',  data: mProgr,  color:'rgba(37,99,235,0.7)' },
+    ]);
+  }
+
+  // Tabela: clientes em progresso
+  const tbody = document.getElementById('reatProgressoBody');
+  if (tbody) {
+    tbody.innerHTML = '';
+    if (reatEmpty || emProgresso.length === 0) {
+      const msg = reatEmpty
+        ? 'Nenhum dado disponível — configure o Pipe de Reativação nas configurações'
+        : 'Nenhum cliente em progresso no período selecionado';
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:24px">${msg}</td></tr>`;
+    } else {
+      [...emProgresso].sort((a,b) => (new Date(b.updated_at||b.created_at)) - (new Date(a.updated_at||a.created_at)))
+        .slice(0, 50).forEach(c => {
+          const dias = daysSince(c.updated_at || c.created_at);
+          const urgClass = dias > 30 ? 'tag-red' : dias > 14 ? 'tag-yellow' : 'tag-green';
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><strong>${normalizeClientName(c.title)}</strong></td>
+            <td><span class="tag tag-blue">${c.fase || '—'}</span></td>
+            <td>${c.updated_at ? new Date(c.updated_at).toLocaleDateString('pt-BR') : '—'}</td>
+            <td><span class="tag ${urgClass}">${dias !== null ? dias + ' dias' : '—'}</span></td>
+            <td>${c.valor > 0 ? fmtBRL(c.valor) : '—'}</td>`;
+          tbody.appendChild(tr);
+        });
+    }
+  }
+}
+
 // ============================================================
 //  RENDER ALL
 // ============================================================
@@ -1213,6 +1474,7 @@ function renderAll() {
   renderCompras();
   renderLogistica();
   renderClientes();
+  renderCRM();
   renderOmieClientes();
   renderOmiePedidos();
 }
@@ -2409,4 +2671,341 @@ function handleFatFile(input) {
         renderOKRs();
         renderGeral();
         const total = nfes.reduce((s,n) => s+n.valor, 0);
-        el('fatUploadZone').style.background = 'var(--gre
+        el('fatUploadZone').style.background = 'var(--green-l)';
+        el('fatUploadZone').innerHTML = `<div class="upload-icon">✅</div><div class="upload-text"><strong>${file.name}</strong> importado</div><div class="upload-hint">${nfes.length} meses · Total: ${fmtBRL(total)}</div>`;
+        const alertEl = el('fatAlert');
+        if (alertEl) {
+          alertEl.innerHTML = `✅ <strong>Faturamento importado via planilha Omie</strong> — ${nfes.length} meses · ${fmtBRL(total)} acumulado.`;
+          alertEl.className = 'alert alert-blue';
+        }
+        return;
+      }
+
+      // ── Fallback: formato genérico (linha por linha) ──
+      const rows = XLSX.utils.sheet_to_json(ws, { defval:'' });
+      state.omie = rows.map(r => {
+        const valor = parseFloat(Object.values(r).find(v => typeof v === 'number' && v > 100) || 0);
+        const dateStr = Object.values(r).find(v => typeof v === 'string' && /\d{2}\/\d{2}\/\d{4}/.test(v));
+        const date = dateStr ? new Date(dateStr.split('/').reverse().join('-')) : null;
+        return { valor, date, raw: r };
+      }).filter(r => r.valor > 0);
+      saveData();
+      renderFaturamento();
+      el('fatUploadZone').style.background = 'var(--green-l)';
+      el('fatUploadZone').innerHTML = `<div class="upload-icon">✅</div><div class="upload-text">${file.name} importado (${state.omie.length} registros)</div>`;
+    } catch(e) {
+      console.error('Import error:', e);
+      alert('Erro ao importar: ' + e.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+// ============================================================
+//  CHART HELPERS
+// ============================================================
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function mkBar(id, labels, data, { label='', color='rgba(37,99,235,0.8)' } = {}) {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  charts[id] = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[{ label, data, backgroundColor:color, borderRadius:4, borderSkipped:false }] },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ display:false },
+        datalabels:{
+          anchor:'end', align:'top',
+          formatter: v => v > 0 ? fmtAxis(v) : '',
+          font:{ size:9, weight:'600' }, color:'rgba(0,0,0,0.55)'
+        }
+      },
+      scales:{ x:{stacked:true}, y:{ stacked:true, beginAtZero:true, ticks:{ callback: fmtAxis } } }
+    }
+  });
+}
+
+function mkLine(id, labels, data, { label='', color='rgba(37,99,235,0.9)' } = {}) {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  charts[id] = new Chart(ctx, {
+    type:'line',
+    data:{ labels, datasets:[{ label, data, borderColor:color, backgroundColor:color.replace('0.9','0.1'), fill:true, tension:0.4, pointRadius:4 }] },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ display:false }, datalabels:{ display:false } },
+      scales:{ y:{ beginAtZero:true } } }
+  });
+}
+
+function mkDoughnut(id, labels, data, colors) {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  const defaultColors = ['rgba(37,99,235,0.8)','rgba(239,68,68,0.8)','rgba(16,185,129,0.8)','rgba(245,158,11,0.8)','rgba(139,92,246,0.8)','rgba(99,102,241,0.7)'];
+  charts[id] = new Chart(ctx, {
+    type:'doughnut',
+    data:{ labels, datasets:[{ data, backgroundColor:colors || defaultColors, borderWidth:2, borderColor:'#fff' }] },
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ padding:12, font:{ size:11 } } }, datalabels:{ display:false } } }
+  });
+}
+
+function mkStackedBar(id, labels, datasets) {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  charts[id] = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets: datasets.map(d => ({ label:d.label, data:d.data, backgroundColor:d.color, borderRadius:2 })) },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ position:'bottom', labels:{ font:{ size:11 }, boxWidth:12 } },
+        datalabels:{
+          anchor:'center', align:'center',
+          formatter: (v, ctx) => {
+            const ds = ctx.chart.data.datasets;
+            const total = ds.reduce((s,d) => s+(d.data[ctx.dataIndex]||0), 0);
+            return (v > 0 && v/total > 0.12) ? fmtAxis(v) : '';
+          },
+          font:{ size:9, weight:'600' }, color:'#fff'
+        }
+      },
+      scales:{ x:{ stacked:true }, y:{ stacked:true, beginAtZero:true, ticks:{ callback: fmtAxis } } }
+    }
+  });
+}
+
+function mkBarWithLine(id, labels, barData, lineData) {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  const datasets = [
+    { type:'bar', label:'Faturamento Real', data:barData, backgroundColor:'rgba(37,99,235,0.75)', borderRadius:4 }
+  ];
+  if (lineData) {
+    datasets.push({ type:'line', label:'Meta Mensal', data:lineData, borderColor:'rgba(239,68,68,0.8)', borderDash:[5,5], pointRadius:0, fill:false });
+  }
+  charts[id] = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ position:'bottom', labels:{ font:{ size:11 }, boxWidth:12 } },
+        datalabels:{
+          anchor:'end', align:'top',
+          formatter: (v, ctx) => ctx.dataset.type === 'line' ? '' : (v > 0 ? fmtAxis(v) : ''),
+          font:{ size:9, weight:'600' }, color:'rgba(0,0,0,0.55)'
+        }
+      },
+      scales:{ y:{ beginAtZero:true, ticks:{ callback: fmtAxis } } }
+    }
+  });
+}
+
+function mkLineChart(id, realData, metaData) {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  const datasets = [
+    { label:'Acumulado Real', data:realData, borderColor:'rgba(37,99,235,0.9)', backgroundColor:'rgba(37,99,235,0.1)', fill:true, tension:0.4 }
+  ];
+  if (metaData?.length > 0) {
+    datasets.push({ label:'Meta Anual', data:metaData, borderColor:'rgba(239,68,68,0.7)', borderDash:[5,5], pointRadius:0, fill:false });
+  }
+  charts[id] = new Chart(ctx, {
+    type:'line',
+    data:{ datasets },
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'bottom', labels:{ font:{ size:11 } } }, datalabels:{ display:false } },
+      scales:{ x:{ type:'category' }, y:{ beginAtZero:true, ticks:{ callback: fmtAxis } } } }
+  });
+}
+
+// ============================================================
+//  UI HELPERS
+// ============================================================
+function el(id) { return document.getElementById(id); }
+
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const idx = ['geral','faturamento','cotacoes','compras','logistica','clientes','crm'].indexOf(name);
+  document.querySelectorAll('.tab')[idx]?.classList.add('active');
+  el('tab-' + name)?.classList.add('active');
+}
+
+function openConfig()  { el('configOverlay').classList.add('open'); }
+function closeConfig() { el('configOverlay').classList.remove('open'); }
+el('configOverlay').addEventListener('click', e => { if (e.target === el('configOverlay')) closeConfig(); });
+
+function setLoading(show, text = '') {
+  el('loadingOverlay').classList.toggle('show', show);
+  if (text) el('loadingText').textContent = text;
+}
+
+function checkSetupAlert() {
+  const hasToken = !!cfg.pipefyToken;
+  el('setupAlert').style.display = hasToken ? 'none' : 'block';
+}
+
+function dragOver(e, zoneId) { e.preventDefault(); el(zoneId).classList.add('dragover'); }
+function dragLeave(zoneId)   { el(zoneId).classList.remove('dragover'); }
+function dropFile(e, inputId) {
+  e.preventDefault();
+  dragLeave(e.target.id);
+  const file = e.dataTransfer.files[0];
+  if (!file) return;
+  const input = el(inputId);
+  const dt = new DataTransfer(); dt.items.add(file);
+  input.files = dt.files;
+  if (inputId === 'fatFileInput') handleFatFile(input);
+}
+
+
+// ============================================================
+//  REPORT MODAL
+// ============================================================
+function openReport(type) {
+  const overlay = el('reportOverlay');
+  const thead   = el('reportThead');
+  const tbody   = el('reportTbody');
+  const titleEl = el('reportTitle');
+  const metaEl  = el('reportMeta');
+  if (!overlay) return;
+
+  const allCots  = cotacoesData();
+  const allComps = comprasData();
+  const allLogs  = logisticaData();
+  const cots  = filteredByPeriod(allCots,  c => c.created_at ? new Date(c.created_at) : null);
+  const comps = filteredByPeriod(allComps, c => c.created_at ? new Date(c.created_at) : null);
+
+  let title = '', rows = [], cols = [];
+
+  if (type === 'cotacoes_enviadas') {
+    title = '📋 Cotações Enviadas — ' + activePeriod.label;
+    cols = ['Cliente','Nº Cotação','Etapa','Data Criação','Valor','NF'];
+    rows = cots.map(c => [
+      normalizeClientName(c.title), c.id || '—',
+      c.current_phase?.name || '—',
+      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+      fmtBRL(c.valor), c.nf || '—'
+    ]);
+  } else if (type === 'aprovacao') {
+    title = '✅ Cotações Finalizadas — ' + activePeriod.label;
+    cols = ['Cliente','Nº Cotação','Etapa','Data Criação','Valor','% Conv.'];
+    const fin = cots.filter(c => !isOpen(c));
+    rows = fin.map(c => [
+      normalizeClientName(c.title), c.id || '—',
+      c.current_phase?.name || '—',
+      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+      fmtBRL(c.valor),
+      c.aprovada ? '<span class="tag tag-green">Aprovada</span>' : '<span class="tag tag-red">Reprovada</span>'
+    ]);
+  } else if (type === 'cotacoes_aprovadas') {
+    title = '🏆 Cotações Aprovadas — ' + activePeriod.label;
+    cols = ['Cliente','Nº Cotação','Etapa','Data Criação','Valor','NF'];
+    rows = cots.filter(c => c.aprovada).map(c => [
+      normalizeClientName(c.title), c.id || '—',
+      c.current_phase?.name || '—',
+      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+      fmtBRL(c.valor), c.nf || '—'
+    ]);
+  } else if (type === 'faturamento') {
+    title = '💰 Faturamento — ' + activePeriod.label;
+    cols = ['Cliente','Nº Cotação','Etapa','Data Criação','Valor','NF'];
+    rows = cots.filter(c => c.aprovada).map(c => [
+      normalizeClientName(c.title), c.id || '—',
+      c.current_phase?.name || '—',
+      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+      fmtBRL(c.valor), c.nf || '—'
+    ]);
+  } else if (type === 'compras') {
+    title = '🛒 Compras Concluídas — ' + activePeriod.label;
+    cols = ['Fornecedor','ID','Etapa','Data','Valor','NF'];
+    const conc = comps.filter(c =>
+      (c.current_phase?.name || '').toLowerCase().includes('concluíd') ||
+      (c.current_phase?.name || '').toLowerCase().includes('concluida'));
+    rows = conc.map(c => [
+      normalizeClientName(c.title), c.id || '—',
+      c.current_phase?.name || '—',
+      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+      fmtBRL(c.valor), c.nf || '—'
+    ]);
+  } else if (type === 'entregas') {
+    title = '🚚 Entregas — ' + activePeriod.label;
+    cols = ['Cliente','ID','Etapa','Data','NF'];
+    const lg = filteredByPeriod(allLogs, c => c.created_at ? new Date(c.created_at) : null);
+    rows = lg.filter(c => c.current_phase?.name?.toLowerCase().includes('concluíd')).map(c => [
+      normalizeClientName(c.title), c.id || '—',
+      c.current_phase?.name || '—',
+      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+      c.nf || '—'
+    ]);
+  } else if (type === 'em_andamento') {
+    title = '⏳ Cotações Em Andamento';
+    cols = ['Cliente','Nº Cotação','Etapa','Data Criação','Valor','NF'];
+    rows = cots.filter(c => isOpen(c)).map(c => [
+      normalizeClientName(c.title), c.id || '—',
+      c.current_phase?.name || '—',
+      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+      fmtBRL(c.valor), c.nf || '—'
+    ]);
+  }
+
+  titleEl.textContent = title;
+  metaEl.textContent  = rows.length + ' registro(s) — período: ' + activePeriod.label;
+  thead.innerHTML = '<tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr>';
+  tbody.innerHTML = '';
+  rows.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = row.map(cell => `<td>${cell}</td>`).join('');
+    tbody.appendChild(tr);
+  });
+
+  overlay.style.display = 'flex';
+}
+
+function closeReport() {
+  const o = el('reportOverlay');
+  if (o) o.style.display = 'none';
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+loadConfig();
+activePeriod = { label:'Ano', ...getPeriodRange('Ano') };
+const rl = el('periodRangeLabel');
+if (rl) { const y = new Date().getFullYear(); rl.textContent = '01/01 – 31/12 (' + y + ')'; }
+
+// Tenta carregar data.json (modo GitHub Pages — sem configuração manual)
+fetch('data.json?v=' + Date.now())
+  .then(r => { if (!r.ok) throw new Error('no data.json'); return r.json(); })
+  .then(data => {
+    state = { ...state, cotacoes: data.cotacoes || [], compras: data.compras || [], logistica: data.logistica || [], crm: data.crm || [], reativacao: data.reativacao || [] };
+    const syncInfo = document.getElementById('syncInfo');
+    if (syncInfo && data.syncedAt) {
+      syncInfo.textContent = 'Atualizado: ' + new Date(data.syncedAt).toLocaleString('pt-BR');
+    }
+    // Oculta botão de sync manual (dados vêm do GitHub Actions)
+    const syncBtn = document.getElementById('syncBtn');
+    if (syncBtn) syncBtn.style.display = 'none';
+    renderAll();
+  })
+  .catch(() => {
+    // Fallback: localStorage (uso local com token configurado manualmente)
+    loadData();
+    loadLastSync();
+    checkSetupAlert();
+    if (state.cotacoes.length || state.compras.length || state.logistica.length) {
+      renderAll();
+    }
+  });
+</script>
+</body>
+</html>
