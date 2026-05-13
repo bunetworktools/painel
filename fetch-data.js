@@ -19,7 +19,6 @@ if (!TOKEN) {
   process.exit(1);
 }
 
-// Campos buscados em cada card — mesmo formato do data.json original
 const CARD_FIELDS = `
   id title
   current_phase { name }
@@ -42,18 +41,7 @@ async function pipefyGQL(query, variables = {}) {
   return json.data;
 }
 
-/**
- * Busca apenas cards de fases ativas (done: false) do pipe.
- *
- * Chamadas de API por execução:
- *   1 chamada para buscar as fases do pipe
- *   + 1 chamada por página de cards em cada fase ativa com cards
- *
- * Exemplo real: pipe com 3 fases ativas, ~20 cards cada
- *   → 1 + 3 = 4 chamadas  (vs. allCards com 500 cards históricos → 10+ chamadas)
- */
 async function fetchActivePipeCards(pipeId, label) {
-  // 1. Busca as fases do pipe, filtra para ativas com cards
   const pipeData = await pipefyGQL(`
     query($id: ID!) {
       pipe(id: $id) {
@@ -75,7 +63,6 @@ async function fetchActivePipeCards(pipeId, label) {
 
   console.log(`  ${label} — ${activePhases.length} fase(s) ativa(s): ${activePhases.map(p => p.name).join(', ')}`);
 
-  // 2. Para cada fase ativa, pagina os cards
   const cards = [];
   for (const phase of activePhases) {
     let cursor = null;
@@ -101,16 +88,6 @@ async function fetchActivePipeCards(pipeId, label) {
   return cards;
 }
 
-/**
- * Mescla cards ativos frescos da API com histórico finalizado do data.json.
- *
- * - Cards ativos      → substituídos pelos dados frescos da API
- * - Cards finalizados → preservados do data.json (0 chamadas de API)
- *
- * Card novo (criado após último sync): está em fase ativa → capturado aqui.
- * Card finalizado desde o último sync: webhook já atualizou finished_at;
- *   ele está em existingCards com finished_at preenchido e é preservado.
- */
 function mergeCards(activeCards, existingCards) {
   const activeIds = new Set(activeCards.map(c => String(c.id)));
   const historicalFinished = (existingCards || []).filter(
@@ -122,7 +99,6 @@ function mergeCards(activeCards, existingCards) {
 async function main() {
   console.log('🔄 Sincronizando cards ativos com Pipefy...\n');
 
-  // Carrega data.json existente para preservar histórico de cards finalizados
   let existing = { cotacoes: [], compras: [], logistica: [] };
   if (fs.existsSync('data.json')) {
     try {
