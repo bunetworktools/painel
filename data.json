@@ -648,7 +648,7 @@
       },
       "created_at": "2026-05-06T15:24:20Z",
       "finished_at": null,
-      "updated_at": "2026-05-13T14:56:31.248Z",
+      "updated_at": "2026-05-06T15:27:02Z",
       "fields": [
         {
           "name": "Cliente",
@@ -769,10 +769,6 @@
         {
           "name": "Link de compra",
           "value": "https://www.comprasparaguai.com.br/ipad-11-a16-wifi5g-256gb-blue-2025-11a-geracao-md7l4ll-a3355__4880272/"
-        },
-        {
-          "name": "Motivo da reprovação",
-          "value": "Expirado"
         }
       ]
     },
@@ -780,11 +776,11 @@
       "id": "1347044883",
       "title": "União Química",
       "current_phase": {
-        "name": "Cotação enviada"
+        "name": "Reprovada"
       },
       "created_at": "2026-05-06T15:36:28Z",
       "finished_at": null,
-      "updated_at": "2026-05-06T15:39:58Z",
+      "updated_at": "2026-05-13T14:56:44.148Z",
       "fields": [
         {
           "name": "Empresa ",
@@ -79445,5 +79441,5 @@
       ]
     }
   ],
-  "syncedAt": "2026-05-13T14:56:31.248Z"
+  "syncedAt": "2026-05-13T14:56:44.148Z"
 }
