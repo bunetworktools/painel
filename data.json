@@ -244,7 +244,7 @@
       },
       "created_at": "2026-04-17T11:52:24Z",
       "finished_at": null,
-      "updated_at": "2026-05-05T02:00:22Z",
+      "updated_at": "2026-05-13T14:55:32.778Z",
       "fields": [
         {
           "name": "Cliente",
@@ -368,7 +368,7 @@
         },
         {
           "name": "Cotação aprovada?",
-          "value": ""
+          "value": "Sem retorno"
         }
       ]
     },
@@ -79441,5 +79441,5 @@
       ]
     }
   ],
-  "syncedAt": "2026-05-13T14:05:11.379Z"
+  "syncedAt": "2026-05-13T14:55:32.778Z"
 }
