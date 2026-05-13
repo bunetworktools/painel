@@ -780,7 +780,7 @@
       },
       "created_at": "2026-05-06T15:36:28Z",
       "finished_at": null,
-      "updated_at": "2026-05-13T14:57:06.195Z",
+      "updated_at": "2026-05-06T15:39:58Z",
       "fields": [
         {
           "name": "Empresa ",
@@ -905,10 +905,6 @@
         {
           "name": "Status do cliente",
           "value": "[\"Aguardando retorno\"]"
-        },
-        {
-          "name": "Motivo da reprovação",
-          "value": "Expirado"
         }
       ]
     },
@@ -1060,7 +1056,7 @@
       },
       "created_at": "2026-04-24T20:05:38Z",
       "finished_at": null,
-      "updated_at": "2026-05-13T00:25:28Z",
+      "updated_at": "2026-05-13T14:57:40.843Z",
       "fields": [
         {
           "name": "N° da cotação",
@@ -1180,7 +1176,7 @@
         },
         {
           "name": "Data limite para retorno",
-          "value": "13/05/2026 08:00"
+          "value": "2026-05-20 08:00:27 UTC"
         },
         {
           "name": "Status do cliente",
@@ -79445,5 +79441,5 @@
       ]
     }
   ],
-  "syncedAt": "2026-05-13T14:57:06.195Z"
+  "syncedAt": "2026-05-13T14:57:40.843Z"
 }
