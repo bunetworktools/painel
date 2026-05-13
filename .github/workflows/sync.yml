@@ -38,9 +38,15 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase
           git add data.json
-          git diff --staged --quiet \
-            && echo "Sem mudancas, nenhum commit necessario." \
-            || (git commit -m "chore: sync Pipefy $(date -u '+%Y-%m-%d %H:%M UTC')" \
-                && git pull --rebase \
-                && git push)
+          if git diff --staged --quiet; then
+            echo "Sem mudancas, nenhum commit necessario."
+          else
+            git commit -m "chore: sync Pipefy $(date -u '+%Y-%m-%d %H:%M UTC')"
+            for attempt in 1 2 3; do
+              git pull --rebase && git push && break
+              echo "Push rejeitado (tentativa $attempt/3), aguardando..."
+              sleep $((attempt * 5))
+            done
+          fi
