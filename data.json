@@ -647,8 +647,8 @@
         "name": "Reprovada"
       },
       "created_at": "2026-05-06T15:24:20Z",
-      "finished_at": null,
-      "updated_at": "2026-05-13T14:56:24.862Z",
+      "finished_at": "2026-05-13T14:56:27.820Z",
+      "updated_at": "2026-05-13T14:56:27.820Z",
       "fields": [
         {
           "name": "Cliente",
@@ -79441,5 +79441,5 @@
       ]
     }
   ],
-  "syncedAt": "2026-05-13T14:56:24.862Z"
+  "syncedAt": "2026-05-13T14:56:27.820Z"
 }
