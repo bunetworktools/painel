@@ -3,27 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Be You · Painel Estratégico 2026</title>
+<title>Be You · Painel Estratégico e Operacional</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%237c3aed'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='20' fill='white'%3Eb%3C/text%3E%3C/svg%3E">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --blue:#2563eb;--blue-d:#1d4ed8;--blue-l:#eff6ff;--blue-m:#bfdbfe;
-  --green:#10b981;--green-l:#d1fae5;--green-d:#059669;
-  --yellow:#f59e0b;--yellow-l:#fef3c7;
-  --red:#ef4444;--red-l:#fee2e2;--red-d:#dc2626;
-  --purple:#8b5cf6;--purple-l:#ede9fe;
-  --bg:#f1f5f9;--card:#fff;--border:#e2e8f0;
-  --text:#1e293b;--muted:#64748b;--subtle:#94a3b8;
+  --blue:#7c3aed;--blue-d:#6d28d9;--blue-l:#1e1040;--blue-m:#2d1a5e;
+  --green:#10b981;--green-l:#0a2e20;--green-d:#059669;
+  --yellow:#f59e0b;--yellow-l:#261c00;
+  --red:#ef4444;--red-l:#280c0c;--red-d:#dc2626;
+  --purple:#7c3aed;--purple-l:#1e1040;
+  --bg:#0a0a0f;--card:#13131e;--border:#26263a;
+  --text:#e8e8f5;--muted:#8a8da8;--subtle:#55576a;
   --radius:12px;--radius-sm:8px;
-  --shadow:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.1);
+  --shadow:0 1px 4px rgba(0,0,0,.5);--shadow-md:0 4px 16px rgba(0,0,0,.6);
+  --logo-color:#ffffff;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
 
 /* ---- LAYOUT ---- */
-.header{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;gap:16px;height:60px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow)}
+.header{background:#000;border-bottom:1px solid #1e1e2e;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:90px;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(124,58,237,.18)}
 .logo{font-size:20px;font-weight:800;color:var(--blue);letter-spacing:-0.5px}
 .logo span{color:var(--text)}
 .header-right{margin-left:auto;display:flex;align-items:center;gap:10px}
@@ -39,7 +41,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* ---- OKR CARDS ---- */
 .okr-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
-.okr-card{background:var(--card);border-radius:var(--radius);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden}
+.okr-card{background:var(--card);border-radius:var(--radius);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);position:relative;overflow:hidden;min-height:160px;display:flex;flex-direction:column;justify-content:space-between}
 .okr-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px}
 .okr-card.blue::before{background:var(--blue)}
 .okr-card.green::before{background:var(--green)}
@@ -57,14 +59,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* ---- TABS ---- */
 .tabs{display:flex;gap:2px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:4px;margin-bottom:24px}
-.tab{padding:8px 18px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);transition:all .15s;white-space:nowrap}
+.tab{padding:8px 18px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-weight:500;color:var(--muted);transition:all .15s;white-space:nowrap;user-select:none}
 .tab.active{background:var(--blue);color:#fff}
-.tab:hover:not(.active){background:var(--bg);color:var(--text)}
+.tab:hover:not(.active){background:#1a1a28;color:var(--text)}
 .tab-panel{display:none}.tab-panel.active{display:block}
 
 /* ---- METRIC CARDS ---- */
 .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
-.metric{background:var(--card);border-radius:var(--radius);padding:18px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.metric{background:var(--card);border-radius:var(--radius);padding:18px;border:1px solid var(--border);box-shadow:var(--shadow);min-height:88px;display:flex;flex-direction:column;justify-content:space-between}
 .metric-label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
 .metric-value{font-size:24px;font-weight:800;color:var(--text);line-height:1.2}
 .metric-delta{font-size:12px;margin-top:4px;color:var(--muted)}
@@ -72,20 +74,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
 /* ---- CHARTS & TABLES ---- */
 .charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:20px;margin-bottom:24px}
-.chart-card{background:var(--card);border-radius:var(--radius);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow)}
+.chart-card{background:var(--card);border-radius:var(--radius);padding:20px;border:1px solid var(--border);box-shadow:var(--shadow);display:flex;flex-direction:column}
 .chart-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
 .chart-subtitle{font-size:12px;color:var(--muted);font-weight:400}
 .chart-wrap{position:relative;height:240px}
 .chart-wrap.tall{height:300px}
 .chart-wrap.xl{height:380px}
 
-.table-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px}
+.table-card{background:var(--card);border-radius:var(--radius);border:1px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:24px;color:var(--text)}
 .table-header{padding:16px 20px;border-bottom:1px solid var(--border);font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:space-between}
 table{width:100%;border-collapse:collapse}
-th{padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;background:var(--bg);border-bottom:1px solid var(--border)}
+th{padding:10px 16px;text-align:left;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;background:#0d0d18;border-bottom:1px solid var(--border)}
 td{padding:11px 16px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text)}
 tr:last-child td{border-bottom:none}
-tr:hover td{background:var(--bg)}
+tr:hover td{background:#1a1a28}
 .tag{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
 .tag-green{background:var(--green-l);color:var(--green-d)}
 .tag-red{background:var(--red-l);color:var(--red-d)}
@@ -104,18 +106,18 @@ tr:hover td{background:var(--bg)}
 /* ---- MODAL (Config) ---- */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;align-items:center;justify-content:center}
 .overlay.open{display:flex}
-.modal{background:#fff;border-radius:var(--radius);width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-md)}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);width:600px;max-width:95vw;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-md)}
 .modal-header{padding:20px 24px;border-bottom:1px solid var(--border);font-size:16px;font-weight:700;display:flex;align-items:center;justify-content:space-between}
 .modal-body{padding:24px}
 .modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:10px}
 .close-btn{cursor:pointer;color:var(--muted);font-size:20px;line-height:1;padding:2px}
 .form-group{margin-bottom:18px}
 .form-label{display:block;font-size:12px;font-weight:600;color:var(--text);margin-bottom:6px}
-.form-input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;color:var(--text);transition:border .15s;background:#fff}
-.form-input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-m)}
+.form-input{width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:13px;color:var(--text);transition:border .15s;background:#1a1a2e}
+.form-input:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(124,58,237,.25)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .form-hint{font-size:11px;color:var(--muted);margin-top:4px}
-.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);padding:12px 0 8px;border-top:1px solid var(--border);margin-top:8px}
+.section-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:#a78bfa;padding:12px 0 8px;border-top:1px solid var(--border);margin-top:8px}
 .section-label:first-of-type{border-top:none;margin-top:0;padding-top:0}
 
 /* ---- EMPTY STATE & ALERTS ---- */
@@ -124,28 +126,28 @@ tr:hover td{background:var(--bg)}
 .empty-title{font-size:15px;font-weight:600;color:var(--text);margin-bottom:6px}
 .empty-desc{font-size:13px}
 .alert{padding:12px 16px;border-radius:var(--radius-sm);font-size:13px;margin-bottom:16px;display:flex;align-items:flex-start;gap:10px}
-.alert-blue{background:var(--blue-l);color:var(--blue-d);border:1px solid var(--blue-m)}
-.alert-yellow{background:var(--yellow-l);color:#92400e;border:1px solid #fde68a}
+.alert-blue{background:#1e1040;color:#a78bfa;border:1px solid #2d1a5e}
+.alert-yellow{background:#261c00;color:#fbbf24;border:1px solid #3d2f00}
 
 /* ---- LOADING ---- */
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-overlay{display:none;position:fixed;inset:0;background:rgba(255,255,255,.85);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:12px}
+.loading-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;align-items:center;justify-content:center;flex-direction:column;gap:12px}
 .loading-overlay.show{display:flex}
 .loading-text{font-size:14px;color:var(--text);font-weight:500}
 
 /* ---- INACTIVE CLIENTS ---- */
-.client-okr-card{background:linear-gradient(135deg,var(--purple-l),#fff);border:1px solid #c4b5fd;border-radius:var(--radius);padding:24px;margin-bottom:24px}
+.client-okr-card{background:linear-gradient(135deg,#1e1040,#13131e);border:1px solid #3d2d7a;border-radius:var(--radius);padding:24px;margin-bottom:24px}
 .client-okr-title{font-size:16px;font-weight:700;margin-bottom:4px}
 .client-okr-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
 .okr-big{display:flex;align-items:flex-end;gap:6px;margin-bottom:16px}
-.okr-num{font-size:48px;font-weight:900;color:var(--purple);line-height:1}
+.okr-num{font-size:48px;font-weight:900;color:#a78bfa;line-height:1}
 .okr-denom{font-size:20px;color:var(--muted);padding-bottom:6px}
 .okr-target{font-size:13px;color:var(--muted);margin-left:auto}
 
 /* ---- UPLOAD ZONE ---- */
-.upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:32px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px}
-.upload-zone:hover,.upload-zone.dragover{border-color:var(--blue);background:var(--blue-l)}
+.upload-zone{border:2px dashed var(--border);border-radius:var(--radius);padding:32px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px;background:var(--card)}
+.upload-zone:hover,.upload-zone.dragover{border-color:var(--blue);background:#1e1040}
 .upload-icon{font-size:32px;margin-bottom:8px}
 .upload-text{font-size:14px;font-weight:500;color:var(--text)}
 .upload-hint{font-size:12px;color:var(--muted);margin-top:4px}
@@ -153,8 +155,14 @@ input[type=file]{display:none}
 
 /* ---- PIPES DISCOVERY ---- */
 .pipe-option{display:flex;align-items:center;gap:10px;padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;cursor:pointer;transition:all .15s}
-.pipe-option:hover{border-color:var(--blue);background:var(--blue-l)}
+.pipe-option:hover{border-color:var(--blue);background:#1e1040}
 .pipe-option input[type=radio]{accent-color:var(--blue)}
+
+/* ─── Scrollbar dark ─── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:#0a0a0f}
+::-webkit-scrollbar-thumb{background:#2d2d42;border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:#7c3aed}
 
 @media(max-width:768px){
   .okr-bar{grid-template-columns:1fr}.charts{grid-template-columns:1fr}
@@ -175,6 +183,59 @@ input[type=file]{display:none}
 .conv-bar-wrap{display:flex;align-items:center;gap:6px}
 .conv-bar-bg{flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden;min-width:60px}
 .conv-bar-fill{height:100%;border-radius:3px}
+
+/* ─── LIGHT MODE ─── */
+html.light-mode {
+  --logo-color:#1e1e2e;
+  --bg:#f4f4f8;--card:#ffffff;--border:#e2e8f0;
+  --text:#1e293b;--muted:#64748b;--subtle:#94a3b8;
+  --blue-l:#ede9fe;--blue-m:#ddd6fe;
+  --green-l:#dcfce7;--yellow-l:#fef9c3;
+  --red-l:#fee2e2;--red-d:#dc2626;
+  --purple-l:#ede9fe;
+  --shadow:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.12);
+}
+html.light-mode .header{background:#ffffff !important;border-bottom:1px solid #e2e8f0 !important;box-shadow:0 2px 10px rgba(0,0,0,.07) !important}
+html.light-mode th{background:#f8fafc !important;color:#64748b !important}
+html.light-mode tr:hover td{background:#f8fafc !important}
+html.light-mode td{color:#1e293b !important}
+html.light-mode .form-input{background:#fff !important;color:#1e293b !important;border-color:#e2e8f0 !important}
+html.light-mode .modal{background:#fff !important;border-color:#e2e8f0 !important}
+html.light-mode .modal-header{color:#1e293b !important;border-color:#e2e8f0 !important}
+html.light-mode .modal-footer{border-color:#e2e8f0 !important}
+html.light-mode .loading-overlay{background:rgba(255,255,255,.9) !important}
+html.light-mode .client-okr-card{background:linear-gradient(135deg,#ede9fe,#fff) !important;border-color:#c4b5fd !important}
+html.light-mode .upload-zone{background:#f8fafc !important;border-color:#c4b5fd !important}
+html.light-mode .upload-zone:hover{background:#ede9fe !important}
+html.light-mode .tab:hover:not(.active){background:#f1f5f9 !important;color:#1e293b !important}
+html.light-mode ::-webkit-scrollbar-track{background:#f1f5f9 !important}
+html.light-mode ::-webkit-scrollbar-thumb{background:#c4b5fd !important}
+html.light-mode .alert-blue{background:#ede9fe !important;color:#6d28d9 !important;border-color:#c4b5fd !important}
+html.light-mode .alert-yellow{background:#fef9c3 !important;color:#92400e !important;border-color:#fde68a !important}
+html.light-mode .section-label{color:#7c3aed !important}
+html.light-mode .tag-gray{background:#f1f5f9 !important;color:#64748b !important}
+html.light-mode .chart-card{background:#fff !important}
+html.light-mode .table-card{background:#fff !important}
+html.light-mode .metric{background:#fff !important}
+html.light-mode .okr-card{background:#fff !important}
+html.light-mode .tabs{background:#fff !important}
+html.light-mode .period-bar{background:#fff !important}
+html.light-mode .pipe-option:hover{background:#ede9fe !important}
+html.light-mode .table-header{color:#1e293b !important}
+html.light-mode .chart-title{color:#1e293b !important}
+html.light-mode .metric-label{color:#64748b !important}
+html.light-mode .metric-value{color:#1e293b !important}
+html.light-mode .okr-label{color:#64748b !important}
+html.light-mode .okr-value{color:#1e293b !important}
+html.light-mode .okr-sub{color:#64748b !important}
+html.light-mode .sync-info{color:#64748b !important}
+html.light-mode .close-btn{color:#64748b !important}
+html.light-mode .form-label{color:#1e293b !important}
+html.light-mode .form-hint{color:#64748b !important}
+html.light-mode .period-label{color:#64748b !important}
+html.light-mode .period-btn:not(.active){color:#64748b !important}
+html.light-mode .btn-secondary{background:#fff !important;color:#1e293b !important;border-color:#e2e8f0 !important}
+html.light-mode .btn-secondary:hover{background:#f1f5f9 !important}
 </style>
 </head>
 <body>
@@ -188,7 +249,7 @@ input[type=file]{display:none}
 
 <!-- REPORT MODAL -->
 <div class="overlay" id="reportOverlay" onclick="if(event.target===this)closeReport()" style="display:none">
-  <div class="modal" style="width:820px;max-width:96vw">
+  <div class="modal" style="width:820px;max-width:96vw;background:var(--card)">
     <div class="modal-header">
       <span id="reportTitle">Relatório</span>
       <span class="close-btn" onclick="closeReport()">✕</span>
@@ -210,95 +271,90 @@ input[type=file]{display:none}
 <!-- CONFIG MODAL -->
 <div class="overlay" id="configOverlay">
   <div class="modal">
-    <div class="modal-header">
-      ⚙️ Configurações de Integração
+    <div class="modal-header" style="border-bottom:1px solid var(--border)">
+      ⚙️ Configurações
       <span class="close-btn" onclick="closeConfig()">✕</span>
     </div>
     <div class="modal-body">
-      <div class="section-label">🟦 Pipefy</div>
+
+      <!-- Toggle tema -->
+      <div class="section-label" style="border-top:none;margin-top:0;padding-top:0">🎨 Aparência</div>
+      <div class="form-group" style="display:flex;align-items:center;justify-content:space-between;background:var(--bg);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:4px">
+        <div>
+          <div style="font-size:13px;font-weight:600;color:var(--text)">Tema do Painel</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">Fundo escuro (roxo/preto) ou fundo claro</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+          <span style="font-size:12px;color:var(--muted)">☀️ Claro</span>
+          <label style="position:relative;display:inline-block;width:48px;height:26px;cursor:pointer">
+            <input type="checkbox" id="cfgDarkMode" style="opacity:0;width:0;height:0" onchange="applyTheme(this.checked)">
+            <span id="themeSlider" style="position:absolute;inset:0;background:#c7c7c7;border-radius:26px;transition:.3s">
+              <span style="position:absolute;left:3px;top:3px;width:20px;height:20px;background:#fff;border-radius:50%;transition:.3s;display:block;box-shadow:0 1px 4px rgba(0,0,0,.3)"></span>
+            </span>
+          </label>
+          <span style="font-size:12px;color:var(--muted)">🌙 Escuro</span>
+        </div>
+      </div>
+
+      <div class="section-label">💰 OKR 1 — Faturamento</div>
       <div class="form-group">
-        <label class="form-label">API Token</label>
-        <input class="form-input" type="password" id="cfgPipefyToken" placeholder="eyJhbGciOiJIUzUxMiJ9…">
-        <div class="form-hint">Configurações → Conta → API Access Tokens</div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Pipe ID – Cotações</label>
-          <input class="form-input" type="text" id="cfgPipeCotacoes" placeholder="Ex: 302346">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Pipe ID – Compras</label>
-          <input class="form-input" type="text" id="cfgPipeCompras" placeholder="Ex: 302347">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Pipe ID – Logística</label>
-          <input class="form-input" type="text" id="cfgPipeLogistica" placeholder="Ex: 302348">
-        </div>
-        <div class="form-group"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Pipe ID – CRM (Oportunidades)</label>
-          <input class="form-input" type="text" id="cfgPipeCrm" placeholder="Ex: 302349">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Pipe ID – Reativação de Clientes</label>
-          <input class="form-input" type="text" id="cfgPipeReativacao" placeholder="Ex: 302350">
-        </div>
-      </div>
-      <div class="form-group" style="text-align:center">
-        <button class="btn btn-secondary btn-sm" onclick="discoverPipes()">🔍 Descobrir Pipes Automaticamente</button>
-      </div>
-      <div id="pipesDiscovery" style="display:none;margin-top:8px"></div>
-
-      <div class="section-label">🟠 Omie (Faturamento)</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">App Key</label>
-          <input class="form-input" type="text" id="cfgOmieKey" placeholder="3386409280254">
-        </div>
-        <div class="form-group">
-          <label class="form-label">App Secret</label>
-          <input class="form-input" type="password" id="cfgOmieSecret" placeholder="Cole o App Secret aqui">
-        </div>
-      </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button class="btn btn-secondary btn-sm" onclick="testOmie()">🧪 Testar Conexão Omie</button>
-        <span id="omieTestStatus" style="font-size:12px;color:var(--muted)"></span>
+        <label class="form-label">Meta de Faturamento Anual (R$)</label>
+        <input class="form-input" type="number" id="cfgMetaAnual" placeholder="10000000">
+        <div class="form-hint">Receita total de cotações aprovadas no ano</div>
       </div>
 
-      <div class="section-label">🎯 Metas Anuais 2026</div>
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Meta de Faturamento Anual (R$)</label>
-          <input class="form-input" type="number" id="cfgMetaAnual" placeholder="10000000">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Inatividade (dias sem cotação)</label>
-          <input class="form-input" type="number" id="cfgDiasInativo" placeholder="60" value="60">
-        </div>
+      <div class="section-label">🎯 OKR 2 — Excelência Operacional</div>
+      <div class="form-group">
+        <label class="form-label">Meta de Taxa de Aprovação de Cotações (%)</label>
+        <input class="form-input" type="number" id="cfgMetaAprovacao" placeholder="50" min="0" max="100">
+        <div class="form-hint">Percentual de cotações aprovadas sobre o total finalizado</div>
+      </div>
+
+      <div class="section-label">🔄 OKR 3 — Reativação de Clientes</div>
+      <div class="form-group">
+        <label class="form-label">Meta de % de Reativação de Clientes</label>
+        <input class="form-input" type="number" id="cfgMetaReativacao" placeholder="50" min="0" max="100">
+        <div class="form-hint">Percentual de clientes inativos que devem ser reativados</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Inatividade (dias sem atividade)</label>
+        <input class="form-input" type="number" id="cfgDiasInativo" placeholder="60" value="60">
+        <div class="form-hint">Clientes sem cotação/compra há mais de X dias são considerados inativos</div>
       </div>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer" style="border-top:1px solid var(--border)">
       <button class="btn btn-secondary" onclick="closeConfig()">Cancelar</button>
-      <button class="btn btn-primary" onclick="saveConfig()">💾 Salvar e Conectar</button>
+      <button class="btn btn-primary" onclick="saveConfig()">💾 Salvar Metas</button>
     </div>
   </div>
 </div>
 
 <!-- HEADER -->
 <div class="header">
-  <div class="logo">Be <span>You</span></div>
-  <div style="width:1px;height:24px;background:var(--border)"></div>
-  <span style="font-size:13px;color:var(--muted);font-weight:500">Painel Estratégico 2026</span>
+  <!-- Logo Be You Tech -->
+  <div class="logo">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="140 80 800 520" height="58" style="display:block">
+<path fill="currentColor" d="M219.507385,420.062378 C195.827225,415.623413 180.050476,402.305511 171.618271,380.299500 C169.522369,374.829742 168.743652,369.079529 168.568466,363.188049 C167.514008,327.723694 168.212494,292.237427 167.407410,256.781921 C166.715256,226.300461 167.266113,195.820389 166.510010,165.356842 C166.154800,151.045959 165.909836,136.737885 165.749283,122.426292 C165.406891,91.901566 195.675339,84.772850 212.834457,94.634369 C222.786392,100.353836 227.116959,109.376511 227.198669,120.368401 C227.409225,148.692749 227.250458,177.019699 227.278702,205.345581 C227.289642,216.316360 230.957443,219.934433 242.022003,219.943939 C266.182343,219.964691 290.346100,219.688858 314.502136,220.009964 C343.940308,220.401245 369.760742,229.948975 389.749176,252.302277 C404.966675,269.320190 412.510651,289.547913 413.295197,312.393463 C413.954987,331.605377 412.465607,350.421234 403.249695,367.743896 C385.305206,401.473083 357.526794,419.924072 318.914337,420.299469 C285.930176,420.620178 252.939133,420.228699 219.507385,420.062378 M350.871460,329.288483 C351.710815,326.072632 352.744446,322.853302 352.427856,319.491730 C350.755981,301.738098 337.576965,288.794312 319.863892,288.373810 C301.878143,287.946869 283.861938,287.866364 265.881592,288.397369 C245.422211,289.001556 231.755173,306.479187 235.198990,326.665253 C237.616562,340.835785 251.839066,352.491974 267.143585,352.601196 C283.805847,352.720093 300.469543,352.633087 317.132629,352.640106 C333.754639,352.647125 344.327393,345.526306 350.871460,329.288483z"/>
+<path fill="currentColor" d="M804.062378,286.000000 C804.069641,232.169983 804.039246,178.839935 804.103210,125.509987 C804.128845,104.113525 819.051086,89.016068 839.248657,89.705971 C856.105957,90.281784 870.096497,104.071480 871.361816,120.887527 C872.276550,133.044403 871.765137,145.196716 871.806274,157.344177 C871.978760,208.340469 871.825134,259.337799 871.945679,310.334351 C872.000610,333.591095 867.209473,355.462891 853.164734,374.390320 C830.146240,405.411255 799.167664,419.214661 760.604431,415.712158 C721.185303,412.131958 680.062805,380.912537 672.900940,328.543091 C672.519348,325.752747 672.608337,322.887726 672.606445,320.057373 C672.576660,275.560242 672.555481,231.063126 672.560608,186.565994 C672.562561,169.504730 686.236511,154.559189 702.591187,153.658020 C722.066345,152.584869 737.146118,164.538895 739.391663,182.650360 C739.885742,186.635406 740.090515,190.597809 740.090576,194.596680 C740.090881,235.594116 740.035950,276.591766 740.153137,317.588898 C740.206726,336.321289 757.030396,351.710022 774.765259,349.580078 C792.034058,347.506104 804.776428,332.548767 804.376404,314.986420 C804.160217,305.493500 804.160156,295.995636 804.062378,286.000000z"/>
+<path fill="currentColor" d="M429.375397,368.513489 C436.080994,358.759583 445.263306,353.411682 456.511261,353.267242 C483.312958,352.923035 510.146729,352.123169 536.923889,353.703918 C553.495911,354.682220 566.369263,367.900909 567.309937,383.599762 C568.405212,401.878876 558.276428,416.033661 541.263184,419.815887 C539.020325,420.314514 536.642273,420.350464 534.326416,420.353912 C509.174835,420.391418 483.987762,419.547241 458.881287,420.613312 C433.329315,421.698303 414.320526,393.537720 429.375397,368.513489z"/>
+<path fill="currentColor" d="M633.119385,419.552002 C614.253540,423.327789 597.480713,413.697693 592.212769,396.409973 C587.212341,380.000183 595.494141,362.085358 611.184814,355.370453 C629.513733,347.526550 650.525452,356.637390 656.880554,375.184479 C663.469788,394.414795 653.076477,414.124359 633.119385,419.552002z"/>
+<path fill="currentColor" d="M350.229980,486.869873 C350.461365,489.803314 349.647186,492.322540 350.692230,494.973450 C353.442474,495.186005 355.147766,493.079895 357.215759,491.938782 C365.194580,487.536133 373.331879,483.843658 382.806732,485.604095 C390.379517,487.011139 394.433868,490.863831 395.259613,498.492157 C396.930786,513.930481 395.753662,529.441772 395.852356,544.921082 C395.863495,546.671570 395.582611,549.020020 393.022766,548.756714 C390.890076,548.537292 390.948578,546.407654 390.942688,544.770996 C390.895233,531.606384 390.911377,518.441589 390.885529,505.276886 C390.861145,492.851593 385.624542,488.426514 373.340942,490.261475 C365.113892,491.490448 358.586029,496.144165 351.944855,500.596619 C349.811981,502.026550 350.004700,504.306488 350.003967,506.472015 C349.999969,518.470337 350.046509,530.468872 349.977905,542.466736 C349.964355,544.834900 350.481628,547.596313 347.449646,548.863708 C344.893036,547.937439 345.141296,545.731995 345.136658,543.818726 C345.072083,517.156372 345.046417,490.493805 345.062927,463.831329 C345.064117,461.898804 344.920349,459.199280 347.636902,459.250275 C350.211761,459.298615 350.221710,461.885010 350.230011,463.895416 C350.260986,471.394287 350.234589,478.893372 350.229980,486.869873z"/>
+<path fill="currentColor" d="M246.775726,551.003174 C243.323242,550.959839 240.354553,551.011963 237.352051,550.571716 C222.446609,548.385864 215.329544,540.714905 214.717422,525.648865 C214.514664,520.658447 214.475006,515.643311 214.712357,510.656189 C215.609146,491.813629 225.327301,484.132477 244.647827,485.176270 C246.139282,485.256866 247.619461,485.547180 249.104752,485.741028 C263.314453,487.595520 270.567505,500.965088 264.467102,514.068298 C262.395050,518.518921 258.709106,520.339600 253.990875,520.368896 C244.159042,520.429932 234.320953,520.673462 224.497559,520.402649 C219.650650,520.269043 218.797424,522.493286 219.378540,526.491394 C221.523621,541.249939 229.191940,547.522827 247.723053,546.448792 C251.871124,546.208435 256.001831,545.650696 260.135986,545.197510 C261.709595,545.025024 263.138885,545.031921 264.055664,547.404114 C259.077972,551.403809 252.782135,549.701477 246.775726,551.003174 M222.297852,498.928192 C220.401733,503.058685 219.312943,507.358093 219.281708,511.939636 C219.263016,514.682800 220.509995,515.946716 223.173523,515.939392 C233.329575,515.911438 243.486252,515.929871 253.641235,515.808472 C256.496307,515.774414 258.690125,514.338135 260.024628,511.705963 C264.589081,502.702911 259.180359,491.962830 249.180878,490.427856 C244.562134,489.718872 239.885513,489.645325 235.237106,490.320618 C229.874939,491.099609 225.376236,493.286591 222.297852,498.928192z"/>
+<path fill="currentColor" d="M281.389832,523.476990 C280.595062,516.897034 281.209412,510.744965 282.467255,504.720062 C284.995209,492.611816 290.728882,487.611847 302.968597,485.539001 C309.523407,484.428894 315.915924,485.195526 322.322845,486.205170 C324.119080,486.488220 326.512177,486.485870 326.921021,489.311798 C325.464966,491.750732 323.213409,490.818848 321.182770,490.533234 C315.205841,489.692566 309.212860,489.616699 303.241028,490.348206 C294.004395,491.479645 289.151276,495.979736 287.372040,505.050323 C285.721680,513.463867 285.590027,521.913879 287.217102,530.369446 C289.089081,540.097595 293.707367,544.093933 303.501953,545.909729 C310.249664,547.160645 316.763489,545.936890 323.382935,545.659424 C324.971191,545.592834 326.705139,544.817810 328.155243,546.307861 C328.712311,547.989441 327.767426,548.873047 326.308319,549.132080 C317.605255,550.676636 308.872833,551.924011 300.077606,549.847046 C289.109131,547.256897 283.703522,541.114807 281.962494,529.336304 C281.694824,527.525452 281.587158,525.690979 281.389832,523.476990z"/>
+<path fill="currentColor" d="M176.632172,494.622070 C176.198166,491.173584 173.906631,491.349487 171.708099,491.198914 C169.859070,491.072296 167.590134,491.811188 166.502228,488.945923 C167.966263,486.696960 170.414505,486.949738 172.621262,486.869202 C175.569504,486.761627 176.772720,485.348572 176.691193,482.457642 C176.597382,479.131134 176.642487,475.798645 176.710815,472.470490 C176.747314,470.693054 176.439209,468.208771 178.898361,468.158752 C181.796875,468.099884 181.246063,470.805969 181.306229,472.682129 C181.402206,475.675659 181.477982,478.682343 181.306702,481.668793 C181.099152,485.287354 182.533478,486.868652 186.233093,486.723602 C190.554565,486.554199 194.888809,486.644714 199.215897,486.717987 C200.958878,486.747528 203.427139,486.345947 203.325363,489.024231 C203.227341,491.603729 200.766037,491.153320 199.031021,491.184998 C194.704193,491.263977 190.372253,491.306976 186.047577,491.182983 C182.665390,491.086029 181.275162,492.452881 181.303909,495.908600 C181.413315,509.058990 181.272888,522.211426 181.380768,535.361877 C181.434616,541.923645 185.429016,545.413696 192.184921,545.761414 C195.527542,545.933594 199.336304,544.324768 203.282364,548.166443 C196.156479,550.921143 189.979568,550.996033 183.826797,548.601257 C178.424454,546.498596 176.768860,541.829102 176.734268,536.506226 C176.644501,522.689636 176.677200,508.872192 176.632172,494.622070z"/>
+</svg>
+  </div>
+
+  <!-- Title centered -->
+  <div style="position:absolute;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap">
+    <div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px;line-height:1.1">Painel Estratégico e Operacional</div>
+
+  </div>
+
+  <!-- Right controls -->
   <div class="header-right">
-    <span class="sync-info" id="syncInfo">Nenhuma sincronização</span>
+    <span class="sync-info" id="syncInfo" style="font-size:12px;color:var(--muted)"></span>
     <button class="btn btn-secondary btn-sm" onclick="openConfig()">⚙️ Configurar</button>
-    <button class="btn btn-primary btn-sm" id="syncBtn" onclick="syncAll()">
-      🔄 Sincronizar
-    </button>
   </div>
 </div>
 
@@ -307,7 +363,7 @@ input[type=file]{display:none}
 
   <!-- SETUP ALERT -->
   <div class="alert alert-yellow" id="setupAlert" style="display:none">
-    ⚠️ <strong>Configure a integração</strong> — Clique em "Configurar" para adicionar seu token do Pipefy e os IDs dos pipes.
+    ⚙️ <strong>Configure as metas</strong> — Clique em "Configurar" para definir as metas anuais de faturamento, aprovação e reativação.
   </div>
 
 
@@ -323,7 +379,7 @@ input[type=file]{display:none}
     <div class="okr-card green">
       <div class="okr-label">🎯 OKR 2 — Excelência Operacional</div>
       <div class="okr-value" id="okrPainelValue">—</div>
-      <div class="okr-sub" id="okrPainelSub">Meta: 50% de aprovação nas cotações</div>
+      <div class="okr-sub" id="okrPainelSub">Meta: aprovação nas cotações</div>
       <div class="okr-progress"><div class="okr-progress-bar" id="okrPainelBar" style="background:var(--green);width:0%"></div></div>
       <div class="okr-sub" id="okrPainelPct" style="margin-top:4px">— da meta atingida</div>
     </div>
@@ -365,40 +421,40 @@ input[type=file]{display:none}
     <button class="period-btn" onclick="setPeriod('Semana Anterior')">Sem. Anterior</button>
     <div class="period-sep"></div>
     <span style="font-size:12px;color:var(--muted);font-weight:500">De</span>
-    <input type="date" id="customStart" style="font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text)">
+    <input type="date" id="customStart" style="font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:#1a1a2e;color:var(--text)">
     <span style="font-size:12px;color:var(--muted);font-weight:500">até</span>
-    <input type="date" id="customEnd" style="font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text)">
+    <input type="date" id="customEnd" style="font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:#1a1a2e;color:var(--text)">
     <button class="period-btn" onclick="applyCustomPeriod()" style="background:var(--blue);color:#fff">Aplicar</button>
     <span id="periodRangeLabel" style="font-size:12px;color:var(--muted);margin-left:4px"></span>
   </div>
 
   <!-- TAB: VISÃO GERAL -->
   <div class="tab-panel active" id="tab-geral">
-    <!-- Linha A: Métricas de Cotações (6 colunas) -->
-    <div id="geralMetrics" style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:14px">
-      <div class="metric" style="cursor:pointer;border-left:3px solid #2563eb" onclick="openReport('cotacoes_enviadas')">
+    <!-- Linha A: Métricas de Cotações (5 colunas) -->
+    <div id="geralMetrics" style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:14px">
+      <div class="metric" style="cursor:pointer;border-left:3px solid #7c3aed;padding:22px 20px" onclick="openReport('cotacoes_enviadas')">
         <div class="metric-label">📋 Cotações Abertas</div>
-        <div class="metric-value" id="gmCotRec">—</div>
+        <div class="metric-value" id="gmCotRec" style="font-size:32px">—</div>
         <div class="metric-delta" id="gmCotRecDelta">no período</div>
       </div>
-      <div class="metric" style="cursor:pointer;border-left:3px solid #10b981" onclick="openReport('cotacoes_aprovadas')">
+      <div class="metric" style="cursor:pointer;border-left:3px solid #10b981;padding:22px 20px" onclick="openReport('cotacoes_aprovadas')">
         <div class="metric-label">✅ Cotações Aprovadas</div>
-        <div class="metric-value" id="gmCotAprov">—</div>
+        <div class="metric-value" id="gmCotAprov" style="font-size:32px">—</div>
         <div class="metric-delta" id="gmCotAprovDelta">—</div>
       </div>
-      <div class="metric" style="cursor:pointer;border-left:3px solid #ef4444" onclick="openReport('cotacoes_reprovadas')">
+      <div class="metric" style="cursor:pointer;border-left:3px solid #ef4444;padding:22px 20px" onclick="openReport('cotacoes_reprovadas')">
         <div class="metric-label">❌ Cotações Reprovadas</div>
-        <div class="metric-value" id="gmCotReprov">—</div>
+        <div class="metric-value" id="gmCotReprov" style="font-size:32px">—</div>
         <div class="metric-delta" id="gmCotReprovDelta">—</div>
       </div>
-      <div class="metric" style="cursor:pointer;border-left:3px solid #f59e0b" onclick="openReport('em_andamento')">
-        <div class="metric-label">⏳ Cotações em Andamento</div>
-        <div class="metric-value" id="gmOpen">—</div>
+      <div class="metric" style="cursor:pointer;border-left:3px solid #f59e0b;padding:22px 20px" onclick="openReport('em_andamento')">
+        <div class="metric-label">⏳ Em Andamento</div>
+        <div class="metric-value" id="gmOpen" style="font-size:32px">—</div>
         <div class="metric-delta" id="gmOpenDelta">valor em aberto</div>
       </div>
-      <div class="metric" style="cursor:pointer;border-left:3px solid #8b5cf6" onclick="openReport('aprovacao')">
+      <div class="metric" style="cursor:pointer;border-left:3px solid #a78bfa;padding:22px 20px" onclick="openReport('aprovacao')">
         <div class="metric-label">📊 Taxa de Aprovação</div>
-        <div class="metric-value" id="gmConv">—</div>
+        <div class="metric-value" id="gmConv" style="font-size:32px">—</div>
         <div class="metric-delta" id="gmConvDelta">aprovadas / finalizadas</div>
       </div>
     </div>
@@ -503,10 +559,10 @@ input[type=file]{display:none}
         <div class="upload-hint">Omie → Relatórios → Faturamento por MêsAno → Exportar Excel</div>
         <input type="file" id="fatFileInput" accept=".xlsx,.xls,.csv" onchange="handleFatFile(this)">
       </div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px">
-        <div style="font-size:13px;font-weight:600;margin-bottom:12px">Meta Anual de Faturamento</div>
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:8px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text)">Meta Anual de Faturamento</div>
         <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-          <input class="form-input" type="number" id="metaAnualInput" placeholder="10000000" style="flex:1" oninput="updateMetaAnual(this.value)">
+          <input class="form-input" type="number" id="metaAnualInput" placeholder="10000000" style="flex:1;background:#1a1a2e" oninput="updateMetaAnual(this.value)">
           <button class="btn btn-primary btn-sm" onclick="updateMetaAnual(document.getElementById('metaAnualInput').value)">✓</button>
         </div>
         <div id="fatMetaStatus" style="font-size:12px;color:var(--muted)">Defina a meta para ver o progresso</div>
@@ -668,7 +724,7 @@ input[type=file]{display:none}
   <div class="tab-panel" id="tab-clientes">
     <div class="client-okr-card">
       <div class="client-okr-title">🎯 OKR 3 — Reativação de Clientes Inativos</div>
-      <div class="client-okr-sub">Meta: 50% da base de clientes inativos voltam a realizar cotações</div>
+      <div class="client-okr-sub" id="cliOkrSub">Meta: reativação de clientes inativos</div>
       <div class="okr-big">
         <div class="okr-num" id="cliReativNum">0</div>
         <div class="okr-denom" id="cliReativDenom">/ 0 inativos</div>
@@ -676,7 +732,7 @@ input[type=file]{display:none}
       </div>
       <div class="progress-container">
         <div class="progress-track"><div class="progress-fill" id="cliProgressBar" style="background:var(--purple);width:0%"></div></div>
-        <div class="progress-label"><span id="cliProgressPct">0%</span><span>50% (meta)</span></div>
+        <div class="progress-label"><span id="cliProgressPct">0%</span><span id="cliMetaLabel">50% (meta)</span></div>
       </div>
     </div>
 
@@ -826,6 +882,47 @@ input[type=file]{display:none}
 // Registrar plugin de datalabels (obrigatório no Chart.js 4.x)
 Chart.register(ChartDataLabels);
 
+// Defaults globais para tema escuro
+Chart.defaults.color = '#8a8da8';
+Chart.defaults.borderColor = '#26263a';
+Chart.defaults.plugins.legend.labels.color = '#8a8da8';
+Chart.defaults.scale.grid.color = 'rgba(255,255,255,0.05)';
+Chart.defaults.scale.ticks.color = '#8a8da8';
+
+// ─── TEMA CLARO / ESCURO ───
+function applyTheme(isDark, save = true) {
+  const html = document.documentElement;
+  if (isDark) {
+    html.classList.remove('light-mode');
+    Chart.defaults.color = '#8a8da8';
+    Chart.defaults.borderColor = '#26263a';
+    Chart.defaults.scale.grid.color = 'rgba(255,255,255,0.05)';
+    Chart.defaults.scale.ticks.color = '#8a8da8';
+    Chart.defaults.plugins.legend.labels.color = '#8a8da8';
+  } else {
+    html.classList.add('light-mode');
+    Chart.defaults.color = '#64748b';
+    Chart.defaults.borderColor = '#e2e8f0';
+    Chart.defaults.scale.grid.color = 'rgba(0,0,0,0.05)';
+    Chart.defaults.scale.ticks.color = '#64748b';
+    Chart.defaults.plugins.legend.labels.color = '#64748b';
+  }
+  // Atualizar toggle visual
+  const cb = document.getElementById('cfgDarkMode');
+  if (cb) cb.checked = isDark;
+  const sl = document.getElementById('themeSlider');
+  if (sl) {
+    sl.style.background = isDark ? '#7c3aed' : '#c7c7c7';
+    const knob = sl.querySelector('span');
+    if (knob) knob.style.transform = isDark ? 'translateX(22px)' : 'translateX(0)';
+  }
+  if (save) {
+    cfg.darkMode = isDark;
+    localStorage.setItem('beyou_cfg', JSON.stringify(cfg));
+  }
+  renderAll();
+}
+
 // ============================================================
 //  STATE
 // ============================================================
@@ -881,7 +978,10 @@ let cfg = {
   omieKey: '',
   omieSecret: '',
   metaAnual: 0,
+  metaAprovacao: 50,
+  metaReativacao: 50,
   diasInativo: 60,
+  darkMode: true,
 };
 
 const charts = {};
@@ -997,19 +1097,14 @@ function allMonthBuckets(items, getDate, getValue = () => 1) {
 //  PERSISTENCE
 // ============================================================
 function saveConfig() {
-  cfg.pipefyToken     = document.getElementById('cfgPipefyToken').value.trim();
-  cfg.pipeCotacoesId  = document.getElementById('cfgPipeCotacoes').value.trim();
-  cfg.pipeComprasId   = document.getElementById('cfgPipeCompras').value.trim();
-  cfg.pipeLogisticaId = document.getElementById('cfgPipeLogistica').value.trim();
-  cfg.pipeCrmId       = document.getElementById('cfgPipeCrm').value.trim();
-  cfg.pipeReativacaoId= document.getElementById('cfgPipeReativacao').value.trim();
-  cfg.omieKey       = document.getElementById('cfgOmieKey').value.trim();
-  cfg.omieSecret    = document.getElementById('cfgOmieSecret').value.trim();
-  cfg.metaAnual     = parseFloat(document.getElementById('cfgMetaAnual').value) || 0;
-  cfg.diasInativo   = parseInt(document.getElementById('cfgDiasInativo').value) || 60;
+  cfg.metaAnual      = parseFloat(document.getElementById('cfgMetaAnual').value) || 0;
+  cfg.metaAprovacao  = parseFloat(document.getElementById('cfgMetaAprovacao').value) || 50;
+  cfg.metaReativacao = parseFloat(document.getElementById('cfgMetaReativacao').value) || 50;
+  cfg.diasInativo    = parseInt(document.getElementById('cfgDiasInativo').value) || 60;
+  cfg.darkMode       = document.getElementById('cfgDarkMode').checked;
   localStorage.setItem('beyou_cfg', JSON.stringify(cfg));
   closeConfig();
-  checkSetupAlert();
+  applyTheme(cfg.darkMode, false);
   renderAll();
 }
 
@@ -1018,17 +1113,15 @@ function loadConfig() {
     const stored = localStorage.getItem('beyou_cfg');
     if (stored) { cfg = { ...cfg, ...JSON.parse(stored) }; }
   } catch(e) {}
-  document.getElementById('cfgPipefyToken').value    = cfg.pipefyToken;
-  document.getElementById('cfgPipeCotacoes').value   = cfg.pipeCotacoesId;
-  document.getElementById('cfgPipeCompras').value    = cfg.pipeComprasId;
-  document.getElementById('cfgPipeLogistica').value  = cfg.pipeLogisticaId;
-  document.getElementById('cfgPipeCrm').value        = cfg.pipeCrmId || '';
-  document.getElementById('cfgPipeReativacao').value = cfg.pipeReativacaoId || '';
-  document.getElementById('cfgOmieKey').value       = cfg.omieKey;
-  document.getElementById('cfgOmieSecret').value    = cfg.omieSecret;
-  document.getElementById('cfgMetaAnual').value     = cfg.metaAnual || '';
-  document.getElementById('cfgDiasInativo').value   = cfg.diasInativo || 60;
-  document.getElementById('metaAnualInput').value   = cfg.metaAnual || '';
+  document.getElementById('cfgMetaAnual').value      = cfg.metaAnual || '';
+  document.getElementById('cfgMetaAprovacao').value  = cfg.metaAprovacao || 50;
+  document.getElementById('cfgMetaReativacao').value = cfg.metaReativacao || 50;
+  document.getElementById('cfgDiasInativo').value    = cfg.diasInativo || 60;
+  if (document.getElementById('metaAnualInput'))
+    document.getElementById('metaAnualInput').value = cfg.metaAnual || '';
+  // Restaurar tema
+  const isDark = cfg.darkMode !== false; // default: escuro
+  applyTheme(isDark, false);
 }
 
 function saveData() {
@@ -1134,46 +1227,29 @@ function assignPipe(id, type) {
 //  SYNC
 // ============================================================
 async function syncAll() {
-  if (!cfg.pipefyToken) { openConfig(); return; }
-  const btn = document.getElementById('syncBtn');
-  btn.innerHTML = '<span class="spinner"></span> Sincronizando…';
-  btn.disabled = true;
-  setLoading(true, 'Iniciando sincronização…');
+  // sync initiated
+  setLoading(true, 'Carregando dados do Pipefy…');
   try {
-    if (cfg.pipeCotacoesId) {
-      setLoading(true, 'Buscando cotações do Pipefy…');
-      state.cotacoes = await fetchAllCards(cfg.pipeCotacoesId);
-    }
-    if (cfg.pipeComprasId) {
-      setLoading(true, 'Buscando compras do Pipefy…');
-      state.compras = await fetchAllCards(cfg.pipeComprasId);
-    }
-    if (cfg.pipeLogisticaId) {
-      setLoading(true, 'Buscando logística do Pipefy…');
-      state.logistica = await fetchAllCards(cfg.pipeLogisticaId);
-    }
-    if (cfg.pipeCrmId) {
-      setLoading(true, 'Buscando oportunidades CRM do Pipefy…');
-      state.crm = await fetchAllCards(cfg.pipeCrmId);
-    }
-    if (cfg.pipeReativacaoId) {
-      setLoading(true, 'Buscando reativações do Pipefy…');
-      state.reativacao = await fetchAllCards(cfg.pipeReativacaoId);
-    }
-    if (cfg.omieKey && cfg.omieSecret) {
-      setLoading(true, 'Buscando NF-e do Omie…');
-      await syncOmie();
-    }
+    // Tenta buscar data.json sincronizado pelo GitHub Actions
+    const res = await fetch('./data.json?t=' + Date.now());
+    if (!res.ok) throw new Error('Arquivo data.json não encontrado (HTTP ' + res.status + '). Verifique se o GitHub Actions já rodou.');
+    const json = await res.json();
+    if (json.cotacoes)   state.cotacoes   = json.cotacoes;
+    if (json.compras)    state.compras    = json.compras;
+    if (json.logistica)  state.logistica  = json.logistica;
+    if (json.crm)        state.crm        = json.crm;
+    if (json.reativacao) state.reativacao = json.reativacao;
+    if (json.syncedAt)   localStorage.setItem('beyou_pipefy_sync', json.syncedAt);
     saveData();
     const now = new Date().toISOString();
     localStorage.setItem('beyou_sync', now);
-    document.getElementById('syncInfo').textContent = 'Sync: ' + new Date(now).toLocaleString('pt-BR');
+    const syncedAt = json.syncedAt ? new Date(json.syncedAt).toLocaleString('pt-BR') : new Date(now).toLocaleString('pt-BR');
+    document.getElementById('syncInfo').textContent = 'Pipefy: ' + syncedAt;
     renderAll();
   } catch(e) {
-    alert('Erro ao sincronizar: ' + e.message);
+    alert('Erro ao carregar dados: ' + e.message + '\n\nVerifique se o GitHub Actions sincronizou o data.json.');
   } finally {
-    btn.innerHTML = '🔄 Sincronizar';
-    btn.disabled = false;
+    // sync complete
     setLoading(false);
   }
 }
@@ -1400,7 +1476,7 @@ function renderCRM() {
       faseValor[c.fase] = (faseValor[c.fase] || 0) + c.valor;
     });
     const labels = Object.keys(faseCount);
-    mkBar('chartCRMFunil', labels, Object.values(faseCount), { label:'Oportunidades', color:'rgba(37,99,235,0.8)' });
+    mkBar('chartCRMFunil', labels, Object.values(faseCount), { label:'Oportunidades', color:'rgba(124,58,237,0.8)' });
     mkBar('chartCRMValor', labels, Object.values(faseValor), { label:'Valor (R$)', color:'rgba(16,185,129,0.8)' });
   }
 
@@ -1507,8 +1583,8 @@ function renderOKRs() {
   const aprov = enviadas.filter(c => c.aprovada).length;
   const conv = enviadas.length > 0 ? aprov / enviadas.length : 0;
   const okr2Pct  = Math.min(Math.round(conv * 100), 100);
-  const okr2Meta = 50; // meta fixa: 50%
-  const okr2Progress = Math.min(Math.round((conv / 0.5) * 100), 100);
+  const okr2Meta = cfg.metaAprovacao || 50;
+  const okr2Progress = Math.min(Math.round((conv / (okr2Meta/100)) * 100), 100);
   el('okrPainelValue').textContent = fmtPct(conv);
   el('okrPainelSub').textContent   = `${aprov} aprovadas de ${enviadas.length} finalizadas`;
   const okr2Bar = el('okrPainelBar');
@@ -1519,11 +1595,11 @@ function renderOKRs() {
   // OKR 3 — Clientes inativos (considera cotações + compras + NFs)
   const { inativos, reativados } = calcInactiveClients();
   const pctCli = inativos > 0 ? reativados / inativos : 0;
-  const metaCli = 0.5;
+  const metaCli = (cfg.metaReativacao || 50) / 100;
   el('okrCliValue').textContent = reativados + ' / ' + inativos;
   el('okrCliSub').textContent   = `Clientes inativos há +${cfg.diasInativo} dias`;
   el('okrCliBar').style.width   = Math.min(pctCli / metaCli * 100, 100) + '%';
-  el('okrCliPct').textContent   = fmtPct(pctCli) + ' reativados — meta: 50%';
+  el('okrCliPct').textContent   = fmtPct(pctCli) + ' reativados — meta: ' + (cfg.metaReativacao || 50) + '%';
 }
 
 // ============================================================
@@ -1607,7 +1683,7 @@ function renderGeral() {
           datalabels:{
             anchor:'end', align:'top',
             formatter: v => v > 0 ? String(v) : '',
-            font:{ size:12, weight:'700' }, color:'rgba(0,0,0,0.65)'
+            font:{ size:12, weight:'700' }, color:'rgba(255,255,255,0.9)'
           }
         },
         scales:{
@@ -1791,8 +1867,8 @@ function renderGeral() {
             { type:'bar', label:'Frete',                   data: sliceM(freteByM).map(v => -v),
               backgroundColor:'rgba(245,158,11,0.80)',   borderRadius:3, stack:'lucro', yAxisID:'y' },
             { type:'line', label:'Lucro Líquido',          data: sliceM(lucroByM),
-              borderColor:'#2563eb', backgroundColor:'rgba(37,99,235,0.1)',
-              yAxisID:'y', pointRadius:4, pointBackgroundColor:'#2563eb',
+              borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,0.1)',
+              yAxisID:'y', pointRadius:4, pointBackgroundColor:'#7c3aed',
               borderWidth:2, tension:0.3, spanGaps:true, fill:false },
           ]
         },
@@ -1983,7 +2059,7 @@ function renderFaturamento() {
   const metaMensal = cfg.metaAnual > 0 ? Array(12).fill(cfg.metaAnual / 12) : null;
   mkBarWithLine('chartFatMensal', activeMonths, sliceM(fatByM), metaMensal ? sliceM(metaMensal) : null);
   mkStackedBar('chartFatCusto', activeMonths, [
-    { label:'Faturamento', data: sliceM(fatByM), color:'rgba(37,99,235,0.75)' },
+    { label:'Faturamento', data: sliceM(fatByM), color:'rgba(124,58,237,0.75)' },
     { label:'Custo Compras', data: sliceM(custoByM), color:'rgba(239,68,68,0.6)' },
     { label:'Frete', data: sliceM(freteByM), color:'rgba(245,158,11,0.6)' },
   ]);
@@ -2067,7 +2143,7 @@ function renderCotacoes() {
   // Chart Volume por mês
   const volByM = Array(12).fill(0);
   cots.forEach(c => { if (c.mes >= 0) volByM[c.mes]++; });
-  mkBar('chartCotVol', activeMonths, sliceM(volByM), { label:'Cotações', color:'rgba(37,99,235,0.8)' });
+  mkBar('chartCotVol', activeMonths, sliceM(volByM), { label:'Cotações', color:'rgba(124,58,237,0.8)' });
 
   // Chart status
   const aprovByM = Array(12).fill(0), reprovByM = Array(12).fill(0);
@@ -2083,7 +2159,7 @@ function renderCotacoes() {
     const fin = (aprovByM[i] + reprovByM[i]);
     return fin > 0 ? +(aprovByM[i]/fin*100).toFixed(1) : null;
   });
-  mkLine('chartCotConv', activeMonths, sliceM(convByM), { label:'Taxa de Conversão (%)', color:'rgba(37,99,235,0.9)' });
+  mkLine('chartCotConv', activeMonths, sliceM(convByM), { label:'Taxa de Conversão (%)', color:'rgba(124,58,237,0.9)' });
 
   // Motivos reprovação
   const motivosMap = {};
@@ -2147,7 +2223,7 @@ function renderCompras() {
   const valorByM = Array(12).fill(0), qtdByM = Array(12).fill(0);
   concluidas.forEach(c => { if (c.mes >= 0) { valorByM[c.mes] += c.valor; qtdByM[c.mes]++; } });
   mkBar('chartCpMensal', activeMonths, sliceM(valorByM), { label:'Valor (R$)', color:'rgba(16,185,129,0.8)' });
-  mkBar('chartCpQtd',    activeMonths, sliceM(qtdByM),   { label:'Qtd Compras', color:'rgba(37,99,235,0.7)' });
+  mkBar('chartCpQtd',    activeMonths, sliceM(qtdByM),   { label:'Qtd Compras', color:'rgba(124,58,237,0.7)' });
 
   // Tabela clientes
   const map = {};
@@ -2849,8 +2925,8 @@ function setLoading(show, text = '') {
 }
 
 function checkSetupAlert() {
-  const hasToken = !!cfg.pipefyToken;
-  el('setupAlert').style.display = hasToken ? 'none' : 'block';
+  const alert = document.getElementById('setupAlert');
+  if (alert) alert.style.display = 'none';
 }
 
 function dragOver(e, zoneId) { e.preventDefault(); el(zoneId).classList.add('dragover'); }
@@ -2993,8 +3069,7 @@ fetch('data.json?v=' + Date.now())
       syncInfo.textContent = 'Atualizado: ' + new Date(data.syncedAt).toLocaleString('pt-BR');
     }
     // Oculta botão de sync manual (dados vêm do GitHub Actions)
-    const syncBtn = document.getElementById('syncBtn');
-    if (syncBtn) syncBtn.style.display = 'none';
+    // syncBtn removed
     renderAll();
   })
   .catch(() => {
