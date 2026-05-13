@@ -52,15 +52,15 @@
       "id": "1350018330",
       "title": "teste",
       "current_phase": {
-        "name": "Nova solicitação"
+        "name": "Cotação em andamento"
       },
       "created_at": "2026-05-13T00:26:55Z",
       "finished_at": null,
-      "updated_at": "2026-05-13T15:32:33.058Z",
+      "updated_at": "2026-05-13T15:32:35.728Z",
       "fields": [
         {
           "name": "Forma de pagamento",
-          "value": "TED/PIX"
+          "value": "Boleto"
         },
         {
           "name": "Condição de pagamento",
@@ -79441,5 +79441,5 @@
       ]
     }
   ],
-  "syncedAt": "2026-05-13T15:32:33.058Z"
+  "syncedAt": "2026-05-13T15:32:35.728Z"
 }
