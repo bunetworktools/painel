@@ -52,11 +52,11 @@
       "id": "1350018330",
       "title": "teste",
       "current_phase": {
-        "name": "Nova solicitação"
+        "name": "Cotação em andamento"
       },
       "created_at": "2026-05-13T00:26:55Z",
       "finished_at": null,
-      "updated_at": "2026-05-13T00:36:28Z",
+      "updated_at": "2026-05-13T15:31:46.154Z",
       "fields": [
         {
           "name": "Forma de pagamento",
@@ -79441,5 +79441,5 @@
       ]
     }
   ],
-  "syncedAt": "2026-05-13T15:25:13.443Z"
+  "syncedAt": "2026-05-13T15:31:46.154Z"
 }
