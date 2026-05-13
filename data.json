@@ -376,11 +376,11 @@
       "id": "1343369824",
       "title": "DEUTSCHE TELEKOM GLOBAL BUSINESS SOLUTIONS BRASIL LTDA",
       "current_phase": {
-        "name": "Reprovada"
+        "name": "Cotação enviada"
       },
       "created_at": "2026-04-28T18:54:13Z",
-      "finished_at": "2026-05-13T14:55:58.087Z",
-      "updated_at": "2026-05-13T14:55:58.087Z",
+      "finished_at": null,
+      "updated_at": "2026-05-13T14:56:01.749Z",
       "fields": [
         {
           "name": "Empresa ",
@@ -509,6 +509,10 @@
         {
           "name": "Planilha da Red Bull:",
           "value": "[]"
+        },
+        {
+          "name": "Motivo da reprovação",
+          "value": "Expirado"
         }
       ]
     },
@@ -79441,5 +79445,5 @@
       ]
     }
   ],
-  "syncedAt": "2026-05-13T14:55:58.087Z"
+  "syncedAt": "2026-05-13T14:56:01.749Z"
 }
