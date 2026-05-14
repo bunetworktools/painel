@@ -23,6 +23,7 @@
   --logo-color:#ffffff;
 }
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+canvas{cursor:pointer}
 
 /* ---- LAYOUT ---- */
 .header{background:#000;border-bottom:1px solid #1e1e2e;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:90px;position:sticky;top:0;z-index:100;box-shadow:0 2px 20px rgba(124,58,237,.18)}
@@ -178,6 +179,10 @@ input[type=file]{display:none}
 .period-sep{width:1px;height:16px;background:var(--border);margin:0 4px;align-self:center;flex-shrink:0}
 #periodRangeLabel{font-size:11px;color:var(--muted);font-style:italic;padding:0 8px;border-left:1px solid var(--border);margin-left:4px;white-space:nowrap}
 
+/* ---- DATE INPUT ---- */
+.date-input{font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text);color-scheme:dark}
+html.light-mode .date-input{color-scheme:light}
+
 /* ---- RANKING CLIENTES ---- */
 .rank-medal{font-size:16px;min-width:24px;text-align:center;display:inline-block}
 .conv-bar-wrap{display:flex;align-items:center;gap:6px}
@@ -233,9 +238,14 @@ html.light-mode .close-btn{color:#64748b !important}
 html.light-mode .form-label{color:#1e293b !important}
 html.light-mode .form-hint{color:#64748b !important}
 html.light-mode .period-label{color:#64748b !important}
-html.light-mode .period-btn:not(.active){color:#64748b !important}
+html.light-mode .period-btn:not(.active){color:#1e293b !important;background:transparent !important}
+html.light-mode .period-btn:hover:not(.active){background:#f1f5f9 !important;color:#1e293b !important}
+html.light-mode #periodRangeLabel{color:#64748b !important;border-color:#e2e8f0 !important}
 html.light-mode .btn-secondary{background:#fff !important;color:#1e293b !important;border-color:#e2e8f0 !important}
 html.light-mode .btn-secondary:hover{background:#f1f5f9 !important}
+/* panel title adapts to theme */
+.panel-title{color:#fff}
+html.light-mode .panel-title{color:#1e293b !important}
 </style>
 </head>
 <body>
@@ -249,9 +259,13 @@ html.light-mode .btn-secondary:hover{background:#f1f5f9 !important}
 
 <!-- REPORT MODAL -->
 <div class="overlay" id="reportOverlay" onclick="if(event.target===this)closeReport()" style="display:none">
-  <div class="modal" style="width:820px;max-width:96vw;background:var(--card)">
-    <div class="modal-header">
-      <span id="reportTitle">Relatório</span>
+  <div class="modal" style="width:960px;max-width:96vw;background:var(--card)">
+    <div class="modal-header" style="gap:12px">
+      <span id="reportTitle" style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Relatório</span>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="btn btn-secondary btn-sm" onclick="exportReportExcel()" title="Exportar Excel">⬇️ Excel</button>
+        <button class="btn btn-secondary btn-sm" onclick="exportReportPDF()" title="Imprimir / Salvar PDF">🖨️ PDF</button>
+      </div>
       <span class="close-btn" onclick="closeReport()">✕</span>
     </div>
     <div class="modal-body" style="padding:16px">
@@ -263,8 +277,23 @@ html.light-mode .btn-secondary:hover{background:#f1f5f9 !important}
         </table>
       </div>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end">
       <button class="btn btn-secondary btn-sm" onclick="closeReport()">Fechar</button>
+    </div>
+  </div>
+</div>
+<!-- ITEMS POPUP MODAL -->
+<div class="overlay" id="itensOverlay" onclick="if(event.target===this)closeItems()" style="display:none">
+  <div class="modal" style="width:560px;max-width:95vw;background:var(--card)">
+    <div class="modal-header" style="gap:12px">
+      <span id="itensTitle" style="flex:1;font-size:15px">📦 Itens da Cotação</span>
+      <span class="close-btn" onclick="closeItems()">✕</span>
+    </div>
+    <div class="modal-body" style="padding:16px">
+      <div id="itensContent" style="font-size:13px;white-space:pre-wrap;color:var(--text);line-height:1.6;min-height:60px"></div>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end">
+      <button class="btn btn-secondary btn-sm" onclick="closeItems()">Fechar</button>
     </div>
   </div>
 </div>
@@ -347,7 +376,7 @@ html.light-mode .btn-secondary:hover{background:#f1f5f9 !important}
 
   <!-- Title centered -->
   <div style="position:absolute;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap">
-    <div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-0.5px;line-height:1.1">Painel Estratégico e Operacional</div>
+    <div class="panel-title" style="font-size:26px;font-weight:800;letter-spacing:-0.5px;line-height:1.1">Painel Estratégico e Operacional</div>
 
   </div>
 
@@ -421,9 +450,9 @@ html.light-mode .btn-secondary:hover{background:#f1f5f9 !important}
     <button class="period-btn" onclick="setPeriod('Semana Anterior')">Sem. Anterior</button>
     <div class="period-sep"></div>
     <span style="font-size:12px;color:var(--muted);font-weight:500">De</span>
-    <input type="date" id="customStart" style="font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:#1a1a2e;color:var(--text)">
+    <input type="date" id="customStart" class="date-input">
     <span style="font-size:12px;color:var(--muted);font-weight:500">até</span>
-    <input type="date" id="customEnd" style="font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:#1a1a2e;color:var(--text)">
+    <input type="date" id="customEnd" class="date-input">
     <button class="period-btn" onclick="applyCustomPeriod()" style="background:var(--blue);color:#fff">Aplicar</button>
     <span id="periodRangeLabel" style="font-size:12px;color:var(--muted);margin-left:4px"></span>
   </div>
@@ -526,10 +555,10 @@ html.light-mode .btn-secondary:hover{background:#f1f5f9 !important}
       </div>
     </div>
 
-    <!-- Ranking de clientes -->
+    <!-- Ranking 1: por Faturamento -->
     <div class="table-card">
       <div class="table-header" style="justify-content:space-between">
-        <span>🏆 Ranking de Clientes — Cotações</span>
+        <span>💰 Ranking por Faturamento</span>
         <span style="font-size:12px;color:var(--muted);font-weight:400">% calculado sobre cotações finalizadas (exclui em andamento)</span>
       </div>
       <table><thead><tr>
@@ -540,10 +569,32 @@ html.light-mode .btn-secondary:hover{background:#f1f5f9 !important}
         <th style="text-align:center">Rejeitadas</th>
         <th style="text-align:center">Em Andamento</th>
         <th>% Aprovação</th>
-        <th>Valor Aprovado</th>
+        <th>Faturamento</th>
         <th>Recorrência</th>
+        <th>Última Cotação</th>
         <th>Última Compra</th>
-      </tr></thead><tbody id="geralRankingBody"></tbody></table>
+      </tr></thead><tbody id="rankFatBody"></tbody></table>
+    </div>
+
+    <!-- Ranking 2: por Cotações Aprovadas -->
+    <div class="table-card">
+      <div class="table-header" style="justify-content:space-between">
+        <span>📋 Ranking por Cotações Aprovadas</span>
+        <span style="font-size:12px;color:var(--muted);font-weight:400">% calculado sobre cotações finalizadas (exclui em andamento)</span>
+      </div>
+      <table><thead><tr>
+        <th style="width:40px">#</th>
+        <th>Cliente</th>
+        <th style="text-align:center">Enviadas</th>
+        <th style="text-align:center">Aprovadas</th>
+        <th style="text-align:center">Rejeitadas</th>
+        <th style="text-align:center">Em Andamento</th>
+        <th>% Aprovação</th>
+        <th>Faturamento</th>
+        <th>Recorrência</th>
+        <th>Última Cotação</th>
+        <th>Última Compra</th>
+      </tr></thead><tbody id="rankVolBody"></tbody></table>
     </div>
   </div>
 
@@ -1384,9 +1435,24 @@ function cotacoesData() {
 function comprasData() {
   return state.compras.map(c => {
     const valor = toNum(fieldVal(c, 'valor total da compra') || fieldVal(c, 'valor total') || 0);
-    const nf = fieldVal(c, 'n° da nf') || fieldVal(c, 'nf') || null;
+    // NF: "Nº da NF" field in the initial form
+    const nf =
+      fieldVal(c, 'nº da nf') ||
+      fieldVal(c, 'n° da nf') ||
+      fieldVal(c, 'numero da nf') ||
+      fieldVal(c, 'número da nf') ||
+      fieldVal(c, 'nota fiscal') ||
+      null;
+    // Cotação reference: "Nº da cotação" field in the initial form
+    const cotacaoNum =
+      fieldVal(c, 'nº da cotação') ||
+      fieldVal(c, 'n° da cotação') ||
+      fieldVal(c, 'numero da cotacao') ||
+      fieldVal(c, 'número da cotação') ||
+      fieldVal(c, 'nº cotação') ||
+      null;
     const m = monthOf(c.created_at);
-    return { ...c, valor, nf, mes: m };
+    return { ...c, valor, nf, cotacaoNum, mes: m };
   });
 }
 
@@ -1396,7 +1462,14 @@ function logisticaData() {
     const atraso = (fieldVal(c, 'atraso') || '').toLowerCase() === 'sim';
     const tipo = fieldVal(c, 'tipo de entrega') || '';
     const entrega = fieldVal(c, 'entrega') || '';
-    const nf = fieldVal(c, 'nf') || null;
+    const nf =
+      fieldVal(c, 'nº da nf') ||
+      fieldVal(c, 'n° da nf') ||
+      fieldVal(c, 'numero da nf') ||
+      fieldVal(c, 'número da nf') ||
+      fieldVal(c, 'nota fiscal') ||
+      fieldVal(c, 'nf') ||
+      null;
     const m = monthOf(c.created_at);
     return { ...c, frete, atraso, tipo, entrega, nf, mes: m };
   });
@@ -1678,12 +1751,19 @@ function renderGeral() {
       },
       options: {
         responsive:true, maintainAspectRatio:false,
+        onClick: (evt, elements) => {
+          if (elements.length > 0) {
+            const i = elements[0].index;
+            openReport('cotacoes_mes', { monthIndex: MONTHS.indexOf(activeMonths[i]) !== -1 ? MONTHS.indexOf(activeMonths[i]) : i, monthLabel: activeMonths[i] });
+          }
+        },
         plugins:{
           legend:{ display:false },
           datalabels:{
             anchor:'end', align:'top',
             formatter: v => v > 0 ? String(v) : '',
-            font:{ size:12, weight:'700' }, color:'rgba(255,255,255,0.9)'
+            font:{ size:12, weight:'700' },
+            color: () => document.documentElement.classList.contains('light-mode') ? '#1e293b' : 'rgba(255,255,255,0.9)'
           }
         },
         scales:{
@@ -1713,6 +1793,14 @@ function renderGeral() {
       },
       options: {
         responsive: true, maintainAspectRatio: false,
+        onClick: (evt, elements) => {
+          if (elements.length > 0) {
+            const i = elements[0].index;
+            const di = elements[0].datasetIndex;
+            const dsLabel = (di === 0 ? 'aprovadas' : 'reprovadas');
+            openReport('cotacoes_status', { monthIndex: MONTHS.indexOf(activeMonths[i]) !== -1 ? MONTHS.indexOf(activeMonths[i]) : i, monthLabel: activeMonths[i], categoria: dsLabel });
+          }
+        },
         plugins: {
           legend: { position:'bottom', labels:{ boxWidth:12, font:{size:11} } },
           tooltip: { callbacks: {
@@ -1764,6 +1852,20 @@ function renderGeral() {
         },
         options: {
           responsive:true, maintainAspectRatio:false,
+          onClick: (evt, elements) => {
+            if (elements.length > 0) {
+              const i  = elements[0].index;
+              const di = elements[0].datasetIndex;
+              const mi = MONTHS.indexOf(activeMonths[i]) !== -1 ? MONTHS.indexOf(activeMonths[i]) : i;
+              if (di === 0) {
+                // Dataset 0 = Compra Concluída
+                openReport('compras_mes', { monthIndex: mi, monthLabel: activeMonths[i] });
+              } else {
+                // Dataset 1 = Compra em Andamento
+                openReport('compras_andamento', { monthIndex: mi, monthLabel: activeMonths[i] });
+              }
+            }
+          },
           plugins: {
             legend: { position:'bottom', labels:{ font:{size:11}, boxWidth:12 } },
             datalabels: {
@@ -1788,7 +1890,10 @@ function renderGeral() {
     (c.current_phase?.name || '').toLowerCase().includes('concluida')
   );
   const compByM = allMonthBuckets(compConcluidas, c => c.created_at ? new Date(c.created_at) : null, c => c.valor||0);
-  mkBar('chartGeralComp', activeMonths, sliceM(compByM), { label:'Compras (R$)', color:'rgba(239,68,68,0.75)' });
+  mkBar('chartGeralComp', activeMonths, sliceM(compByM), {
+    label:'Compras (R$)', color:'rgba(239,68,68,0.75)',
+    onClick: ({ index, label }) => openReport('compras_mes', { monthIndex: MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index, monthLabel: label })
+  });
 
   // ── Gráfico 4: Cotações por Mês — volume (contagem) empilhado + % aprovação ──
   destroyChart('chartGeralCotValor');
@@ -1807,6 +1912,16 @@ function renderGeral() {
       },
       options: {
         responsive: true, maintainAspectRatio: false,
+        onClick: (evt, elements) => {
+          if (elements.length > 0) {
+            const i = elements[0].index;
+            const di = elements[0].datasetIndex;
+            const dsLabels = ['aprovadas','reprovadas','em_andamento'];
+            const cat = dsLabels[di] || 'aprovadas';
+            if (cat === 'em_andamento') openReport('em_andamento');
+            else openReport('cotacoes_status', { monthIndex: MONTHS.indexOf(activeMonths[i]) !== -1 ? MONTHS.indexOf(activeMonths[i]) : i, monthLabel: activeMonths[i], categoria: cat });
+          }
+        },
         plugins: {
           legend: { position:'bottom', labels:{ boxWidth:12, font:{size:11} } },
           tooltip: {
@@ -1865,8 +1980,8 @@ function renderGeral() {
             { type:'bar', label:'Compras Realizadas',      data: sliceM(compByM).map(v => -v),
               backgroundColor:'rgba(239,68,68,0.75)',    borderRadius:3, stack:'lucro', yAxisID:'y' },
             { type:'bar', label:'Frete',                   data: sliceM(freteByM).map(v => -v),
-              backgroundColor:'rgba(245,158,11,0.80)',   borderRadius:3, stack:'lucro', yAxisID:'y' },
-            { type:'line', label:'Lucro Líquido',          data: sliceM(lucroByM),
+              backgroundColor:'rgba(245,158,11,0.80)',   borderRadius:3, stack:'lucro', yAxisID:'y', minBarLength:6 },
+            { type:'line', label:'Lucro Operacional',      data: sliceM(lucroByM),
               borderColor:'#7c3aed', backgroundColor:'rgba(124,58,237,0.1)',
               yAxisID:'y', pointRadius:4, pointBackgroundColor:'#7c3aed',
               borderWidth:2, tension:0.3, spanGaps:true, fill:false },
@@ -1914,82 +2029,147 @@ function renderGeral() {
   renderGeralRanking();
 }
 
-function renderGeralRanking() {
-  // Cotações filtradas por período
-  const cots  = filteredByPeriod(cotacoesData(), c => c.created_at ? new Date(c.created_at) : null);
-  // Compras: histórico completo (sem filtro de período) para calcular recorrência corretamente
-  const allCompsHist = comprasData();
-  const tbody = el('geralRankingBody');
-  if (!tbody) return;
+// ── Agrupa nomes de clientes similares (ex: "RED BULL" e "BULL" → mesmo cliente) ──
+function mergeClientNames(rawMap, rawCompMap) {
+  const STOP = new Set(['DE','DA','DO','DAS','DOS','EM','E','A','O','OU','COM','POR','PARA','SEM','AO','NA','NO']);
+  const sigWords = n => n.split(/\s+/).filter(w => w.length > 2 && !STOP.has(w));
 
-  // ── Mapa de cotações por cliente ──
-  const map = {};
+  const names = Object.keys(rawMap);
+  const wordSets = {};
+  names.forEach(n => { wordSets[n] = new Set(sigWords(n)); });
+
+  // Union-Find
+  const parent = {};
+  names.forEach(n => (parent[n] = n));
+  function find(x) { return parent[x] === x ? x : (parent[x] = find(parent[x])); }
+  function union(a, b) {
+    const pa = find(a), pb = find(b);
+    if (pa === pb) return;
+    // Keep the name with more words (more descriptive) as the canonical root
+    parent[pa.split(' ').length >= pb.split(' ').length ? pb : pa] =
+      pa.split(' ').length >= pb.split(' ').length ? pa : pb;
+  }
+
+  for (let i = 0; i < names.length; i++) {
+    for (let j = i + 1; j < names.length; j++) {
+      const a = names[i], b = names[j];
+      const wa = wordSets[a], wb = wordSets[b];
+      if (!wa.size || !wb.size) continue;
+      const [smaller, larger] = wa.size <= wb.size ? [wa, wb] : [wb, wa];
+      // Merge if every word of the shorter name appears in the longer name
+      if ([...smaller].every(w => larger.has(w))) union(a, b);
+    }
+  }
+
+  // Aggregate into merged map
+  const map = {}, compMap = {};
+  names.forEach(name => {
+    const root = find(name);
+    if (!map[root]) map[root] = { total:0, aprov:0, reprov:0, open:0, valor:0, lastCot:null };
+    const d = rawMap[name];
+    map[root].total  += d.total;
+    map[root].aprov  += d.aprov;
+    map[root].reprov += d.reprov;
+    map[root].open   += d.open;
+    map[root].valor  += d.valor;
+    // Merge lastCot date (keep the most recent)
+    if (d.lastCot && (!map[root].lastCot || d.lastCot > map[root].lastCot)) map[root].lastCot = d.lastCot;
+    // Merge purchase dates
+    if (!compMap[root]) compMap[root] = [];
+    if (rawCompMap[name]) compMap[root].push(...rawCompMap[name]);
+  });
+  Object.values(compMap).forEach(arr => arr.sort((a, b) => a - b));
+
+  return { map, compMap };
+}
+
+function renderGeralRanking() {
+  const cots         = filteredByPeriod(cotacoesData(), c => c.created_at ? new Date(c.created_at) : null);
+  const allCompsHist = comprasData();
+  const tbodyFat = el('rankFatBody');
+  const tbodyVol = el('rankVolBody');
+  if (!tbodyFat || !tbodyVol) return;
+
+  // ── Mapa bruto de cotações por cliente ──
+  const rawMap = {};
   cots.forEach(c => {
     const name = clientName(c.title);
     if (!name || name === '—') return;
-    if (!map[name]) map[name] = { total:0, aprov:0, reprov:0, open:0, valor:0 };
-    map[name].total++;
-    if (c.aprovada)       { map[name].aprov++;  map[name].valor += c.valor; }
-    else if (c.reprovada)   map[name].reprov++;
-    else                    map[name].open++;
+    if (!rawMap[name]) rawMap[name] = { total:0, aprov:0, reprov:0, open:0, valor:0, lastCot:null };
+    rawMap[name].total++;
+    if (c.aprovada)      { rawMap[name].aprov++; rawMap[name].valor += c.valor; }
+    else if (c.reprovada)  rawMap[name].reprov++;
+    else                   rawMap[name].open++;
+    const cotDate = c.created_at ? new Date(c.created_at) : null;
+    if (cotDate && (!rawMap[name].lastCot || cotDate > rawMap[name].lastCot)) rawMap[name].lastCot = cotDate;
   });
 
-  // ── Mapa de compras históricas por cliente (para recorrência + última compra) ──
-  const compMap = {};
+  // ── Mapa bruto de compras por cliente ──
+  const rawCompMap = {};
   allCompsHist.forEach(c => {
     const name = clientName(c.title);
     if (!name || name === '—') return;
     const d = c.created_at ? new Date(c.created_at) : null;
     if (!d) return;
-    if (!compMap[name]) compMap[name] = [];
-    compMap[name].push(d);
+    if (!rawCompMap[name]) rawCompMap[name] = [];
+    rawCompMap[name].push(d);
   });
-  // Ordena datas de cada cliente
-  Object.values(compMap).forEach(arr => arr.sort((a,b) => a - b));
 
-  // Ordena ranking: maior volume de cotações enviadas primeiro
-  const sorted = Object.entries(map)
-    .sort((a,b) => b[1].total - a[1].total || b[1].valor - a[1].valor);
+  // ── Mescla nomes similares ──
+  const { map, compMap } = mergeClientNames(rawMap, rawCompMap);
 
-  tbody.innerHTML = '';
   const medals = ['🥇','🥈','🥉'];
-  sorted.forEach(([name, d], idx) => {
+  const EMPTY = '<tr><td colspan="11" class="empty">Nenhum dado disponível no período</td></tr>';
+
+  // ── Filtra: mantém apenas clientes com ao menos 1 cotação enviada no período ──
+  const activeEntries = Object.entries(map).filter(([, d]) => d.total > 0);
+
+  // ── Helper: linha completa ──
+  function buildRankRow(name, d, idx) {
+    const medal    = medals[idx] || `<span style="font-size:12px;color:var(--muted)">${idx+1}</span>`;
     const finalized = d.aprov + d.reprov;
-    const pct = finalized > 0 ? d.aprov / finalized : null;
+    const pct      = finalized > 0 ? d.aprov / finalized : null;
     const pctColor = pct === null ? 'var(--muted)' : pct >= 0.5 ? 'var(--green)' : pct >= 0.25 ? 'var(--yellow)' : 'var(--red)';
     const pctText  = pct !== null ? fmtPct(pct) : '—';
-    const pctWidth = pct !== null ? Math.round(pct*100) : 0;
-    const medal    = medals[idx] || `<span style="font-size:12px;color:var(--muted)">${idx+1}</span>`;
+    const pctWidth = pct !== null ? Math.round(pct * 100) : 0;
 
-    // Recorrência
-    const compDates  = compMap[name] || [];
-    const rec        = calcRecorrencia(compDates);
-    const recBadge   = `<span style="font-size:11px;font-weight:600;color:${rec.color};background:${rec.color}18;padding:2px 7px;border-radius:20px;white-space:nowrap">
-                          ${rec.icon} ${rec.label}${rec.avgDays ? ' · ' + rec.avgDays + 'd' : ''}
-                        </span>`;
+    // Tags de atenção / destaque
+    const showAtencao  = d.total >= 5 && pct !== null && pct < 0.20;
+    const showDestaque = d.total > 5  && pct !== null && pct > 0.50;
+    const tagAtencao   = showAtencao
+      ? `<span title="Muitas cotações com baixa conversão" style="font-size:11px;background:#fee2e2;color:#b91c1c;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700;white-space:nowrap">⚠️ Atenção</span>`
+      : '';
+    const tagDestaque  = showDestaque
+      ? `<span title="Alta conversão com volume relevante" style="font-size:11px;background:#d1fae5;color:#065f46;padding:1px 6px;border-radius:10px;margin-left:4px;font-weight:700;white-space:nowrap">⭐ Destaque</span>`
+      : '';
 
-    // Última compra
-    const lastDate   = compDates.length ? compDates[compDates.length - 1] : null;
-    const dAgo       = daysSince(lastDate);
-    const lastColor  = dAgo === null ? 'var(--muted)' : dAgo <= 30 ? 'var(--green-d)' : dAgo <= 60 ? 'var(--yellow)' : 'var(--red-d)';
-    const lastText   = lastDate
+    // Truncate long names to first 2 words for display
+    const words = name.trim().split(/\s+/);
+    const displayName = words.length > 2 ? words.slice(0, 2).join(' ') : name;
+
+    const compDates = compMap[name] || [];
+    const rec       = calcRecorrencia(compDates);
+    const recBadge  = `<span style="font-size:11px;font-weight:600;color:${rec.color};background:${rec.color}18;padding:2px 7px;border-radius:20px;white-space:nowrap">${rec.icon} ${rec.label}${rec.avgDays ? ' · ' + rec.avgDays + 'd' : ''}</span>`;
+
+    const lastDate  = compDates.length ? compDates[compDates.length - 1] : null;
+    const dAgo      = daysSince(lastDate);
+    const lastColor = dAgo === null ? 'var(--muted)' : dAgo <= 30 ? 'var(--green-d)' : dAgo <= 60 ? 'var(--yellow)' : 'var(--red-d)';
+    const lastText  = lastDate
       ? `<span style="color:${lastColor};font-size:12px;font-weight:600">${lastDate.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})} <span style="font-weight:400;color:var(--muted)">(${dAgo}d)</span></span>`
       : `<span style="color:var(--muted);font-size:12px">—</span>`;
 
-    // Badge estratégico
-    const stratBadge = isStrategic(name)
-      ? `<span title="Cliente estratégico" style="font-size:11px;background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:10px;margin-left:6px;font-weight:700">⭐ Chave</span>`
-      : '';
-
-    // Alerta se cliente estratégico não compra há +30d
-    const alertCompra = isStrategic(name) && (dAgo === null || dAgo > 30)
-      ? `<span title="Sem compra recente" style="margin-left:4px;color:var(--red-d);font-size:13px">⚠️</span>`
-      : '';
+    // Last cotação date
+    const lastCotDate  = d.lastCot || null;
+    const dCotAgo      = daysSince(lastCotDate);
+    const lastCotColor = dCotAgo === null ? 'var(--muted)' : dCotAgo <= 30 ? 'var(--green-d)' : dCotAgo <= 60 ? 'var(--yellow)' : 'var(--red-d)';
+    const lastCotText  = lastCotDate
+      ? `<span style="color:${lastCotColor};font-size:12px;font-weight:600">${lastCotDate.toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})} <span style="font-weight:400;color:var(--muted)">(${dCotAgo}d)</span></span>`
+      : `<span style="color:var(--muted);font-size:12px">—</span>`;
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><span class="rank-medal">${medal}</span></td>
-      <td><strong>${name}</strong>${stratBadge}${alertCompra}</td>
+      <td><strong title="${name}">${displayName}</strong>${tagDestaque}${tagAtencao}</td>
       <td style="text-align:center">${d.total}</td>
       <td style="text-align:center;color:var(--green-d);font-weight:600">${d.aprov}</td>
       <td style="text-align:center;color:var(--red-d)">${d.reprov}</td>
@@ -2002,10 +2182,24 @@ function renderGeralRanking() {
       </td>
       <td style="font-weight:600">${fmtBRL(d.valor)}</td>
       <td>${recBadge}</td>
+      <td>${lastCotText}</td>
       <td>${lastText}</td>`;
-    tbody.appendChild(tr);
-  });
-  if (!sorted.length) tbody.innerHTML = '<tr><td colspan="10" class="empty"><div class="empty-desc">Nenhum dado de cotação disponível</div></td></tr>';
+    return tr;
+  }
+
+  // ── Ranking 1: por Faturamento (exclui faturamento zero) ──
+  const sortedFat = [...activeEntries]
+    .filter(([, d]) => d.valor > 0)
+    .sort((a,b) => b[1].valor - a[1].valor || b[1].aprov - a[1].aprov);
+  tbodyFat.innerHTML = '';
+  if (sortedFat.length) sortedFat.forEach(([name, d], idx) => tbodyFat.appendChild(buildRankRow(name, d, idx)));
+  else tbodyFat.innerHTML = EMPTY;
+
+  // ── Ranking 2: por Cotações Aprovadas ──
+  const sortedVol = [...activeEntries].sort((a,b) => b[1].aprov - a[1].aprov || b[1].valor - a[1].valor);
+  tbodyVol.innerHTML = '';
+  if (sortedVol.length) sortedVol.forEach(([name, d], idx) => tbodyVol.appendChild(buildRankRow(name, d, idx)));
+  else tbodyVol.innerHTML = EMPTY;
 }
 
 // ============================================================
@@ -2143,7 +2337,10 @@ function renderCotacoes() {
   // Chart Volume por mês
   const volByM = Array(12).fill(0);
   cots.forEach(c => { if (c.mes >= 0) volByM[c.mes]++; });
-  mkBar('chartCotVol', activeMonths, sliceM(volByM), { label:'Cotações', color:'rgba(124,58,237,0.8)' });
+  mkBar('chartCotVol', activeMonths, sliceM(volByM), {
+    label:'Cotações', color:'rgba(124,58,237,0.8)',
+    onClick: ({ index, label }) => openReport('cotacoes_mes', { monthIndex: MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index, monthLabel: label })
+  });
 
   // Chart status
   const aprovByM = Array(12).fill(0), reprovByM = Array(12).fill(0);
@@ -2152,14 +2349,21 @@ function renderCotacoes() {
   mkStackedBar('chartCotStatus', activeMonths, [
     { label:'Aprovadas', data: sliceM(aprovByM), color:'rgba(16,185,129,0.8)' },
     { label:'Reprovadas', data: sliceM(reprovByM), color:'rgba(239,68,68,0.7)' },
-  ]);
+  ], ({ index, label, datasetLabel }) => {
+    const mi = MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index;
+    const cat = datasetLabel.toLowerCase().includes('aprov') ? 'aprovadas' : 'reprovadas';
+    openReport('cotacoes_status', { monthIndex: mi, monthLabel: label, categoria: cat });
+  });
 
   // Chart taxa conversão mensal
   const convByM = MONTHS.map((_, i) => {
     const fin = (aprovByM[i] + reprovByM[i]);
     return fin > 0 ? +(aprovByM[i]/fin*100).toFixed(1) : null;
   });
-  mkLine('chartCotConv', activeMonths, sliceM(convByM), { label:'Taxa de Conversão (%)', color:'rgba(124,58,237,0.9)' });
+  mkLine('chartCotConv', activeMonths, sliceM(convByM), {
+    label:'Taxa de Conversão (%)', color:'rgba(124,58,237,0.9)',
+    onClick: ({ index, label }) => openReport('cotacoes_mes', { monthIndex: MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index, monthLabel: label })
+  });
 
   // Motivos reprovação
   const motivosMap = {};
@@ -2167,7 +2371,8 @@ function renderCotacoes() {
     const m = c.motivo || 'Não informado';
     motivosMap[m] = (motivosMap[m] || 0) + 1;
   });
-  mkDoughnut('chartCotMotivo', Object.keys(motivosMap), Object.values(motivosMap));
+  mkDoughnut('chartCotMotivo', Object.keys(motivosMap), Object.values(motivosMap), undefined,
+    ({ label }) => openReport('cotacoes_motivo', { motivo: label }));
 
   // Tabela clientes — % calculado APENAS sobre cotações finalizadas (exclui em andamento)
   const clientMap = {};
@@ -2222,8 +2427,14 @@ function renderCompras() {
 
   const valorByM = Array(12).fill(0), qtdByM = Array(12).fill(0);
   concluidas.forEach(c => { if (c.mes >= 0) { valorByM[c.mes] += c.valor; qtdByM[c.mes]++; } });
-  mkBar('chartCpMensal', activeMonths, sliceM(valorByM), { label:'Valor (R$)', color:'rgba(16,185,129,0.8)' });
-  mkBar('chartCpQtd',    activeMonths, sliceM(qtdByM),   { label:'Qtd Compras', color:'rgba(124,58,237,0.7)' });
+  mkBar('chartCpMensal', activeMonths, sliceM(valorByM), {
+    label:'Valor (R$)', color:'rgba(16,185,129,0.8)',
+    onClick: ({ index, label }) => openReport('compras_mes', { monthIndex: MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index, monthLabel: label })
+  });
+  mkBar('chartCpQtd', activeMonths, sliceM(qtdByM), {
+    label:'Qtd Compras', color:'rgba(124,58,237,0.7)',
+    onClick: ({ index, label }) => openReport('compras_mes', { monthIndex: MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index, monthLabel: label })
+  });
 
   // Tabela clientes
   const map = {};
@@ -2270,13 +2481,21 @@ function renderLogistica() {
 
   const entByM = Array(12).fill(0), freteByM = Array(12).fill(0);
   concluidas.forEach(c => { if (c.mes >= 0) { entByM[c.mes]++; freteByM[c.mes] += Math.max(c.frete,0); } });
-  mkBar('chartLgMensal', activeMonths, sliceM(entByM),   { label:'Entregas', color:'rgba(16,185,129,0.8)' });
-  mkBar('chartLgFrete',  activeMonths, sliceM(freteByM), { label:'Frete (R$)', color:'rgba(245,158,11,0.8)' });
-  mkDoughnut('chartLgStatus', ['No Prazo','Com Atraso'], [noPrazo.length, comAtraso.length], ['rgba(16,185,129,0.8)','rgba(239,68,68,0.8)']);
+  mkBar('chartLgMensal', activeMonths, sliceM(entByM), {
+    label:'Entregas', color:'rgba(16,185,129,0.8)',
+    onClick: ({ index, label }) => openReport('logistica_mes', { monthIndex: MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index, monthLabel: label })
+  });
+  mkBar('chartLgFrete', activeMonths, sliceM(freteByM), {
+    label:'Frete (R$)', color:'rgba(245,158,11,0.8)',
+    onClick: ({ index, label }) => openReport('logistica_mes', { monthIndex: MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index, monthLabel: label })
+  });
+  mkDoughnut('chartLgStatus', ['No Prazo','Com Atraso'], [noPrazo.length, comAtraso.length],
+    ['rgba(16,185,129,0.8)','rgba(239,68,68,0.8)'],
+    ({ label }) => openReport('logistica_status', { categoria: label.toLowerCase().includes('prazo') ? 'no_prazo' : 'atraso' }));
   mkDoughnut('chartLgTipo', ['Entrega Total','Entrega Parcial','Retirada'], [
     totais.length, parciais.length,
     concluidas.filter(c => c.tipo?.toLowerCase().includes('retira')).length
-  ]);
+  ], undefined, ({ label }) => openReport('logistica_tipo', { tipo: label }));
 
   // Tabela recente
   const sorted = [...concluidas].sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0,20);
@@ -2782,7 +3001,7 @@ function handleFatFile(input) {
 // ============================================================
 function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
 
-function mkBar(id, labels, data, { label='', color='rgba(37,99,235,0.8)' } = {}) {
+function mkBar(id, labels, data, { label='', color='rgba(37,99,235,0.8)', onClick=null } = {}) {
   destroyChart(id);
   const ctx = document.getElementById(id);
   if (!ctx) return;
@@ -2791,12 +3010,16 @@ function mkBar(id, labels, data, { label='', color='rgba(37,99,235,0.8)' } = {})
     data:{ labels, datasets:[{ label, data, backgroundColor:color, borderRadius:4, borderSkipped:false }] },
     options:{
       responsive:true, maintainAspectRatio:false,
+      onClick: onClick ? (evt, elements) => {
+        if (elements.length > 0) { const i = elements[0].index; onClick({ index:i, label:labels[i], datasetLabel:label }); }
+      } : undefined,
       plugins:{
         legend:{ display:false },
         datalabels:{
           anchor:'end', align:'top',
           formatter: v => v > 0 ? fmtAxis(v) : '',
-          font:{ size:9, weight:'600' }, color:'rgba(0,0,0,0.55)'
+          font:{ size:9, weight:'600' },
+          color: () => document.documentElement.classList.contains('light-mode') ? 'rgba(30,41,59,0.75)' : 'rgba(255,255,255,0.85)'
         }
       },
       scales:{ x:{stacked:true}, y:{ stacked:true, beginAtZero:true, ticks:{ callback: fmtAxis } } }
@@ -2804,7 +3027,7 @@ function mkBar(id, labels, data, { label='', color='rgba(37,99,235,0.8)' } = {})
   });
 }
 
-function mkLine(id, labels, data, { label='', color='rgba(37,99,235,0.9)' } = {}) {
+function mkLine(id, labels, data, { label='', color='rgba(37,99,235,0.9)', onClick=null } = {}) {
   destroyChart(id);
   const ctx = document.getElementById(id);
   if (!ctx) return;
@@ -2812,12 +3035,15 @@ function mkLine(id, labels, data, { label='', color='rgba(37,99,235,0.9)' } = {}
     type:'line',
     data:{ labels, datasets:[{ label, data, borderColor:color, backgroundColor:color.replace('0.9','0.1'), fill:true, tension:0.4, pointRadius:4 }] },
     options:{ responsive:true, maintainAspectRatio:false,
+      onClick: onClick ? (evt, elements) => {
+        if (elements.length > 0) { const i = elements[0].index; onClick({ index:i, label:labels[i], datasetLabel:label }); }
+      } : undefined,
       plugins:{ legend:{ display:false }, datalabels:{ display:false } },
       scales:{ y:{ beginAtZero:true } } }
   });
 }
 
-function mkDoughnut(id, labels, data, colors) {
+function mkDoughnut(id, labels, data, colors, onClick=null) {
   destroyChart(id);
   const ctx = document.getElementById(id);
   if (!ctx) return;
@@ -2825,11 +3051,15 @@ function mkDoughnut(id, labels, data, colors) {
   charts[id] = new Chart(ctx, {
     type:'doughnut',
     data:{ labels, datasets:[{ data, backgroundColor:colors || defaultColors, borderWidth:2, borderColor:'#fff' }] },
-    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'bottom', labels:{ padding:12, font:{ size:11 } } }, datalabels:{ display:false } } }
+    options:{ responsive:true, maintainAspectRatio:false,
+      onClick: onClick ? (evt, elements) => {
+        if (elements.length > 0) { const i = elements[0].index; onClick({ index:i, label:labels[i] }); }
+      } : undefined,
+      plugins:{ legend:{ position:'bottom', labels:{ padding:12, font:{ size:11 } } }, datalabels:{ display:false } } }
   });
 }
 
-function mkStackedBar(id, labels, datasets) {
+function mkStackedBar(id, labels, datasets, onClick=null) {
   destroyChart(id);
   const ctx = document.getElementById(id);
   if (!ctx) return;
@@ -2838,6 +3068,13 @@ function mkStackedBar(id, labels, datasets) {
     data:{ labels, datasets: datasets.map(d => ({ label:d.label, data:d.data, backgroundColor:d.color, borderRadius:2 })) },
     options:{
       responsive:true, maintainAspectRatio:false,
+      onClick: onClick ? (evt, elements) => {
+        if (elements.length > 0) {
+          const i = elements[0].index;
+          const di = elements[0].datasetIndex;
+          onClick({ index:i, label:labels[i], datasetLabel: datasets[di]?.label || '' });
+        }
+      } : undefined,
       plugins:{
         legend:{ position:'bottom', labels:{ font:{ size:11 }, boxWidth:12 } },
         datalabels:{
@@ -2875,7 +3112,8 @@ function mkBarWithLine(id, labels, barData, lineData) {
         datalabels:{
           anchor:'end', align:'top',
           formatter: (v, ctx) => ctx.dataset.type === 'line' ? '' : (v > 0 ? fmtAxis(v) : ''),
-          font:{ size:9, weight:'600' }, color:'rgba(0,0,0,0.55)'
+          font:{ size:9, weight:'600' },
+          color: () => document.documentElement.classList.contains('light-mode') ? 'rgba(30,41,59,0.75)' : 'rgba(255,255,255,0.85)'
         }
       },
       scales:{ y:{ beginAtZero:true, ticks:{ callback: fmtAxis } } }
@@ -2946,7 +3184,208 @@ function dropFile(e, inputId) {
 // ============================================================
 //  REPORT MODAL
 // ============================================================
-function openReport(type) {
+let currentReport = { title:'', cols:[], rows:[], rawData:[] };
+
+// Helper: card title as-is, stripping only a leading numeric code (e.g. "3273 EMPRESA XYZ" → "EMPRESA XYZ")
+function cardTitle(card) {
+  const raw = String(card.title || '').trim();
+  // Remove leading sequence of digits + whitespace (the pipe card number prefix)
+  return raw.replace(/^\d{3,}\s+/, '').trim() || raw || '—';
+}
+
+// Helper: extract cotação number from the Pipefy field "Nº da cotação"
+function cotNum(card) {
+  // Primary: read the dedicated field (field name as shown in Pipefy)
+  const fromField =
+    fieldVal(card, 'nº da cotação') ||
+    fieldVal(card, 'n° da cotação') ||
+    fieldVal(card, 'numero da cotacao') ||
+    fieldVal(card, 'número da cotação') ||
+    fieldVal(card, 'nº cotação') ||
+    fieldVal(card, 'n cotacao') ||
+    fieldVal(card, 'cotacao gerada') ||
+    fieldVal(card, 'número da cotação gerada') ||
+    null;
+  if (fromField) return String(fromField).trim();
+  // Fallback 1: leading digits in the title
+  const m = String(card.title || '').match(/^(\d{3,})/);
+  if (m) return m[1];
+  // Fallback 2: last 4 chars of the card ID
+  return String(card.id || '').slice(-4).padStart(4,'0');
+}
+
+// Helper: Pipefy card link
+function cardLink(card) {
+  return `<a href="https://app.pipefy.com/open-cards/${card.id}" target="_blank" rel="noopener"
+    style="color:var(--blue);text-decoration:none;font-size:16px" title="Abrir card no Pipefy">🔗</a>`;
+}
+
+// Build cotações row: Cliente | Nº Cotação | Etapa | Data Criação | Valor | Link
+function buildCotRow(c) {
+  return [
+    cardTitle(c),
+    cotNum(c),
+    c.current_phase?.name || '—',
+    c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+    fmtBRL(c.valor),
+    cardLink(c)
+  ];
+}
+function buildCotRawRow(c) {
+  return [
+    cardTitle(c),
+    cotNum(c),
+    c.current_phase?.name || '—',
+    c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+    c.valor,
+    `https://app.pipefy.com/open-cards/${c.id}`
+  ];
+}
+
+// Build compras row: Cliente | Nº NF | Nº Cotação | Etapa | Data Criação | Valor | Data Finalização | Link
+function buildCompRow(c) {
+  const finDate = c.finished_at ? new Date(c.finished_at).toLocaleDateString('pt-BR') : '—';
+  return [
+    cardTitle(c),
+    c.nf || '—',
+    c.cotacaoNum || '—',
+    c.current_phase?.name || '—',
+    c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+    fmtBRL(c.valor),
+    finDate,
+    cardLink(c)
+  ];
+}
+function buildCompRawRow(c) {
+  return [
+    cardTitle(c),
+    c.nf || '—',
+    c.cotacaoNum || '—',
+    c.current_phase?.name || '—',
+    c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+    c.valor,
+    c.finished_at ? new Date(c.finished_at).toLocaleDateString('pt-BR') : '—',
+    `https://app.pipefy.com/open-cards/${c.id}`
+  ];
+}
+
+// Build logística row: Cliente | Nº NF | Etapa | Data Criação | Tipo Entrega | Itens Entregues | Link
+function buildLogRow(c) {
+  // "todos itens entregues": check entrega field or a dedicated field
+  const itensField = fieldVal(c,'todos os itens') || fieldVal(c,'itens entregues') || fieldVal(c,'entrega completa') || null;
+  let itensEntregues;
+  if (itensField !== null) {
+    itensEntregues = /sim|yes|true|s$/i.test(String(itensField)) ? '<span class="tag tag-green">Sim</span>' : '<span class="tag tag-red">Não</span>';
+  } else {
+    // Fallback: "Entrega Total" = todos entregues; "Parcial" = não
+    const ent = (c.entrega || '').toLowerCase();
+    itensEntregues = ent.includes('total') ? '<span class="tag tag-green">Sim</span>' : ent.includes('parcial') ? '<span class="tag tag-yellow">Parcial</span>' : '—';
+  }
+  return [
+    cardTitle(c),
+    c.nf || '—',
+    c.current_phase?.name || '—',
+    c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+    c.tipo || c.entrega || '—',
+    itensEntregues,
+    cardLink(c)
+  ];
+}
+function buildLogRawRow(c) {
+  const itensField = fieldVal(c,'todos os itens') || fieldVal(c,'itens entregues') || fieldVal(c,'entrega completa') || null;
+  let itensEntregues;
+  if (itensField !== null) {
+    itensEntregues = /sim|yes|true|s$/i.test(String(itensField)) ? 'Sim' : 'Não';
+  } else {
+    const ent = (c.entrega || '').toLowerCase();
+    itensEntregues = ent.includes('total') ? 'Sim' : ent.includes('parcial') ? 'Parcial' : '—';
+  }
+  return [
+    cardTitle(c),
+    c.nf || '—',
+    c.current_phase?.name || '—',
+    c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
+    c.tipo || c.entrega || '—',
+    itensEntregues,
+    `https://app.pipefy.com/open-cards/${c.id}`
+  ];
+}
+
+// ── Items popup ──
+function showComprasItens(cardId) {
+  const card = comprasData().find(c => String(c.id) === String(cardId));
+  if (!card) return;
+  const itens = fieldVal(card, 'itens da cotação') || fieldVal(card, 'itens da compra') ||
+                fieldVal(card, 'itens') || fieldVal(card, 'produtos') || fieldVal(card, 'descrição dos itens') || '—';
+  el('itensTitle').textContent = '📦 Itens — ' + cardTitle(card);
+  el('itensContent').textContent = itens;
+  el('itensOverlay').style.display = 'flex';
+}
+function closeItems() { const o = el('itensOverlay'); if (o) o.style.display = 'none'; }
+
+// ── Compras em Andamento row builder ──
+function buildCompAndRow(c, cotAprovDateStr) {
+  const diasAberto = c.created_at ? Math.floor((Date.now() - new Date(c.created_at)) / 86400000) : '—';
+  const diasColor  = typeof diasAberto === 'number' ? (diasAberto > 30 ? 'var(--red-d)' : diasAberto > 14 ? 'var(--yellow)' : 'var(--green-d)') : 'var(--muted)';
+
+  // Etiquetas (labels field from Pipefy, if fetched)
+  const labelsArr = c.labels || [];
+  const etiquetas = labelsArr.length
+    ? labelsArr.map(l => `<span style="background:${l.color||'#555'};color:#fff;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;display:inline-block;margin:1px">${l.name}</span>`).join(' ')
+    : '<span style="color:var(--muted);font-size:12px">—</span>';
+
+  // Data aprovação cotação
+  let aprovDateFmt = '—', diasDesdeAprov = '—', aprovColor = 'var(--muted)';
+  if (cotAprovDateStr) {
+    const apDt = new Date(cotAprovDateStr);
+    if (!isNaN(apDt)) {
+      aprovDateFmt = apDt.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'2-digit' });
+      const days = Math.floor((Date.now() - apDt) / 86400000);
+      diasDesdeAprov = days;
+      aprovColor = days > 14 ? 'var(--red-d)' : days > 7 ? 'var(--yellow)' : 'var(--green-d)';
+    }
+  }
+
+  const itensBtn = `<button onclick="showComprasItens('${c.id}')" style="background:var(--blue-l);color:var(--blue);border:none;border-radius:6px;padding:3px 10px;cursor:pointer;font-size:12px;font-weight:600">📦</button>`;
+
+  return [
+    cardTitle(c),
+    c.cotacaoNum || cotNum(c) || '—',
+    c.current_phase?.name || '—',
+    typeof diasAberto === 'number' ? `<span style="font-weight:600;color:${diasColor}">${diasAberto}d</span>` : '—',
+    etiquetas,
+    aprovDateFmt,
+    typeof diasDesdeAprov === 'number' ? `<span style="font-weight:600;color:${aprovColor}">${diasDesdeAprov}d</span>` : '—',
+    itensBtn,
+    cardLink(c)
+  ];
+}
+function buildCompAndRawRow(c, cotAprovDateStr) {
+  const diasAberto = c.created_at ? Math.floor((Date.now() - new Date(c.created_at)) / 86400000) : '—';
+  const labelsArr  = c.labels || [];
+  const etiquetas  = labelsArr.map(l => l.name).join(', ') || '—';
+  let aprovDateFmt = '—', diasDesdeAprov = '—';
+  if (cotAprovDateStr) {
+    const apDt = new Date(cotAprovDateStr);
+    if (!isNaN(apDt)) {
+      aprovDateFmt = apDt.toLocaleDateString('pt-BR');
+      diasDesdeAprov = Math.floor((Date.now() - apDt) / 86400000);
+    }
+  }
+  return [
+    cardTitle(c),
+    c.cotacaoNum || cotNum(c) || '—',
+    c.current_phase?.name || '—',
+    diasAberto,
+    etiquetas,
+    aprovDateFmt,
+    diasDesdeAprov,
+    '',  // Itens (button only in HTML view)
+    `https://app.pipefy.com/open-cards/${c.id}`
+  ];
+}
+
+function openReport(type, filter = {}) {
   const overlay = el('reportOverlay');
   const thead   = el('reportThead');
   const tbody   = el('reportTbody');
@@ -2959,87 +3398,172 @@ function openReport(type) {
   const allLogs  = logisticaData();
   const cots  = filteredByPeriod(allCots,  c => c.created_at ? new Date(c.created_at) : null);
   const comps = filteredByPeriod(allComps, c => c.created_at ? new Date(c.created_at) : null);
+  const logs  = filteredByPeriod(allLogs,  c => c.created_at ? new Date(c.created_at) : null);
 
-  let title = '', rows = [], cols = [];
+  const COT_COLS  = ['Cliente','Nº Cotação','Etapa','Data Criação','Valor','Link'];
+  const COMP_COLS = ['Cliente','Nº NF','Nº Cotação','Etapa','Data Criação','Valor','Data Finalização','Link'];
+  const LOG_COLS  = ['Cliente','Nº NF','Etapa','Data Criação','Tipo Entrega','Itens Entregues','Link'];
 
-  if (type === 'cotacoes_enviadas') {
-    title = '📋 Cotações Enviadas — ' + activePeriod.label;
-    cols = ['Cliente','Nº Cotação','Etapa','Data Criação','Valor','NF'];
-    rows = cots.map(c => [
-      normalizeClientName(c.title), c.id || '—',
-      c.current_phase?.name || '—',
-      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
-      fmtBRL(c.valor), c.nf || '—'
-    ]);
-  } else if (type === 'aprovacao') {
-    title = '✅ Cotações Finalizadas — ' + activePeriod.label;
-    cols = ['Cliente','Nº Cotação','Etapa','Data Criação','Valor','% Conv.'];
-    const fin = cots.filter(c => !isOpen(c));
-    rows = fin.map(c => [
-      normalizeClientName(c.title), c.id || '—',
-      c.current_phase?.name || '—',
-      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
-      fmtBRL(c.valor),
-      c.aprovada ? '<span class="tag tag-green">Aprovada</span>' : '<span class="tag tag-red">Reprovada</span>'
-    ]);
-  } else if (type === 'cotacoes_aprovadas') {
-    title = '🏆 Cotações Aprovadas — ' + activePeriod.label;
-    cols = ['Cliente','Nº Cotação','Etapa','Data Criação','Valor','NF'];
-    rows = cots.filter(c => c.aprovada).map(c => [
-      normalizeClientName(c.title), c.id || '—',
-      c.current_phase?.name || '—',
-      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
-      fmtBRL(c.valor), c.nf || '—'
-    ]);
+  let title = '', items = [], htmlRows = [], rawRows = [], cols = [];
+
+  // ── COTAÇÕES types ──
+  if (type === 'cotacoes_enviadas' || type === 'em_andamento') {
+    const isOpen_ = type === 'em_andamento';
+    title = isOpen_ ? '⏳ Cotações Em Andamento' : `📋 Cotações Enviadas — ${activePeriod.label}`;
+    cols  = COT_COLS;
+    items = isOpen_ ? cots.filter(c => isOpen(c)) : cots;
+    htmlRows = items.map(buildCotRow);
+    rawRows  = items.map(buildCotRawRow);
+
+  } else if (type === 'cotacoes_mes') {
+    const mi = filter.monthIndex ?? -1;
+    const ml = filter.monthLabel || '';
+    title = `📋 Cotações — ${ml || activePeriod.label}`;
+    cols  = COT_COLS;
+    items = mi >= 0 ? allCots.filter(c => c.mes === mi) : cots;
+    htmlRows = items.map(buildCotRow);
+    rawRows  = items.map(buildCotRawRow);
+
+  } else if (type === 'cotacoes_status') {
+    const mi  = filter.monthIndex ?? -1;
+    const ml  = filter.monthLabel || '';
+    const cat = filter.categoria || 'aprovadas';
+    title = cat === 'aprovadas' ? `✅ Cotações Aprovadas — ${ml}` : `❌ Cotações Reprovadas — ${ml}`;
+    cols  = COT_COLS;
+    const pool = mi >= 0 ? allCots.filter(c => c.mes === mi) : cots;
+    items = cat === 'aprovadas' ? pool.filter(c => c.aprovada) : pool.filter(c => c.reprovada);
+    htmlRows = items.map(buildCotRow);
+    rawRows  = items.map(buildCotRawRow);
+
+  } else if (type === 'cotacoes_motivo') {
+    const motivo = filter.motivo || '';
+    title = `🚫 Reprovadas — ${motivo}`;
+    cols  = COT_COLS;
+    items = cots.filter(c => c.reprovada && (c.motivo || 'Não informado') === motivo);
+    htmlRows = items.map(buildCotRow);
+    rawRows  = items.map(buildCotRawRow);
+
+  } else if (type === 'cotacoes_reprovadas') {
+    title = `❌ Cotações Reprovadas — ${activePeriod.label}`;
+    cols  = COT_COLS;
+    items = cots.filter(c => c.reprovada);
+    htmlRows = items.map(buildCotRow);
+    rawRows  = items.map(buildCotRawRow);
+
+  } else if (type === 'aprovacao' || type === 'cotacoes_aprovadas') {
+    title = `🏆 Cotações Aprovadas — ${activePeriod.label}`;
+    cols  = COT_COLS;
+    items = cots.filter(c => c.aprovada);
+    htmlRows = items.map(buildCotRow);
+    rawRows  = items.map(buildCotRawRow);
+
   } else if (type === 'faturamento') {
-    title = '💰 Faturamento — ' + activePeriod.label;
-    cols = ['Cliente','Nº Cotação','Etapa','Data Criação','Valor','NF'];
-    rows = cots.filter(c => c.aprovada).map(c => [
-      normalizeClientName(c.title), c.id || '—',
-      c.current_phase?.name || '—',
-      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
-      fmtBRL(c.valor), c.nf || '—'
-    ]);
+    title = `💰 Faturamento — ${activePeriod.label}`;
+    cols  = COT_COLS;
+    items = cots.filter(c => c.aprovada);
+    htmlRows = items.map(buildCotRow);
+    rawRows  = items.map(buildCotRawRow);
+
+  // ── COMPRAS types ──
   } else if (type === 'compras') {
-    title = '🛒 Compras Concluídas — ' + activePeriod.label;
-    cols = ['Fornecedor','ID','Etapa','Data','Valor','NF'];
-    const conc = comps.filter(c =>
-      (c.current_phase?.name || '').toLowerCase().includes('concluíd') ||
-      (c.current_phase?.name || '').toLowerCase().includes('concluida'));
-    rows = conc.map(c => [
-      normalizeClientName(c.title), c.id || '—',
-      c.current_phase?.name || '—',
-      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
-      fmtBRL(c.valor), c.nf || '—'
-    ]);
+    title = `🛒 Compras Concluídas — ${activePeriod.label}`;
+    cols  = COMP_COLS;
+    items = comps.filter(c => (c.current_phase?.name || '').toLowerCase().includes('concluíd'));
+    htmlRows = items.map(buildCompRow);
+    rawRows  = items.map(buildCompRawRow);
+
+  } else if (type === 'compras_mes') {
+    const mi = filter.monthIndex ?? -1;
+    const ml = filter.monthLabel || '';
+    title = `🛒 Compras Concluídas — ${ml || activePeriod.label}`;
+    cols  = COMP_COLS;
+    const pool = mi >= 0 ? allComps.filter(c => c.mes === mi) : comps;
+    items = pool.filter(c => (c.current_phase?.name || '').toLowerCase().includes('concluíd'));
+    htmlRows = items.map(buildCompRow);
+    rawRows  = items.map(buildCompRawRow);
+
+  } else if (type === 'compras_andamento') {
+    const mi = filter.monthIndex ?? -1;
+    const ml = filter.monthLabel || '';
+    title = `⏳ Compras em Andamento${ml ? ' — ' + ml : ' — ' + activePeriod.label}`;
+    cols  = ['Cliente','Nº Cotação','Etapa','Dias Aberto','Etiquetas','Data Aprov. Cotação','Dias desde Aprov.','Itens','Link'];
+    // Build lookup: cotacaoNum → cotação card for approval date
+    const cotByNum = {};
+    allCots.forEach(cot => {
+      const n = cotNum(cot);
+      if (n) cotByNum[String(n)] = cot;
+    });
+    const isConcluida_ = c => (c.current_phase?.name || '').toLowerCase().includes('concluíd') || (c.current_phase?.name || '').toLowerCase().includes('concluida');
+    const pool2 = mi >= 0 ? allComps.filter(c => c.mes === mi) : comps;
+    items = pool2.filter(c => !isConcluida_(c));
+    htmlRows = items.map(c => {
+      const cotCard = cotByNum[String(c.cotacaoNum || '')] || cotByNum[String(cotNum(c) || '')] || null;
+      const aprovDateStr = cotCard
+        ? (fieldVal(cotCard, 'data e hora da aprovação') || fieldVal(cotCard, 'data da aprovação') || fieldVal(cotCard, 'aprovação') || null)
+        : null;
+      return buildCompAndRow(c, aprovDateStr);
+    });
+    rawRows = items.map(c => {
+      const cotCard = cotByNum[String(c.cotacaoNum || '')] || cotByNum[String(cotNum(c) || '')] || null;
+      const aprovDateStr = cotCard
+        ? (fieldVal(cotCard, 'data e hora da aprovação') || fieldVal(cotCard, 'data da aprovação') || fieldVal(cotCard, 'aprovação') || null)
+        : null;
+      return buildCompAndRawRow(c, aprovDateStr);
+    });
+
+  // ── LOGÍSTICA types ──
   } else if (type === 'entregas') {
-    title = '🚚 Entregas — ' + activePeriod.label;
-    cols = ['Cliente','ID','Etapa','Data','NF'];
-    const lg = filteredByPeriod(allLogs, c => c.created_at ? new Date(c.created_at) : null);
-    rows = lg.filter(c => c.current_phase?.name?.toLowerCase().includes('concluíd')).map(c => [
-      normalizeClientName(c.title), c.id || '—',
-      c.current_phase?.name || '—',
-      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
-      c.nf || '—'
-    ]);
-  } else if (type === 'em_andamento') {
-    title = '⏳ Cotações Em Andamento';
-    cols = ['Cliente','Nº Cotação','Etapa','Data Criação','Valor','NF'];
-    rows = cots.filter(c => isOpen(c)).map(c => [
-      normalizeClientName(c.title), c.id || '—',
-      c.current_phase?.name || '—',
-      c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—',
-      fmtBRL(c.valor), c.nf || '—'
-    ]);
+    title = `🚚 Logística — ${activePeriod.label}`;
+    cols  = LOG_COLS;
+    items = logs;
+    htmlRows = items.map(buildLogRow);
+    rawRows  = items.map(buildLogRawRow);
+
+  } else if (type === 'logistica_mes') {
+    const mi = filter.monthIndex ?? -1;
+    const ml = filter.monthLabel || '';
+    title = `🚚 Logística — ${ml || activePeriod.label}`;
+    cols  = LOG_COLS;
+    items = mi >= 0 ? allLogs.filter(c => c.mes === mi) : logs;
+    htmlRows = items.map(buildLogRow);
+    rawRows  = items.map(buildLogRawRow);
+
+  } else if (type === 'logistica_status') {
+    const cat = filter.categoria || 'no_prazo';
+    title = cat === 'no_prazo' ? '✅ Entregas No Prazo' : '⚠️ Entregas Com Atraso';
+    cols  = LOG_COLS;
+    items = logs.filter(c => cat === 'no_prazo' ? !c.atraso : c.atraso);
+    htmlRows = items.map(buildLogRow);
+    rawRows  = items.map(buildLogRawRow);
+
+  } else if (type === 'logistica_tipo') {
+    const tipo = filter.tipo || '';
+    title = `📦 Logística — ${tipo}`;
+    cols  = LOG_COLS;
+    const tipoL = tipo.toLowerCase();
+    items = logs.filter(c => {
+      const t = (c.tipo || c.entrega || '').toLowerCase();
+      if (tipoL.includes('total'))   return t.includes('total');
+      if (tipoL.includes('parcial')) return t.includes('parcial');
+      if (tipoL.includes('retira'))  return t.includes('retira');
+      return true;
+    });
+    htmlRows = items.map(buildLogRow);
+    rawRows  = items.map(buildLogRawRow);
   }
 
+  // Store globally for export
+  currentReport = { title, cols, rows: rawRows, htmlRows };
+
+  // Render
   titleEl.textContent = title;
-  metaEl.textContent  = rows.length + ' registro(s) — período: ' + activePeriod.label;
-  thead.innerHTML = '<tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr>';
+  metaEl.textContent  = `${items.length} registro(s)${filter.monthLabel ? '' : ' — período: ' + activePeriod.label}`;
+  const centeredCols = new Set(['Link','Itens']);
+  thead.innerHTML = '<tr>' + cols.map(c => `<th${centeredCols.has(c)?' style="text-align:center;width:48px"':''}>${centeredCols.has(c) ? '' : c}</th>`).join('') + '</tr>';
   tbody.innerHTML = '';
-  rows.forEach(row => {
+  htmlRows.forEach(row => {
     const tr = document.createElement('tr');
-    tr.innerHTML = row.map(cell => `<td>${cell}</td>`).join('');
+    tr.innerHTML = row.map((cell, i) => `<td${centeredCols.has(cols[i])?' style="text-align:center"':''}>${cell}</td>`).join('');
     tbody.appendChild(tr);
   });
 
@@ -3049,6 +3573,56 @@ function openReport(type) {
 function closeReport() {
   const o = el('reportOverlay');
   if (o) o.style.display = 'none';
+}
+
+// ── Export helpers ──
+function exportReportExcel() {
+  if (!currentReport.cols.length) return;
+  try {
+    const WB = XLSX.utils.book_new();
+    const data = [currentReport.cols, ...currentReport.rows];
+    const WS = XLSX.utils.aoa_to_sheet(data);
+    // Auto column widths
+    const colWidths = currentReport.cols.map((c, ci) => {
+      const max = Math.max(c.length, ...currentReport.rows.map(r => String(r[ci] || '').length));
+      return { wch: Math.min(max + 2, 40) };
+    });
+    WS['!cols'] = colWidths;
+    XLSX.utils.book_append_sheet(WB, WS, 'Relatório');
+    const fileName = (currentReport.title.replace(/[^\w\s-]/g,'').trim().replace(/\s+/g,'_') || 'relatorio') + '.xlsx';
+    XLSX.writeFile(WB, fileName);
+  } catch(e) {
+    alert('Erro ao exportar Excel: ' + e.message);
+  }
+}
+
+function exportReportPDF() {
+  if (!currentReport.cols.length) return;
+  const printWin = window.open('', '_blank', 'width=900,height=700');
+  if (!printWin) { alert('Permita pop-ups para gerar o PDF.'); return; }
+  const colsHtml = currentReport.cols.map(c => `<th>${c === 'Link' ? 'Link' : c}</th>`).join('');
+  const rowsHtml = currentReport.htmlRows.map(row =>
+    '<tr>' + row.map((cell, i) => `<td${currentReport.cols[i]==='Link'?' style="text-align:center"':''}>${cell}</td>`).join('') + '</tr>'
+  ).join('');
+  printWin.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8">
+    <title>${currentReport.title}</title>
+    <style>
+      body { font-family: Arial, sans-serif; font-size: 11px; color: #1a1a2e; margin: 20px; }
+      h2 { font-size: 15px; margin-bottom: 4px; color: #7c3aed; }
+      p.meta { font-size: 10px; color: #666; margin-bottom: 12px; }
+      table { border-collapse: collapse; width: 100%; }
+      th { background: #7c3aed; color: #fff; padding: 6px 8px; text-align: left; font-size: 10px; white-space: nowrap; }
+      td { border-bottom: 1px solid #e2e8f0; padding: 5px 8px; vertical-align: middle; }
+      tr:nth-child(even) td { background: #f8f8ff; }
+      a { color: #7c3aed; }
+      @media print { body { margin: 0; } }
+    </style></head><body>
+    <h2>${currentReport.title}</h2>
+    <p class="meta">${currentReport.htmlRows.length} registro(s) — gerado em ${new Date().toLocaleString('pt-BR')}</p>
+    <table><thead><tr>${colsHtml}</tr></thead><tbody>${rowsHtml}</tbody></table>
+    <script>window.onload=()=>{ window.print(); }<\/script>
+  </body></html>`);
+  printWin.document.close();
 }
 
 // ============================================================
