@@ -188,6 +188,14 @@ html.light-mode .date-input{color-scheme:light}
 .conv-bar-wrap{display:flex;align-items:center;gap:6px}
 .conv-bar-bg{flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden;min-width:60px}
 .conv-bar-fill{height:100%;border-radius:3px}
+.rank-filter-bar{padding:10px 20px 12px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--card)}
+.rank-filter-group{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.rank-filter-sep{width:1px;height:18px;background:var(--border);flex-shrink:0}
+.rank-filter-label{font-size:11px;font-weight:600;color:var(--muted);white-space:nowrap;text-transform:uppercase;letter-spacing:.3px}
+.rank-filter-btn{padding:3px 10px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:11px;font-weight:500;cursor:pointer;transition:all .12s;white-space:nowrap;line-height:1.6}
+.rank-filter-btn:hover:not(.active){background:var(--bg);color:var(--text)}
+.rank-filter-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+.rank-active-count{font-size:11px;color:var(--muted);margin-left:auto;white-space:nowrap;font-style:italic}
 
 /* ─── LIGHT MODE ─── */
 html.light-mode {
@@ -246,6 +254,9 @@ html.light-mode .btn-secondary:hover{background:#f1f5f9 !important}
 /* panel title adapts to theme */
 .panel-title{color:#fff}
 html.light-mode .panel-title{color:#1e293b !important}
+html.light-mode .rank-filter-bar{background:#f8fafc !important;border-color:#e2e8f0 !important}
+html.light-mode .rank-filter-btn:not(.active){color:#64748b !important;border-color:#e2e8f0 !important}
+html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !important;color:#1e293b !important}
 </style>
 </head>
 <body>
@@ -560,6 +571,33 @@ html.light-mode .panel-title{color:#1e293b !important}
       <div class="table-header" style="justify-content:space-between">
         <span>💰 Ranking por Faturamento</span>
         <span style="font-size:12px;color:var(--muted);font-weight:400">% calculado sobre cotações finalizadas (exclui em andamento)</span>
+      </div>
+      <!-- Filtros compartilhados entre os dois rankings -->
+      <div class="rank-filter-bar" id="rankFilterBar">
+        <div class="rank-filter-group">
+          <span class="rank-filter-label">Tag</span>
+          <button class="rank-filter-btn active" onclick="setRankFilter('tag','all',this)">Todos</button>
+          <button class="rank-filter-btn" onclick="setRankFilter('tag','destaque',this)">⭐ Destaque</button>
+          <button class="rank-filter-btn" onclick="setRankFilter('tag','atencao',this)">⚠️ Atenção</button>
+        </div>
+        <div class="rank-filter-sep"></div>
+        <div class="rank-filter-group">
+          <span class="rank-filter-label">Recorrência</span>
+          <button class="rank-filter-btn active" onclick="setRankFilter('rec','all',this)">Todos</button>
+          <button class="rank-filter-btn" onclick="setRankFilter('rec','Alta',this)">🔥 Alta</button>
+          <button class="rank-filter-btn" onclick="setRankFilter('rec','Média',this)">📅 Média</button>
+          <button class="rank-filter-btn" onclick="setRankFilter('rec','Pontual',this)">📌 Pontual</button>
+        </div>
+        <div class="rank-filter-sep"></div>
+        <div class="rank-filter-group">
+          <span class="rank-filter-label">Última Cotação</span>
+          <button class="rank-filter-btn active" onclick="setRankFilter('lastCot','all',this)">Todos</button>
+          <button class="rank-filter-btn" onclick="setRankFilter('lastCot','7d',this)">≤ 7 dias</button>
+          <button class="rank-filter-btn" onclick="setRankFilter('lastCot','15d',this)">≤ 15 dias</button>
+          <button class="rank-filter-btn" onclick="setRankFilter('lastCot','1m',this)">≤ 1 mês</button>
+          <button class="rank-filter-btn" onclick="setRankFilter('lastCot','60d+',this)">&gt; 60 dias</button>
+        </div>
+        <span class="rank-active-count" id="rankActiveCount"></span>
       </div>
       <table><thead><tr>
         <th style="width:40px">#</th>
@@ -2187,8 +2225,48 @@ function renderGeralRanking() {
     return tr;
   }
 
+  // ── Aplica filtros do ranking ──
+  function rankPassesFilter(name, d) {
+    const finalized = d.aprov + d.reprov;
+    const pct = finalized > 0 ? d.aprov / finalized : null;
+
+    if (rankFilter.tag !== 'all') {
+      const showDestaque = d.total > 5  && pct !== null && pct > 0.50;
+      const showAtencao  = d.total >= 5 && pct !== null && pct < 0.20;
+      if (rankFilter.tag === 'destaque' && !showDestaque) return false;
+      if (rankFilter.tag === 'atencao'  && !showAtencao)  return false;
+    }
+
+    if (rankFilter.rec !== 'all') {
+      const rec = calcRecorrencia(compMap[name] || []);
+      if (rec.label !== rankFilter.rec) return false;
+    }
+
+    if (rankFilter.lastCot !== 'all') {
+      const dAgo = daysSince(d.lastCot);
+      if (dAgo === null)                           return false;
+      if (rankFilter.lastCot === '7d'  && dAgo > 7)   return false;
+      if (rankFilter.lastCot === '15d' && dAgo > 15)  return false;
+      if (rankFilter.lastCot === '1m'  && dAgo > 30)  return false;
+      if (rankFilter.lastCot === '60d+' && dAgo <= 60) return false;
+    }
+
+    return true;
+  }
+
+  const visibleEntries = activeEntries.filter(([name, d]) => rankPassesFilter(name, d));
+
+  // Update filter counter label
+  const countEl = el('rankActiveCount');
+  if (countEl) {
+    const isFiltered = rankFilter.tag !== 'all' || rankFilter.rec !== 'all' || rankFilter.lastCot !== 'all';
+    countEl.textContent = isFiltered
+      ? `${visibleEntries.length} de ${activeEntries.length} cliente(s)`
+      : `${activeEntries.length} cliente(s)`;
+  }
+
   // ── Ranking 1: por Faturamento (exclui faturamento zero) ──
-  const sortedFat = [...activeEntries]
+  const sortedFat = [...visibleEntries]
     .filter(([, d]) => d.valor > 0)
     .sort((a,b) => b[1].valor - a[1].valor || b[1].aprov - a[1].aprov);
   tbodyFat.innerHTML = '';
@@ -2196,7 +2274,7 @@ function renderGeralRanking() {
   else tbodyFat.innerHTML = EMPTY;
 
   // ── Ranking 2: por Cotações Aprovadas ──
-  const sortedVol = [...activeEntries].sort((a,b) => b[1].aprov - a[1].aprov || b[1].valor - a[1].valor);
+  const sortedVol = [...visibleEntries].sort((a,b) => b[1].aprov - a[1].aprov || b[1].valor - a[1].valor);
   tbodyVol.innerHTML = '';
   if (sortedVol.length) sortedVol.forEach(([name, d], idx) => tbodyVol.appendChild(buildRankRow(name, d, idx)));
   else tbodyVol.innerHTML = EMPTY;
@@ -3186,6 +3264,17 @@ function dropFile(e, inputId) {
 // ============================================================
 let currentReport = { title:'', cols:[], rows:[], rawData:[] };
 
+// ── Ranking filter state ──
+let rankFilter = { tag: 'all', rec: 'all', lastCot: 'all' };
+
+function setRankFilter(key, val, btn) {
+  rankFilter[key] = val;
+  // Update active pill for this filter group only
+  btn.closest('.rank-filter-group').querySelectorAll('.rank-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGeralRanking();
+}
+
 // Helper: card title as-is, stripping only a leading numeric code (e.g. "3273 EMPRESA XYZ" → "EMPRESA XYZ")
 function cardTitle(card) {
   const raw = String(card.title || '').trim();
@@ -3218,6 +3307,33 @@ function cotNum(card) {
 function cardLink(card) {
   return `<a href="https://app.pipefy.com/open-cards/${card.id}" target="_blank" rel="noopener"
     style="color:var(--blue);text-decoration:none;font-size:16px" title="Abrir card no Pipefy">🔗</a>`;
+}
+
+// Helper: parse a Pipefy date string (ISO or Brazilian DD/MM/YYYY) into a JS Date
+function parsePipefyDate(str) {
+  if (!str) return null;
+  str = String(str).trim();
+  // ISO format: "2026-04-08" or "2026-04-08T10:30:00Z"
+  if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+    const d = new Date(str); return isNaN(d) ? null : d;
+  }
+  // Brazilian format: "08/04/2026" or "08/04/2026 10:30"
+  const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m) {
+    const d = new Date(`${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`);
+    return isNaN(d) ? null : d;
+  }
+  const d = new Date(str); return isNaN(d) ? null : d;
+}
+
+// Helper: always outputs DD/MM/YY regardless of browser locale
+function fmtDateBR(str) {
+  const d = parsePipefyDate(str);
+  if (!d) return '—';
+  const day   = String(d.getDate()).padStart(2,'0');
+  const month = String(d.getMonth() + 1).padStart(2,'0');
+  const year  = String(d.getFullYear()).slice(-2);
+  return `${day}/${month}/${year}`;
 }
 
 // Build cotações row: Cliente | Nº Cotação | Etapa | Data Criação | Valor | Link
@@ -3324,22 +3440,17 @@ function showComprasItens(cardId) {
 function closeItems() { const o = el('itensOverlay'); if (o) o.style.display = 'none'; }
 
 // ── Compras em Andamento row builder ──
+// Columns: Cliente | Nº NF | Etapa | Dias Aberto | Data Aprov. Cotação | Dias desde Aprov. | Itens | Link
 function buildCompAndRow(c, cotAprovDateStr) {
   const diasAberto = c.created_at ? Math.floor((Date.now() - new Date(c.created_at)) / 86400000) : '—';
   const diasColor  = typeof diasAberto === 'number' ? (diasAberto > 30 ? 'var(--red-d)' : diasAberto > 14 ? 'var(--yellow)' : 'var(--green-d)') : 'var(--muted)';
 
-  // Etiquetas (labels field from Pipefy, if fetched)
-  const labelsArr = c.labels || [];
-  const etiquetas = labelsArr.length
-    ? labelsArr.map(l => `<span style="background:${l.color||'#555'};color:#fff;padding:1px 7px;border-radius:10px;font-size:11px;font-weight:600;display:inline-block;margin:1px">${l.name}</span>`).join(' ')
-    : '<span style="color:var(--muted);font-size:12px">—</span>';
-
-  // Data aprovação cotação
+  // Data aprovação cotação — parse correctly regardless of Pipefy date format
   let aprovDateFmt = '—', diasDesdeAprov = '—', aprovColor = 'var(--muted)';
   if (cotAprovDateStr) {
-    const apDt = new Date(cotAprovDateStr);
-    if (!isNaN(apDt)) {
-      aprovDateFmt = apDt.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'2-digit' });
+    const apDt = parsePipefyDate(cotAprovDateStr);
+    if (apDt) {
+      aprovDateFmt = fmtDateBR(cotAprovDateStr);
       const days = Math.floor((Date.now() - apDt) / 86400000);
       diasDesdeAprov = days;
       aprovColor = days > 14 ? 'var(--red-d)' : days > 7 ? 'var(--yellow)' : 'var(--green-d)';
@@ -3350,10 +3461,9 @@ function buildCompAndRow(c, cotAprovDateStr) {
 
   return [
     cardTitle(c),
-    c.cotacaoNum || cotNum(c) || '—',
+    c.nf || '—',
     c.current_phase?.name || '—',
     typeof diasAberto === 'number' ? `<span style="font-weight:600;color:${diasColor}">${diasAberto}d</span>` : '—',
-    etiquetas,
     aprovDateFmt,
     typeof diasDesdeAprov === 'number' ? `<span style="font-weight:600;color:${aprovColor}">${diasDesdeAprov}d</span>` : '—',
     itensBtn,
@@ -3362,24 +3472,16 @@ function buildCompAndRow(c, cotAprovDateStr) {
 }
 function buildCompAndRawRow(c, cotAprovDateStr) {
   const diasAberto = c.created_at ? Math.floor((Date.now() - new Date(c.created_at)) / 86400000) : '—';
-  const labelsArr  = c.labels || [];
-  const etiquetas  = labelsArr.map(l => l.name).join(', ') || '—';
-  let aprovDateFmt = '—', diasDesdeAprov = '—';
-  if (cotAprovDateStr) {
-    const apDt = new Date(cotAprovDateStr);
-    if (!isNaN(apDt)) {
-      aprovDateFmt = apDt.toLocaleDateString('pt-BR');
-      diasDesdeAprov = Math.floor((Date.now() - apDt) / 86400000);
-    }
-  }
   return [
     cardTitle(c),
-    c.cotacaoNum || cotNum(c) || '—',
+    c.nf || '—',
     c.current_phase?.name || '—',
     diasAberto,
-    etiquetas,
-    aprovDateFmt,
-    diasDesdeAprov,
+    fmtDateBR(cotAprovDateStr),
+    cotAprovDateStr ? (() => {
+      const apDt = parsePipefyDate(cotAprovDateStr);
+      return apDt ? Math.floor((Date.now() - apDt) / 86400000) : '—';
+    })() : '—',
     '',  // Itens (button only in HTML view)
     `https://app.pipefy.com/open-cards/${c.id}`
   ];
