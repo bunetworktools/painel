@@ -1020,8 +1020,8 @@ let cfg = {
   pipeLogisticaId: '',
   pipeCrmId: '',
   pipeReativacaoId: '',
-  omieKey: '',
-  omieSecret: '',
+  omieKey: '3386409280254',
+  omieSecret: '0df8348a9be3b2d0bc7c60476ff9c961',
   metaAnual: 0,
   metaAprovacao: 50,
   metaReativacao: 50,
@@ -1162,6 +1162,7 @@ function loadConfig() {
     const stored = localStorage.getItem('beyou_cfg');
     if (stored) { cfg = { ...cfg, ...JSON.parse(stored) }; }
   } catch(e) {}
+  window.cfg = cfg; // re-link após possível reassignment
   document.getElementById('cfgMetaAnual').value      = cfg.metaAnual || '';
   document.getElementById('cfgMetaAprovacao').value  = cfg.metaAprovacao || 50;
   document.getElementById('cfgMetaReativacao').value = cfg.metaReativacao || 50;
@@ -1180,7 +1181,7 @@ function saveData() {
 function loadData() {
   try {
     const d = localStorage.getItem('beyou_data');
-    if (d) state = { ...state, ...JSON.parse(d) };
+    if (d) { state = { ...state, ...JSON.parse(d) }; window.state = state; } // re-link
   } catch(e) {}
 }
 
