@@ -32,7 +32,7 @@
       const t = Date.now();
       (function p() {
         if (fn()) return ok();
-        if (Date.now() - t > (ms || 10000)) return err('timeout');
+        if (Date.now() - t > (ms || 15000)) return err('timeout');
         setTimeout(p, 200);
       })();
     });
@@ -72,9 +72,14 @@
   function injectHTML() {
     if (R('omie-fat-root')) return;
 
-    /* Insere antes da tabela de NF-e detalhada que já existe */
-    const anchor = R('fatNFesWrap') || R('tab-faturamento');
-    if (!anchor) return;
+    /* Âncoras em ordem de preferência:
+       1. omie-patch-root — div reservado no dashboard exatamente para isso
+       2. antes de fatNFesWrap — tabela NF-e já existente
+       3. no final de tab-faturamento */
+    const patchRoot = R('omie-patch-root');
+    const fatWrap   = R('fatNFesWrap');
+    const tabFat    = R('tab-faturamento');
+    if (!patchRoot && !fatWrap && !tabFat) return;
 
     const html = `
 <div id="omie-fat-root" style="margin-top:4px">
@@ -289,10 +294,15 @@
 </div><!-- #omie-fat-root -->
 `;
 
-    if (anchor.id === 'fatNFesWrap') {
-      anchor.insertAdjacentHTML('beforebegin', html);
+    if (patchRoot) {
+      /* Insere o bloco Omie logo após o div reservado */
+      patchRoot.insertAdjacentHTML('afterend', html);
+    } else if (fatWrap) {
+      /* Insere antes da tabela NF-e detalhada */
+      fatWrap.insertAdjacentHTML('beforebegin', html);
     } else {
-      anchor.insertAdjacentHTML('beforeend', html);
+      /* Fallback: no final da aba */
+      tabFat.insertAdjacentHTML('beforeend', html);
     }
   }
 
@@ -360,29 +370,6 @@
     if (maiorNF) {
       setText('of-maior-nf',     fmtBRL(maiorNF.valor));
       setText('of-maior-nf-cli', maiorNF.cliente || maiorNF.nfNum || '—');
-    }
-
-    /* Atualiza também os cards originais do dashboard */
-    setText('fmYTD',    fmtBRL(fatAnual));
-    setText('fmTicket', fmtBRL(ticket));
-    const metaEl = R('fatMetaStatus');
-    if (metaEl && window.cfg?.metaAnual > 0) {
-      metaEl.textContent = `${fmtBRL(fatAnual)} de ${fmtBRL(window.cfg.metaAnual)} (${fmtPct(fatAnual / window.cfg.metaAnual)}) — fonte: NF-e Omie`;
-    }
-
-    /* Tabela mensal original (fatTableBody) */
-    const tbody = R('fatTableBody');
-    if (tbody) {
-      tbody.innerHTML = '';
-      MESES_PT.forEach((m, i) => {
-        const v = fatByM[i];
-        if (!v) return;
-        const nfsCount = nfes.filter(n => n.mes === i).length;
-        const tr = document.createElement('tr');
-        tr.innerHTML = `<td><strong>${m}</strong></td><td>${fmtBRL(v)}</td><td>—</td><td>—</td>
-          <td>—</td><td>—</td><td>${nfsCount}</td>`;
-        tbody.appendChild(tr);
-      });
     }
 
     /* Gráfico faturamento mensal */
@@ -643,49 +630,13 @@
   }
 
   /* ================================================================
-     PATCH renderFaturamento — usa NF-e Omie como fonte primária
+     INIT — sem patches em funções globais do dashboard
+     (patches quebravam handlers dos botões)
      ================================================================ */
-  function patchRenderFaturamento() {
-    const orig = window.renderFaturamento;
-    if (!orig || orig._omieV2) return;
-
-    window.renderFaturamento = function () {
-      orig.call(this);           /* mantém charts/tabelas originais */
-      render();                  /* sobrescreve com dados Omie */
-    };
-    window.renderFaturamento._omieV2 = true;
+  async function safeRender() {
+    try { render(); } catch(e) { console.warn('[omie-fat] render error:', e); }
   }
 
-  /* ================================================================
-     PATCH renderAll
-     ================================================================ */
-  function patchRenderAll() {
-    const orig = window.renderAll;
-    if (!orig || orig._omieV2) return;
-    window.renderAll = function () {
-      orig.call(this);
-      renderClientesAtivos();
-    };
-    window.renderAll._omieV2 = true;
-  }
-
-  /* ================================================================
-     PATCH syncOmie — corrige campos nfDestInt após sync
-     ================================================================ */
-  function patchSyncOmie() {
-    const orig = window.syncOmie;
-    if (!orig || orig._omieV2) return;
-    window.syncOmie = async function () {
-      const r = await orig.call(this);
-      render();
-      return r;
-    };
-    window.syncOmie._omieV2 = true;
-  }
-
-  /* ================================================================
-     INIT
-     ================================================================ */
   async function init() {
     try {
       await waitFor(() =>
@@ -698,38 +649,33 @@
       if (!window.cfg.omieKey)    window.cfg.omieKey    = OMIE_KEY;
       if (!window.cfg.omieSecret) window.cfg.omieSecret = OMIE_SECRET;
 
-      /* HTML */
+      /* Injeta HTML das seções Omie */
       injectHTML();
 
-      /* Patches */
-      patchRenderFaturamento();
-      patchRenderAll();
-      patchSyncOmie();
-
-      /* Expõe globalmente para o select de filtro */
+      /* Expõe globais para o select de filtro e botão Atualizar */
       window._omieRenderClientesAtivos = renderClientesAtivos;
       window._omieRefresh = async () => {
         setText('omie-sync-ts', 'sincronizando…');
         try {
           await window.syncOmie();
-          if (typeof window.renderAll === 'function') window.renderAll();
+          await safeRender();
         } catch (e) {
           setText('omie-sync-ts', '⚠️ erro: ' + e.message);
         }
       };
 
-      /* Dispara sync se não há dados */
+      /* Sincroniza com Omie e renderiza — sem tocar nas funções do dashboard */
       if (!window.state.omieNFes?.length || !window.state.omiePedidos?.length) {
         setText('omie-sync-ts', 'sincronizando…');
         try {
           await window.syncOmie();
-          if (typeof window.renderAll === 'function') window.renderAll();
+          await safeRender();
         } catch (e) {
-          setText('omie-sync-ts', '⚠️ sync falhou — tente manualmente');
+          setText('omie-sync-ts', '⚠️ sync falhou — use o botão Atualizar Omie');
           console.warn('[omie-fat] sync falhou:', e);
         }
       } else {
-        render();
+        await safeRender();
       }
 
       console.log('[omie-fat] ✅ Integração Omie v2 ativa.');
