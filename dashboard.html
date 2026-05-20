@@ -258,6 +258,7 @@ html.light-mode .rank-filter-bar{background:#f8fafc !important;border-color:#e2e
 html.light-mode .rank-filter-btn:not(.active){color:#64748b !important;border-color:#e2e8f0 !important}
 html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !important;color:#1e293b !important}
 </style>
+<script src="omie-faturamento.js" defer></script>
 </head>
 <body>
 
@@ -638,53 +639,85 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
 
   <!-- TAB: FATURAMENTO -->
   <div class="tab-panel" id="tab-faturamento">
-    <div class="alert alert-blue" id="fatAlert">
-      📂 <strong>Dados de faturamento:</strong> Se a sincronização automática com a Omie não trouxer as NF-es, importe o relatório <em>Faturamento por MêsAno</em> exportado pela Omie (Excel) usando o botão abaixo. Os totais serão carregados automaticamente.
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
-      <div class="upload-zone" id="fatUploadZone" onclick="document.getElementById('fatFileInput').click()" ondragover="dragOver(event,'fatUploadZone')" ondragleave="dragLeave('fatUploadZone')" ondrop="dropFile(event,'fatFileInput')">
-        <div class="upload-icon">📊</div>
-        <div class="upload-text">Importar Relatório de Faturamento Omie</div>
-        <div class="upload-hint">Omie → Relatórios → Faturamento por MêsAno → Exportar Excel</div>
-        <input type="file" id="fatFileInput" accept=".xlsx,.xls,.csv" onchange="handleFatFile(this)">
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:8px">
-        <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text)">Meta Anual de Faturamento</div>
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-          <input class="form-input" type="number" id="metaAnualInput" placeholder="10000000" style="flex:1;background:#1a1a2e" oninput="updateMetaAnual(this.value)">
-          <button class="btn btn-primary btn-sm" onclick="updateMetaAnual(document.getElementById('metaAnualInput').value)">✓</button>
+    <!-- ══ OMIE — DADOS DE FATURAMENTO E COTAÇÕES ══ -->
+    <div id="omie-fat-root" style="margin-top:4px">
+
+      <!-- CABEÇALHO -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 0 12px;border-top:1px solid var(--border);margin-top:8px">
+        <div>
+          <span style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:#a78bfa">🟠 Omie — Dados de Faturamento e Cotações</span>
+          <span id="omie-sync-ts" style="font-size:11px;color:var(--muted);margin-left:10px">carregando…</span>
         </div>
-        <div id="fatMetaStatus" style="font-size:12px;color:var(--muted)">Defina a meta para ver o progresso</div>
+        <button onclick="window._omieRefresh && window._omieRefresh()" style="font-size:11px;padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer">🔄 Atualizar Omie</button>
       </div>
-    </div>
-    <div class="metrics" id="fatMetrics">
-      <div class="metric"><div class="metric-label">Faturamento YTD</div><div class="metric-value" id="fmYTD">—</div><div class="metric-delta">2026 acumulado</div></div>
-      <div class="metric"><div class="metric-label">Custo de Compras YTD</div><div class="metric-value" id="fmCusto">—</div><div class="metric-delta">2026 acumulado</div></div>
-      <div class="metric"><div class="metric-label">Frete YTD</div><div class="metric-value" id="fmFrete">—</div><div class="metric-delta">2026 acumulado</div></div>
-      <div class="metric"><div class="metric-label">Lucro Bruto Estimado</div><div class="metric-value" id="fmLucro">—</div><div class="metric-delta">Fat - Custo - Frete</div></div>
-      <div class="metric"><div class="metric-label">Ticket Médio</div><div class="metric-value" id="fmTicket">—</div><div class="metric-delta">Por cotação aprovada</div></div>
-      <div class="metric"><div class="metric-label">Margem Estimada</div><div class="metric-value" id="fmMargem">—</div><div class="metric-delta">Lucro / Faturamento</div></div>
-    </div>
-    <div class="charts">
-      <div class="chart-card" style="grid-column:1/-1">
-        <div class="chart-title">Faturamento × Meta Mensal <span class="chart-subtitle">R$</span></div>
-        <div class="chart-wrap tall"><canvas id="chartFatMensal"></canvas></div>
+
+      <!-- 1. FATURAMENTO -->
+      <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">📄 Faturamento — NF-e Emitidas (2026)</div>
+      <div class="metrics" style="margin-bottom:24px">
+        <div class="metric"><div class="metric-label">Faturamento Anual</div><div class="metric-value" id="of-fat-anual">—</div><div class="metric-delta" id="of-fat-anual-sub">Total NF-e</div></div>
+        <div class="metric"><div class="metric-label">NFs Emitidas</div><div class="metric-value" id="of-nf-count">—</div><div class="metric-delta" id="of-nf-clientes">—</div></div>
+        <div class="metric"><div class="metric-label">Ticket Médio NF</div><div class="metric-value" id="of-ticket-nf">—</div><div class="metric-delta">Por nota fiscal</div></div>
+        <div class="metric"><div class="metric-label">Faturamento Mês Atual</div><div class="metric-value" id="of-fat-mes">—</div><div class="metric-delta" id="of-fat-mes-sub">—</div></div>
+        <div class="metric"><div class="metric-label">Faturamento Mês Anterior</div><div class="metric-value" id="of-fat-mes-ant">—</div><div class="metric-delta" id="of-fat-mes-ant-var">—</div></div>
+        <div class="metric"><div class="metric-label">Maior NF do Ano</div><div class="metric-value" id="of-maior-nf">—</div><div class="metric-delta" id="of-maior-nf-cli">—</div></div>
       </div>
-      <div class="chart-card">
-        <div class="chart-title">Faturamento vs Custo <span class="chart-subtitle">R$ por mês</span></div>
-        <div class="chart-wrap"><canvas id="chartFatCusto"></canvas></div>
+      <div class="charts" style="margin-bottom:24px">
+        <div class="chart-card" style="grid-column:1/-1">
+          <div class="chart-title">Faturamento Mensal — NF-e (2026) <span class="chart-subtitle">R$ por mês</span></div>
+          <div class="chart-wrap tall"><canvas id="of-chart-fat-mensal"></canvas></div>
+        </div>
       </div>
-      <div class="chart-card">
-        <div class="chart-title">Acumulado 2026 <span class="chart-subtitle">Progresso da meta</span></div>
-        <div class="chart-wrap"><canvas id="chartFatAcum"></canvas></div>
+
+      <!-- 2. COTAÇÕES -->
+      <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:24px 0 10px">📋 Cotações — Pedidos de Venda Omie (2026)</div>
+      <div class="metrics" style="margin-bottom:24px">
+        <div class="metric"><div class="metric-label">Total de Cotações</div><div class="metric-value" id="of-cot-total">—</div><div class="metric-delta">Excl. cancelados/devolvidos</div></div>
+        <div class="metric"><div class="metric-label">Valor Total Cotações</div><div class="metric-value" id="of-cot-valor">—</div><div class="metric-delta">Soma de todos os pedidos</div></div>
+        <div class="metric"><div class="metric-label">Orçamentos Abertos</div><div class="metric-value" id="of-cot-orcamentos">—</div><div class="metric-delta" id="of-cot-orc-valor">Etapa 10</div></div>
+        <div class="metric"><div class="metric-label">Pedidos Confirmados</div><div class="metric-value" id="of-cot-pedidos">—</div><div class="metric-delta" id="of-cot-ped-valor">Etapa 20</div></div>
+        <div class="metric"><div class="metric-label">Faturados (etapa 50)</div><div class="metric-value" id="of-cot-faturados">—</div><div class="metric-delta" id="of-cot-fat-valor">NF emitida</div></div>
+        <div class="metric"><div class="metric-label">Cancelados</div><div class="metric-value" id="of-cot-cancelados">—</div><div class="metric-delta" id="of-cot-can-valor">Etapa 60</div></div>
       </div>
-    </div>
-    <div class="table-card">
-      <div class="table-header">📅 Breakdown Mensal</div>
-      <table><thead><tr>
-        <th>Mês</th><th>Faturamento</th><th>Custo Compras</th><th>Frete</th><th>Lucro Estimado</th><th>Margem</th><th>Cotações Aprova.</th>
-      </tr></thead><tbody id="fatTableBody"></tbody></table>
-    </div>
+      <div class="charts" style="margin-bottom:24px">
+        <div class="chart-card"><div class="chart-title">Volume de Cotações por Mês <span class="chart-subtitle">unidades</span></div><div class="chart-wrap tall"><canvas id="of-chart-cot-vol"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Valor de Cotações por Mês <span class="chart-subtitle">R$</span></div><div class="chart-wrap tall"><canvas id="of-chart-cot-val"></canvas></div></div>
+      </div>
+
+      <!-- 3. COMPARAÇÃO -->
+      <div style="font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:24px 0 10px">📊 Comparação — Cotações Aprovadas × NFs Emitidas</div>
+      <div class="metrics" style="margin-bottom:20px">
+        <div class="metric"><div class="metric-label">Cotações Aprovadas</div><div class="metric-value" id="of-conv-aprov">—</div><div class="metric-delta" id="of-conv-aprov-val">Etapas 20 + 50</div></div>
+        <div class="metric"><div class="metric-label">NFs Geradas</div><div class="metric-value" id="of-conv-nfs">—</div><div class="metric-delta" id="of-conv-nfs-val">NF-e emitidas</div></div>
+        <div class="metric"><div class="metric-label">Taxa Cot → NF</div><div class="metric-value" id="of-conv-taxa">—</div><div class="metric-delta">Faturados ÷ Total cotações</div></div>
+        <div class="metric"><div class="metric-label">Gap Aprovado vs Faturado</div><div class="metric-value" id="of-conv-gap">—</div><div class="metric-delta" id="of-conv-gap-sub">—</div></div>
+      </div>
+      <div class="charts" style="margin-bottom:24px">
+        <div class="chart-card"><div class="chart-title">Volume: Cotações Aprovadas × NFs por Mês <span class="chart-subtitle">unidades</span></div><div class="chart-wrap tall"><canvas id="of-chart-comp-vol"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Valor: Cotações Aprovadas × Faturamento NF <span class="chart-subtitle">R$</span></div><div class="chart-wrap tall"><canvas id="of-chart-comp-val"></canvas></div></div>
+      </div>
+
+      <!-- 4. CLIENTES ATIVOS -->
+      <div class="table-card" style="margin-bottom:24px">
+        <div class="table-header">✅ Clientes Ativos — com NF emitida recentemente
+          <div style="display:flex;align-items:center;gap:8px">
+            <span id="of-ativos-count" class="tag tag-green" style="font-size:11px"></span>
+            <select id="of-ativos-filtro" style="font-size:12px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text)" onchange="window._omieRenderClientesAtivos && window._omieRenderClientesAtivos()">
+              <option value="30">Últimos 30 dias</option>
+              <option value="60" selected>Últimos 60 dias</option>
+              <option value="90">Últimos 90 dias</option>
+              <option value="180">Últimos 180 dias</option>
+              <option value="9999">Todo 2026</option>
+            </select>
+          </div>
+        </div>
+        <table><thead><tr>
+          <th>#</th><th>Cliente</th><th>CNPJ / CPF</th><th>Última NF</th>
+          <th>Dias desde última NF</th><th>Valor Última NF</th><th>Total 2026</th><th>Nº NFs</th>
+        </tr></thead>
+        <tbody id="of-ativos-body"><tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">Aguardando sincronização com Omie…</td></tr></tbody></table>
+      </div>
+
+    </div><!-- #omie-fat-root -->
 
     <!-- NF-e detalhadas do Omie -->
     <div class="table-card" id="fatNFesWrap" style="display:none">
@@ -3753,9 +3786,7 @@ fetch('data.json?v=' + Date.now())
     loadData();
     loadLastSync();
     checkSetupAlert();
-    if (state.cotacoes.length || state.compras.length || state.logistica.length) {
-      renderAll();
-    }
+    renderAll();
   });
 </script>
 </body>
