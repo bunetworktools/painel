@@ -1077,9 +1077,6 @@ let cfg = {
   darkMode: true,
 };
 
-window.cfg   = cfg;
-window.state = state;
-
 const charts = {};
 
 // ============================================================
@@ -3760,9 +3757,7 @@ fetch('data.json?v=' + Date.now())
     loadData();
     loadLastSync();
     checkSetupAlert();
-    if (state.cotacoes.length || state.compras.length || state.logistica.length) {
-      renderAll();
-    }
+    renderAll(); // Renderiza sempre — mostra interface mesmo sem dados do Pipefy
   });
 </script>
 </body>

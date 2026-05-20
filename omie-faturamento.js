@@ -1,69 +1,172 @@
 /**
- * omie-faturamento.js — Integração Omie · Aba Faturamento
- * Be You Dashboard · v2
+ * omie-faturamento.js — Be You Dashboard · v3
  *
- * Todos os dados vêm exclusivamente da Omie:
- *  • state.omieNFes     → NF-e emitidas (faturamento real)
- *  • state.omiePedidos  → Pedidos de venda (cotações / orçamentos)
+ * Completamente independente do dashboard:
+ *  • Credenciais hardcoded (não depende de window.cfg)
+ *  • Estado local próprio (não depende de window.state)
+ *  • Fetch próprio para a API Omie (não chama window.syncOmie)
  *
- * Etapas dos pedidos Omie:
- *  10 = Orçamento (cotação em aberto)
- *  20 = Pedido confirmado (cotação aprovada, aguardando NF)
- *  50 = Faturado (NF emitida a partir deste pedido)
- *  60 = Cancelado
- *  70 = Devolvido
- *
- * COMO USAR: adicione antes de </body> no dashboard.html:
- *   <script src="omie-faturamento.js"></script>
+ * Etapas Omie: 10=Orçamento, 20=Pedido, 50=Faturado, 60=Cancelado, 70=Devolvido
  */
 (function () {
   'use strict';
 
-  /* ── Credenciais Omie ─────────────────────────────────────── */
+  /* ── Credenciais e URLs ─────────────────────────────────────── */
   const OMIE_KEY    = '3386409280254';
   const OMIE_SECRET = '0df8348a9be3b2d0bc7c60476ff9c961';
+  const PROXY_URL   = 'http://localhost:8765';
+  const OMIE_URL    = 'https://app.omie.com.br/api/v1';
 
   const MESES_PT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
   const CUR_YEAR = new Date().getFullYear();
 
-  /* ── Helpers ─────────────────────────────────────────────── */
-  function waitFor(fn, ms) {
-    return new Promise((ok, err) => {
-      const t = Date.now();
-      (function p() {
-        if (fn()) return ok();
-        if (Date.now() - t > (ms || 15000)) return err('timeout');
-        setTimeout(p, 200);
-      })();
-    });
-  }
+  /* ── Estado local (independente do dashboard) ───────────────── */
+  const omieData = { nfes: [], pedidos: [] };
+  let omieViaProxy = null;
 
-  function R(id) { return document.getElementById(id); }
-
-  function setText(id, val) { const e = R(id); if (e) e.textContent = val; }
+  /* ── Helpers DOM ─────────────────────────────────────────────── */
+  function R(id)          { return document.getElementById(id); }
+  function setText(id, v) { const e = R(id); if (e) e.textContent = v; }
 
   function fmtBRL(v) {
-    if (typeof window.fmtBRL === 'function') return window.fmtBRL(v);
     return Number(v || 0).toLocaleString('pt-BR', {
-      style: 'currency', currency: 'BRL',
-      minimumFractionDigits: 0, maximumFractionDigits: 0
+      style:'currency', currency:'BRL',
+      minimumFractionDigits:0, maximumFractionDigits:0
     });
   }
-
-  function fmtPct(v) {
-    if (typeof window.fmtPct === 'function') return window.fmtPct(v);
-    return ((v || 0) * 100).toFixed(1) + '%';
-  }
-
+  function fmtPct(v)  { return ((v || 0) * 100).toFixed(1) + '%'; }
   function escHtml(s) {
     const d = document.createElement('div');
     d.appendChild(document.createTextNode(String(s || '')));
     return d.innerHTML;
   }
-
   function diasAtras(date) {
     if (!date) return null;
     return Math.round((Date.now() - new Date(date).getTime()) / 86400000);
+  }
+  function parseDate(s) {
+    if (!s) return null;
+    const m = String(s).match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if (m) return new Date(+m[3], +m[2] - 1, +m[1]);
+    const d = new Date(s);
+    return isNaN(d) ? null : d;
+  }
+
+  /* ── API Omie (fetch próprio, credenciais hardcoded) ────────── */
+  function withTimeout(promise, ms) {
+    return new Promise((resolve, reject) => {
+      const t = setTimeout(() => reject(new Error('timeout')), ms);
+      promise.then(v => { clearTimeout(t); resolve(v); },
+                   e => { clearTimeout(t); reject(e); });
+    });
+  }
+
+  async function omieCall(endpoint, call, param) {
+    const body = JSON.stringify({
+      call, app_key: OMIE_KEY, app_secret: OMIE_SECRET, param: [param]
+    });
+
+    /* Tenta proxy local primeiro (evita CORS) — timeout 2s */
+    if (omieViaProxy !== false) {
+      try {
+        const res = await withTimeout(
+          fetch(`${PROXY_URL}/${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body
+          }), 2000);
+        if (res.ok) {
+          omieViaProxy = true;
+          const json = await res.json();
+          if (json.faultstring) throw new Error(json.faultstring);
+          return json;
+        }
+        throw new Error('proxy not ok');
+      } catch(e) { omieViaProxy = false; }
+    }
+
+    /* Chamada direta à API Omie */
+    const res = await fetch(`${OMIE_URL}/${endpoint}/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (json.faultstring) throw new Error(json.faultstring);
+    return json;
+  }
+
+  async function omiePageAll(endpoint, call, paramBase, arrayKey) {
+    let page = 1, all = [];
+    while (true) {
+      const res = await omieCall(endpoint, call, {
+        ...paramBase, pagina: page, registros_por_pagina: 50
+      });
+      const arr = res[arrayKey] || [];
+      all = all.concat(arr);
+      const total = res.total_de_registros || res.nTotReg || arr.length;
+      if (all.length >= total || arr.length === 0) break;
+      page++;
+    }
+    return all;
+  }
+
+  async function fetchOmieData() {
+    let nfErr = null, pedErr = null;
+
+    /* NF-e — erro não impede busca de pedidos */
+    try {
+      setText('omie-sync-ts', 'buscando NF-e…');
+      const nfRaw = await omiePageAll('produtos/nfe', 'ListarNFe', {
+        filtrar_por_data_de:  `01/01/${CUR_YEAR}`,
+        filtrar_por_data_ate: `31/12/${CUR_YEAR}`,
+      }, 'nfCadastro');
+
+      omieData.nfes = nfRaw.map(nf => {
+        const dataStr = nf.data_emissao || nf.dEmi        || nf.ide?.dEmi        || '';
+        const cliente = nf.nome_destinatario || nf.nfDestInt?.cRazao || nf.xNome || nf.dest?.xNome || '';
+        const cnpj    = nf.cnpj_cpf_destinatario || nf.nfDestInt?.cnpj_cpf || nf.CNPJ || nf.dest?.CNPJ || '';
+        const valor   = parseFloat(nf.valor_total_nfe || nf.vNF || nf.total?.ICMSTot?.vNF || 0);
+        const nfNum   = nf.numero_nfe || nf.nNF          || nf.ide?.nNF          || '';
+        const dt      = parseDate(dataStr);
+        return { nfNum, data: dt, mes: dt?.getMonth() ?? -1, cliente, cnpj, valor };
+      }).filter(n => n.valor > 0);
+    } catch(e) {
+      nfErr = e;
+      console.warn('[omie-fat] NF-e:', e.message);
+    }
+
+    /* Pedidos — erro não cancela resultado das NF-es */
+    try {
+      setText('omie-sync-ts', 'buscando pedidos…');
+      const pedRaw = await omiePageAll('produtos/pedido', 'ListarPedidos', {
+        filtrar_por_data_de:  `01/01/${CUR_YEAR}`,
+        filtrar_por_data_ate: `31/12/${CUR_YEAR}`,
+      }, 'pedido_venda_produto');
+
+      omieData.pedidos = pedRaw.map(p => {
+        const cab = p.cabecalho    || {};
+        const tot = p.total_pedido || {};
+        const dt  = parseDate(cab.data_previsao || (p.infoCadastro || {}).dEmi);
+        return {
+          id:      cab.codigo_pedido       || '',
+          data:    dt,
+          mes:     dt?.getMonth()          ?? -1,
+          cliente: cab.codigo_cliente_nome || '',
+          etapa:   String(cab.etapa        || '10'),
+          valor:   parseFloat(tot.valor_total_pedido || cab.valor_total || 0),
+        };
+      });
+    } catch(e) {
+      pedErr = e;
+      console.warn('[omie-fat] Pedidos:', e.message);
+    }
+
+    /* Status final */
+    if (nfErr && pedErr) {
+      throw new Error('CORS — acesse pelo proxy local ou verifique a rede');
+    }
   }
 
   /* ================================================================
@@ -71,11 +174,6 @@
      ================================================================ */
   function injectHTML() {
     if (R('omie-fat-root')) return;
-
-    /* Âncoras em ordem de preferência:
-       1. omie-patch-root — div reservado no dashboard exatamente para isso
-       2. antes de fatNFesWrap — tabela NF-e já existente
-       3. no final de tab-faturamento */
     const patchRoot = R('omie-patch-root');
     const fatWrap   = R('fatNFesWrap');
     const tabFat    = R('tab-faturamento');
@@ -84,7 +182,7 @@
     const html = `
 <div id="omie-fat-root" style="margin-top:4px">
 
-  <!-- ══ CABEÇALHO DA SEÇÃO ════════════════════════════════════ -->
+  <!-- CABEÇALHO -->
   <div style="display:flex;align-items:center;justify-content:space-between;
               padding:18px 0 12px;border-top:1px solid var(--border);margin-top:8px">
     <div>
@@ -99,17 +197,16 @@
     </button>
   </div>
 
-  <!-- ══ 1. FATURAMENTO ANUAL & MENSAL (NF-e) ══════════════════ -->
+  <!-- ══ 1. FATURAMENTO ══ -->
   <div style="font-size:12px;font-weight:600;color:var(--muted);
               text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px">
     📄 Faturamento — NF-e Emitidas (${CUR_YEAR})
   </div>
-
   <div class="metrics" style="margin-bottom:24px">
     <div class="metric">
       <div class="metric-label">Faturamento Anual</div>
       <div class="metric-value" id="of-fat-anual">—</div>
-      <div class="metric-delta" id="of-fat-anual-sub">Total NF-e ${CUR_YEAR}</div>
+      <div class="metric-delta" id="of-fat-anual-sub">Total NF-e</div>
     </div>
     <div class="metric">
       <div class="metric-label">NFs Emitidas</div>
@@ -137,29 +234,25 @@
       <div class="metric-delta" id="of-maior-nf-cli">—</div>
     </div>
   </div>
-
-  <!-- Gráfico faturamento mensal -->
   <div class="charts" style="margin-bottom:24px">
     <div class="chart-card" style="grid-column:1/-1">
-      <div class="chart-title">
-        Faturamento Mensal — NF-e Omie (${CUR_YEAR})
+      <div class="chart-title">Faturamento Mensal — NF-e (${CUR_YEAR})
         <span class="chart-subtitle">R$ por mês</span>
       </div>
       <div class="chart-wrap tall"><canvas id="of-chart-fat-mensal"></canvas></div>
     </div>
   </div>
 
-  <!-- ══ 2. COTAÇÕES (PEDIDOS DE VENDA) ════════════════════════ -->
+  <!-- ══ 2. COTAÇÕES ══ -->
   <div style="font-size:12px;font-weight:600;color:var(--muted);
               text-transform:uppercase;letter-spacing:.4px;margin:24px 0 10px">
     📋 Cotações — Pedidos de Venda Omie (${CUR_YEAR})
   </div>
-
   <div class="metrics" style="margin-bottom:24px">
     <div class="metric">
       <div class="metric-label">Total de Cotações</div>
       <div class="metric-value" id="of-cot-total">—</div>
-      <div class="metric-delta">Orçamentos + Pedidos + Faturados</div>
+      <div class="metric-delta">Excl. cancelados/devolvidos</div>
     </div>
     <div class="metric">
       <div class="metric-label">Valor Total Cotações</div>
@@ -169,12 +262,12 @@
     <div class="metric">
       <div class="metric-label">Orçamentos Abertos</div>
       <div class="metric-value" id="of-cot-orcamentos">—</div>
-      <div class="metric-delta" id="of-cot-orc-valor">Aguardando aprovação</div>
+      <div class="metric-delta" id="of-cot-orc-valor">Etapa 10</div>
     </div>
     <div class="metric">
       <div class="metric-label">Pedidos Confirmados</div>
       <div class="metric-value" id="of-cot-pedidos">—</div>
-      <div class="metric-delta" id="of-cot-ped-valor">Aprovados, aguardando NF</div>
+      <div class="metric-delta" id="of-cot-ped-valor">Etapa 20</div>
     </div>
     <div class="metric">
       <div class="metric-label">Faturados (etapa 50)</div>
@@ -184,35 +277,29 @@
     <div class="metric">
       <div class="metric-label">Cancelados</div>
       <div class="metric-value" id="of-cot-cancelados">—</div>
-      <div class="metric-delta" id="of-cot-can-valor">—</div>
+      <div class="metric-delta" id="of-cot-can-valor">Etapa 60</div>
     </div>
   </div>
-
-  <!-- Gráfico cotações mensais -->
   <div class="charts" style="margin-bottom:24px">
     <div class="chart-card">
-      <div class="chart-title">
-        Volume de Cotações por Mês
+      <div class="chart-title">Volume de Cotações por Mês
         <span class="chart-subtitle">unidades</span>
       </div>
       <div class="chart-wrap tall"><canvas id="of-chart-cot-vol"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">
-        Valor de Cotações por Mês
+      <div class="chart-title">Valor de Cotações por Mês
         <span class="chart-subtitle">R$</span>
       </div>
       <div class="chart-wrap tall"><canvas id="of-chart-cot-val"></canvas></div>
     </div>
   </div>
 
-  <!-- ══ 3. COMPARAÇÃO COTAÇÕES APROVADAS × NF-e ═══════════════ -->
+  <!-- ══ 3. COMPARAÇÃO ══ -->
   <div style="font-size:12px;font-weight:600;color:var(--muted);
               text-transform:uppercase;letter-spacing:.4px;margin:24px 0 10px">
     📊 Comparação — Cotações Aprovadas × NFs Emitidas
   </div>
-
-  <!-- Métricas de conversão -->
   <div class="metrics" style="margin-bottom:20px">
     <div class="metric">
       <div class="metric-label">Cotações Aprovadas</div>
@@ -222,7 +309,7 @@
     <div class="metric">
       <div class="metric-label">NFs Geradas</div>
       <div class="metric-value" id="of-conv-nfs">—</div>
-      <div class="metric-delta" id="of-conv-nfs-val">NF-e emitidas Omie</div>
+      <div class="metric-delta" id="of-conv-nfs-val">NF-e emitidas</div>
     </div>
     <div class="metric">
       <div class="metric-label">Taxa Cot → NF</div>
@@ -230,31 +317,27 @@
       <div class="metric-delta">Faturados ÷ Total cotações</div>
     </div>
     <div class="metric">
-      <div class="metric-label">Valor Aprovado vs Faturado</div>
+      <div class="metric-label">Gap Aprovado vs Faturado</div>
       <div class="metric-value" id="of-conv-gap">—</div>
-      <div class="metric-delta" id="of-conv-gap-sub">Diferença aprovado → NF</div>
+      <div class="metric-delta" id="of-conv-gap-sub">—</div>
     </div>
   </div>
-
-  <!-- Gráfico comparação por mês -->
   <div class="charts" style="margin-bottom:24px">
     <div class="chart-card">
-      <div class="chart-title">
-        Volume: Cotações Aprovadas × NFs por Mês
+      <div class="chart-title">Volume: Cotações Aprovadas × NFs por Mês
         <span class="chart-subtitle">unidades</span>
       </div>
       <div class="chart-wrap tall"><canvas id="of-chart-comp-vol"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">
-        Valor: Cotações Aprovadas × Faturamento NF
+      <div class="chart-title">Valor: Cotações Aprovadas × Faturamento NF
         <span class="chart-subtitle">R$</span>
       </div>
       <div class="chart-wrap tall"><canvas id="of-chart-comp-val"></canvas></div>
     </div>
   </div>
 
-  <!-- ══ 4. CLIENTES ATIVOS (NF RECENTE) ══════════════════════ -->
+  <!-- ══ 4. CLIENTES ATIVOS ══ -->
   <div class="table-card" style="margin-bottom:24px">
     <div class="table-header">
       ✅ Clientes Ativos — com NF emitida recentemente
@@ -274,14 +357,8 @@
     </div>
     <table>
       <thead><tr>
-        <th>#</th>
-        <th>Cliente</th>
-        <th>CNPJ / CPF</th>
-        <th>Última NF</th>
-        <th>Dias desde última NF</th>
-        <th>Valor Última NF</th>
-        <th>Total ${CUR_YEAR}</th>
-        <th>Nº NFs</th>
+        <th>#</th><th>Cliente</th><th>CNPJ / CPF</th><th>Última NF</th>
+        <th>Dias desde última NF</th><th>Valor Última NF</th><th>Total ${CUR_YEAR}</th><th>Nº NFs</th>
       </tr></thead>
       <tbody id="of-ativos-body">
         <tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">
@@ -295,103 +372,85 @@
 `;
 
     if (patchRoot) {
-      /* Insere o bloco Omie logo após o div reservado */
       patchRoot.insertAdjacentHTML('afterend', html);
     } else if (fatWrap) {
-      /* Insere antes da tabela NF-e detalhada */
       fatWrap.insertAdjacentHTML('beforebegin', html);
     } else {
-      /* Fallback: no final da aba */
       tabFat.insertAdjacentHTML('beforeend', html);
     }
   }
 
   /* ================================================================
-     RENDERIZAÇÃO PRINCIPAL
+     RENDERIZAÇÃO (usa omieData — não depende de window.state)
      ================================================================ */
   function render() {
-    const nfes    = window.state?.omieNFes    || [];
-    const pedidos = window.state?.omiePedidos || [];
+    try { renderFaturamento(); }  catch(e) { console.warn('[omie-fat] renderFaturamento:', e); }
+    try { renderCotacoes(); }     catch(e) { console.warn('[omie-fat] renderCotacoes:', e); }
+    try { renderComparacao(); }   catch(e) { console.warn('[omie-fat] renderComparacao:', e); }
+    try { renderClientesAtivos(); } catch(e) { console.warn('[omie-fat] renderClientes:', e); }
 
-    renderFaturamento(nfes, pedidos);
-    renderCotacoes(pedidos);
-    renderComparacao(nfes, pedidos);
-    renderClientesAtivos();
-
-    /* Timestamp de sync */
     const ts = R('omie-sync-ts');
-    if (ts && nfes.length) {
-      ts.textContent = `• ${nfes.length} NF-es · ${pedidos.length} pedidos · atualizado ${new Date().toLocaleTimeString('pt-BR')}`;
+    if (ts && omieData.nfes.length) {
+      ts.textContent = `• ${omieData.nfes.length} NF-es · ${omieData.pedidos.length} pedidos · ${new Date().toLocaleTimeString('pt-BR')}`;
     }
   }
 
-  /* ── 1. FATURAMENTO ANUAL & MENSAL ────────────────────────── */
-  function renderFaturamento(nfes, pedidos) {
+  /* ── 1. FATURAMENTO ── */
+  function renderFaturamento() {
+    const nfes = omieData.nfes;
     if (!nfes.length) return;
 
     const fatByM = Array(12).fill(0);
-    nfes.forEach(nf => {
-      if (nf.mes >= 0 && nf.mes < 12) fatByM[nf.mes] += (nf.valor || 0);
-    });
+    nfes.forEach(nf => { if (nf.mes >= 0) fatByM[nf.mes] += (nf.valor || 0); });
 
-    const fatAnual = fatByM.reduce((a, b) => a + b, 0);
-    const nfCount  = nfes.length;
-    const ticket   = nfCount > 0 ? fatAnual / nfCount : 0;
-
-    const mesAtual = new Date().getMonth();
-    const fatMes   = fatByM[mesAtual] || 0;
-    const fatMesAnt= mesAtual > 0 ? fatByM[mesAtual - 1] : 0;
-    const varMes   = fatMesAnt > 0 ? (fatMes - fatMesAnt) / fatMesAnt : null;
-
-    /* Maior NF */
-    const maiorNF  = nfes.reduce((mx, n) => n.valor > (mx?.valor || 0) ? n : mx, null);
-
-    /* Clientes únicos */
+    const fatAnual  = fatByM.reduce((a, b) => a + b, 0);
+    const nfCount   = nfes.length;
+    const ticket    = nfCount > 0 ? fatAnual / nfCount : 0;
+    const mesAtual  = new Date().getMonth();
+    const fatMes    = fatByM[mesAtual] || 0;
+    const fatMesAnt = mesAtual > 0 ? fatByM[mesAtual - 1] : 0;
+    const varMes    = fatMesAnt > 0 ? (fatMes - fatMesAnt) / fatMesAnt : null;
+    const maiorNF   = nfes.reduce((mx, n) => n.valor > (mx?.valor || 0) ? n : mx, null);
     const clientesUnicos = new Set(nfes.map(n => n.cnpj || n.cliente)).size;
 
-    /* Atualiza cards */
-    setText('of-fat-anual',       fmtBRL(fatAnual));
-    setText('of-fat-anual-sub',   `${nfCount} NFs · ${clientesUnicos} clientes`);
-    setText('of-nf-count',        nfCount);
-    setText('of-nf-clientes',     `${clientesUnicos} clientes distintos`);
-    setText('of-ticket-nf',       fmtBRL(ticket));
-    setText('of-fat-mes',         fmtBRL(fatMes));
-    setText('of-fat-mes-sub',     MESES_PT[mesAtual] + '/' + CUR_YEAR);
-    setText('of-fat-mes-ant',     fmtBRL(fatMesAnt));
+    setText('of-fat-anual',     fmtBRL(fatAnual));
+    setText('of-fat-anual-sub', `${nfCount} NFs · ${clientesUnicos} clientes`);
+    setText('of-nf-count',      nfCount);
+    setText('of-nf-clientes',   `${clientesUnicos} clientes distintos`);
+    setText('of-ticket-nf',     fmtBRL(ticket));
+    setText('of-fat-mes',       fmtBRL(fatMes));
+    setText('of-fat-mes-sub',   MESES_PT[mesAtual] + '/' + CUR_YEAR);
+    setText('of-fat-mes-ant',   fmtBRL(fatMesAnt));
 
     if (varMes !== null) {
-      const varEl = R('of-fat-mes-ant-var');
-      if (varEl) {
-        varEl.textContent = (varMes >= 0 ? '▲ +' : '▼ ') + fmtPct(Math.abs(varMes)) + ' vs mês anterior';
-        varEl.style.color = varMes >= 0 ? 'var(--green-d)' : 'var(--red-d)';
+      const el = R('of-fat-mes-ant-var');
+      if (el) {
+        el.textContent = (varMes >= 0 ? '▲ +' : '▼ ') + fmtPct(Math.abs(varMes)) + ' vs mês anterior';
+        el.style.color = varMes >= 0 ? 'var(--green-d)' : 'var(--red-d)';
       }
     }
-
     if (maiorNF) {
       setText('of-maior-nf',     fmtBRL(maiorNF.valor));
       setText('of-maior-nf-cli', maiorNF.cliente || maiorNF.nfNum || '—');
     }
 
-    /* Gráfico faturamento mensal */
-    const labels = MESES_PT.slice(0, mesAtual + 1);
-    const data   = fatByM.slice(0, mesAtual + 1);
-    mkChart('of-chart-fat-mensal', 'bar', labels,
-      [{ label: 'Faturamento NF-e', data, color: 'rgba(124,58,237,0.8)', borderColor: '#7c3aed' }],
+    mkChart('of-chart-fat-mensal', 'bar',
+      MESES_PT.slice(0, mesAtual + 1),
+      [{ label:'Faturamento NF-e', data: fatByM.slice(0, mesAtual + 1), color:'rgba(124,58,237,0.8)' }],
       true);
   }
 
-  /* ── 2. COTAÇÕES (PEDIDOS DE VENDA) ──────────────────────── */
-  function renderCotacoes(pedidos) {
+  /* ── 2. COTAÇÕES ── */
+  function renderCotacoes() {
+    const pedidos = omieData.pedidos;
     if (!pedidos.length) return;
 
-    const orcamentos = pedidos.filter(p => p.etapa === '10');
-    const confirmados= pedidos.filter(p => p.etapa === '20');
-    const faturados  = pedidos.filter(p => p.etapa === '50');
-    const cancelados = pedidos.filter(p => p.etapa === '60');
-    /* Total exclui cancelados para volume */
-    const ativos     = pedidos.filter(p => p.etapa !== '60' && p.etapa !== '70');
-
-    const soma = arr => arr.reduce((s, p) => s + (p.valor || 0), 0);
+    const orcamentos  = pedidos.filter(p => p.etapa === '10');
+    const confirmados = pedidos.filter(p => p.etapa === '20');
+    const faturados   = pedidos.filter(p => p.etapa === '50');
+    const cancelados  = pedidos.filter(p => p.etapa === '60');
+    const ativos      = pedidos.filter(p => p.etapa !== '60' && p.etapa !== '70');
+    const soma = arr  => arr.reduce((s, p) => s + (p.valor || 0), 0);
 
     setText('of-cot-total',      ativos.length);
     setText('of-cot-valor',      fmtBRL(soma(ativos)));
@@ -404,45 +463,30 @@
     setText('of-cot-cancelados', cancelados.length);
     setText('of-cot-can-valor',  fmtBRL(soma(cancelados)));
 
-    /* Gráficos por mês */
-    const mesAtual  = new Date().getMonth();
-    const labels    = MESES_PT.slice(0, mesAtual + 1);
-    const volByM    = Array(12).fill(0);
-    const valByM    = Array(12).fill(0);
-    const fatByM    = Array(12).fill(0);
-    const fatValByM = Array(12).fill(0);
-
+    const mesAtual = new Date().getMonth();
+    const labels   = MESES_PT.slice(0, mesAtual + 1);
+    const volByM   = Array(12).fill(0);
+    const valByM   = Array(12).fill(0);
     ativos.forEach(p => {
-      if (p.mes >= 0 && p.mes < 12) {
-        volByM[p.mes]++;
-        valByM[p.mes] += (p.valor || 0);
-      }
-    });
-    faturados.forEach(p => {
-      if (p.mes >= 0 && p.mes < 12) {
-        fatByM[p.mes]++;
-        fatValByM[p.mes] += (p.valor || 0);
-      }
+      if (p.mes >= 0 && p.mes < 12) { volByM[p.mes]++; valByM[p.mes] += (p.valor || 0); }
     });
 
-    mkChart('of-chart-cot-vol', 'bar', labels, [
-      { label: 'Orçamentos/Pedidos', data: volByM.slice(0, mesAtual + 1), color: 'rgba(124,58,237,0.75)' },
-    ], false);
-
-    mkChart('of-chart-cot-val', 'bar', labels, [
-      { label: 'Valor Cotações', data: valByM.slice(0, mesAtual + 1), color: 'rgba(124,58,237,0.75)' },
-    ], true);
+    mkChart('of-chart-cot-vol', 'bar', labels,
+      [{ label:'Cotações', data: volByM.slice(0, mesAtual+1), color:'rgba(124,58,237,0.75)' }], false);
+    mkChart('of-chart-cot-val', 'bar', labels,
+      [{ label:'Valor Cotações', data: valByM.slice(0, mesAtual+1), color:'rgba(124,58,237,0.75)' }], true);
   }
 
-  /* ── 3. COMPARAÇÃO COTAÇÕES × NF-e ──────────────────────── */
-  function renderComparacao(nfes, pedidos) {
+  /* ── 3. COMPARAÇÃO ── */
+  function renderComparacao() {
+    const nfes    = omieData.nfes;
+    const pedidos = omieData.pedidos;
     if (!nfes.length && !pedidos.length) return;
 
-    /* Aprovadas = pedidos confirmados (20) + faturados (50) */
-    const aprovados  = pedidos.filter(p => p.etapa === '20' || p.etapa === '50');
-    const faturados  = pedidos.filter(p => p.etapa === '50');
-    const totalCot   = pedidos.filter(p => p.etapa !== '60' && p.etapa !== '70');
-    const soma = arr => arr.reduce((s, p) => s + (p.valor || 0), 0);
+    const aprovados = pedidos.filter(p => p.etapa === '20' || p.etapa === '50');
+    const faturados = pedidos.filter(p => p.etapa === '50');
+    const totalCot  = pedidos.filter(p => p.etapa !== '60' && p.etapa !== '70');
+    const soma   = arr => arr.reduce((s, p) => s + (p.valor || 0), 0);
     const somaNF = arr => arr.reduce((s, n) => s + (n.valor || 0), 0);
 
     const valorAprov = soma(aprovados);
@@ -456,53 +500,42 @@
     setText('of-conv-nfs-val',   fmtBRL(valorNFes));
     setText('of-conv-taxa',      fmtPct(taxa));
     setText('of-conv-gap',       fmtBRL(Math.abs(gap)));
-    setText('of-conv-gap-sub',
-      gap > 0
-        ? `R$ ${fmtBRL(gap).replace('R$','').trim()} aprovado ainda não faturado`
-        : 'Faturamento alinhado com aprovações');
+    setText('of-conv-gap-sub',   gap > 0
+      ? `${fmtBRL(gap)} aprovado ainda não faturado`
+      : 'Faturamento alinhado com aprovações');
 
-    /* Gráficos comparativos por mês */
     const mesAtual  = new Date().getMonth();
     const labels    = MESES_PT.slice(0, mesAtual + 1);
-    const aprovVolM = Array(12).fill(0);
-    const aprovValM = Array(12).fill(0);
-    const nfVolM    = Array(12).fill(0);
-    const nfValM    = Array(12).fill(0);
+    const aprovVolM = Array(12).fill(0), aprovValM = Array(12).fill(0);
+    const nfVolM    = Array(12).fill(0), nfValM    = Array(12).fill(0);
 
     aprovados.forEach(p => {
-      if (p.mes >= 0 && p.mes < 12) {
-        aprovVolM[p.mes]++;
-        aprovValM[p.mes] += (p.valor || 0);
-      }
+      if (p.mes >= 0 && p.mes < 12) { aprovVolM[p.mes]++; aprovValM[p.mes] += (p.valor || 0); }
     });
     nfes.forEach(n => {
-      if (n.mes >= 0 && n.mes < 12) {
-        nfVolM[n.mes]++;
-        nfValM[n.mes] += (n.valor || 0);
-      }
+      if (n.mes >= 0 && n.mes < 12) { nfVolM[n.mes]++; nfValM[n.mes] += (n.valor || 0); }
     });
 
     mkChart('of-chart-comp-vol', 'bar', labels, [
-      { label: 'Cotações Aprovadas', data: aprovVolM.slice(0, mesAtual + 1), color: 'rgba(124,58,237,0.75)' },
-      { label: 'NFs Emitidas',       data: nfVolM.slice(0, mesAtual + 1),   color: 'rgba(16,185,129,0.75)' },
+      { label:'Cotações Aprovadas', data: aprovVolM.slice(0, mesAtual+1), color:'rgba(124,58,237,0.75)' },
+      { label:'NFs Emitidas',       data: nfVolM.slice(0, mesAtual+1),   color:'rgba(16,185,129,0.75)' },
     ], false);
-
     mkChart('of-chart-comp-val', 'bar', labels, [
-      { label: 'Valor Aprovado', data: aprovValM.slice(0, mesAtual + 1), color: 'rgba(124,58,237,0.75)' },
-      { label: 'Faturamento NF', data: nfValM.slice(0, mesAtual + 1),   color: 'rgba(16,185,129,0.75)' },
+      { label:'Valor Aprovado',  data: aprovValM.slice(0, mesAtual+1), color:'rgba(124,58,237,0.75)' },
+      { label:'Faturamento NF',  data: nfValM.slice(0, mesAtual+1),   color:'rgba(16,185,129,0.75)' },
     ], true);
   }
 
-  /* ── 4. CLIENTES ATIVOS ──────────────────────────────────── */
+  /* ── 4. CLIENTES ATIVOS ── */
   function renderClientesAtivos() {
     const tbody = R('of-ativos-body');
     const badge = R('of-ativos-count');
     if (!tbody) return;
 
-    const nfes = window.state?.omieNFes || [];
+    const nfes = omieData.nfes;
     if (!nfes.length) {
       tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">
-        Sem dados de NF-e. Clique em "Atualizar Omie" para carregar.</td></tr>`;
+        Sem dados. Clique em "Atualizar Omie".</td></tr>`;
       return;
     }
 
@@ -511,21 +544,10 @@
     if (dias < 9999) cutoff.setDate(cutoff.getDate() - dias);
     else cutoff.setFullYear(CUR_YEAR, 0, 1);
 
-    /* Agrupa NFs por CNPJ/cliente */
     const map = {};
     nfes.forEach(nf => {
-      const key = (nf.cnpj && nf.cnpj !== '—' && nf.cnpj !== '') ? nf.cnpj : (nf.cliente || '_sem_id');
-      if (!map[key]) {
-        map[key] = {
-          nome:       nf.cliente || '—',
-          cnpj:       nf.cnpj    || '—',
-          nfs:        [],
-          total:      0,
-          ultimaData: null,
-          ultimaNF:   null,
-        };
-      }
-      /* Normaliza nome (decodifica entidades HTML se necessário) */
+      const key = (nf.cnpj && nf.cnpj !== '—') ? nf.cnpj : (nf.cliente || '_sem');
+      if (!map[key]) map[key] = { nome: nf.cliente||'—', cnpj: nf.cnpj||'—', nfs:[], total:0, ultimaData:null, ultimaNF:null };
       if (map[key].nome === '—' && nf.cliente) map[key].nome = nf.cliente;
       map[key].nfs.push(nf);
       map[key].total += (nf.valor || 0);
@@ -535,34 +557,30 @@
       }
     });
 
-    /* Filtra por período e ordena por data mais recente */
     const ativos = Object.values(map)
       .filter(c => c.ultimaData && c.ultimaData >= cutoff)
-      .sort((a, b) => (b.ultimaData || 0) - (a.ultimaData || 0));
+      .sort((a, b) => (b.ultimaData||0) - (a.ultimaData||0));
 
     if (badge) badge.textContent = ativos.length + ' clientes';
 
     if (!ativos.length) {
       tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">
-        Nenhum cliente com NF emitida no período selecionado.</td></tr>`;
+        Nenhum cliente com NF no período.</td></tr>`;
       return;
     }
 
     tbody.innerHTML = '';
     ativos.forEach((c, idx) => {
       const d = c.ultimaData ? diasAtras(c.ultimaData) : null;
-      const urgClass = d === null   ? 'tag-gray'
-                     : d <= 30     ? 'tag-green'
-                     : d <= 60     ? 'tag-yellow'
-                     : 'tag-red';
+      const cls = d===null?'tag-gray': d<=30?'tag-green': d<=60?'tag-yellow':'tag-red';
       const tr = document.createElement('tr');
       tr.innerHTML = `
-        <td style="color:var(--muted);font-size:12px">${idx + 1}</td>
+        <td style="color:var(--muted);font-size:12px">${idx+1}</td>
         <td><strong>${escHtml(c.nome)}</strong></td>
         <td style="font-family:monospace;font-size:12px">${escHtml(c.cnpj)}</td>
         <td>${c.ultimaData ? c.ultimaData.toLocaleDateString('pt-BR') : '—'}</td>
-        <td><span class="tag ${urgClass}">${d !== null ? d + 'd atrás' : '—'}</span></td>
-        <td>${fmtBRL(c.ultimaNF?.valor || 0)}</td>
+        <td><span class="tag ${cls}">${d!==null ? d+'d atrás':'—'}</span></td>
+        <td>${fmtBRL(c.ultimaNF?.valor||0)}</td>
         <td><strong>${fmtBRL(c.total)}</strong></td>
         <td>${c.nfs.length}</td>`;
       tbody.appendChild(tr);
@@ -570,15 +588,13 @@
   }
 
   /* ================================================================
-     GRÁFICOS (Chart.js direto — sem depender dos helpers internos)
+     GRÁFICOS
      ================================================================ */
   const _ch = {};
-
   function mkChart(id, type, labels, datasets, isMoney) {
     const canvas = R(id);
     if (!canvas || typeof Chart === 'undefined') return;
     if (_ch[id]) { try { _ch[id].destroy(); } catch(e) {} }
-
     _ch[id] = new Chart(canvas.getContext('2d'), {
       type,
       data: {
@@ -588,9 +604,9 @@
           data:            ds.data,
           backgroundColor: ds.color,
           borderColor:     ds.borderColor || ds.color,
-          borderWidth:     type === 'line' ? 2 : 0,
+          borderWidth:     type==='line' ? 2 : 0,
           borderRadius:    4,
-          fill:            type === 'line',
+          fill:            type==='line',
           tension:         0.4,
         })),
       },
@@ -598,96 +614,58 @@
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
-          legend: { labels: { color: '#8a8da8', font: { size: 11 } } },
-          tooltip: {
-            callbacks: {
-              label: ctx => ' ' + ctx.dataset.label + ': ' +
-                (isMoney ? fmtBRL(ctx.raw) : ctx.raw),
-            },
-          },
+          legend: { labels: { color:'#8a8da8', font:{ size:11 } } },
+          tooltip: { callbacks: { label: ctx => ' '+ctx.dataset.label+': '+(isMoney ? fmtBRL(ctx.raw) : ctx.raw) } },
           datalabels: { display: false },
         },
         scales: {
-          x: {
-            grid:  { color: 'rgba(255,255,255,.04)' },
-            ticks: { color: '#8a8da8', font: { size: 11 } },
-          },
-          y: {
-            grid:  { color: 'rgba(255,255,255,.04)' },
-            ticks: {
-              color: '#8a8da8',
-              font:  { size: 11 },
-              callback: v => isMoney
-                ? (v >= 1e6 ? 'R$' + (v / 1e6).toFixed(1) + 'M'
-                 : v >= 1e3 ? 'R$' + (v / 1e3).toFixed(0) + 'k'
-                 : fmtBRL(v))
-                : v,
-            },
-          },
+          x: { grid:{ color:'rgba(255,255,255,.04)' }, ticks:{ color:'#8a8da8', font:{ size:11 } } },
+          y: { grid:{ color:'rgba(255,255,255,.04)' }, ticks: { color:'#8a8da8', font:{ size:11 },
+            callback: v => isMoney
+              ? (v>=1e6 ? 'R$'+(v/1e6).toFixed(1)+'M' : v>=1e3 ? 'R$'+(v/1e3).toFixed(0)+'k' : fmtBRL(v))
+              : v,
+          }},
         },
       },
     });
   }
 
   /* ================================================================
-     INIT — sem patches em funções globais do dashboard
-     (patches quebravam handlers dos botões)
+     INIT
      ================================================================ */
-  async function safeRender() {
-    try { render(); } catch(e) { console.warn('[omie-fat] render error:', e); }
-  }
-
   async function init() {
+    /* Aguarda âncora de injeção estar no DOM */
+    let tries = 0;
+    while (!R('omie-patch-root') && !R('tab-faturamento') && tries++ < 50) {
+      await new Promise(r => setTimeout(r, 200));
+    }
+
+    injectHTML();
+
+    window._omieRenderClientesAtivos = renderClientesAtivos;
+    window._omieRefresh = async () => {
+      setText('omie-sync-ts', 'sincronizando…');
+      try { await fetchOmieData(); render(); }
+      catch(e) { setText('omie-sync-ts', '⚠️ erro: ' + e.message); }
+    };
+
     try {
-      await waitFor(() =>
-        typeof window.cfg      !== 'undefined' &&
-        typeof window.state    !== 'undefined' &&
-        typeof window.syncOmie === 'function'
-      );
-
-      /* Credenciais */
-      if (!window.cfg.omieKey)    window.cfg.omieKey    = OMIE_KEY;
-      if (!window.cfg.omieSecret) window.cfg.omieSecret = OMIE_SECRET;
-
-      /* Injeta HTML das seções Omie */
-      injectHTML();
-
-      /* Expõe globais para o select de filtro e botão Atualizar */
-      window._omieRenderClientesAtivos = renderClientesAtivos;
-      window._omieRefresh = async () => {
-        setText('omie-sync-ts', 'sincronizando…');
-        try {
-          await window.syncOmie();
-          await safeRender();
-        } catch (e) {
-          setText('omie-sync-ts', '⚠️ erro: ' + e.message);
-        }
-      };
-
-      /* Sincroniza com Omie e renderiza — sem tocar nas funções do dashboard */
-      if (!window.state.omieNFes?.length || !window.state.omiePedidos?.length) {
-        setText('omie-sync-ts', 'sincronizando…');
-        try {
-          await window.syncOmie();
-          await safeRender();
-        } catch (e) {
-          setText('omie-sync-ts', '⚠️ sync falhou — use o botão Atualizar Omie');
-          console.warn('[omie-fat] sync falhou:', e);
-        }
-      } else {
-        await safeRender();
-      }
-
-      console.log('[omie-fat] ✅ Integração Omie v2 ativa.');
-    } catch (e) {
-      console.error('[omie-fat] falha init:', e);
+      await fetchOmieData();
+    } catch(e) {
+      const msg = e.message?.includes('CORS') || e.message?.includes('Failed to fetch')
+        ? '⚠️ CORS bloqueado — use o botão Atualizar Omie ou o proxy local'
+        : '⚠️ ' + e.message;
+      setText('omie-sync-ts', msg);
+      console.warn('[omie-fat] init:', e);
+    } finally {
+      render(); // Sempre renderiza — mostra o que foi carregado (mesmo parcialmente)
     }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(init, 800));
+    document.addEventListener('DOMContentLoaded', () => setTimeout(init, 1000));
   } else {
-    setTimeout(init, 800);
+    setTimeout(init, 1000);
   }
 
 })();
