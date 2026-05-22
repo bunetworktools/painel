@@ -1819,6 +1819,7 @@ function renderComercial() {
   // Cotações aprovadas no período
   const aprovadas = cots.filter(c => c.aprovada);
 
+
   // Lookup: compras por cotacaoNum e por NF (raw e normalizado)
   const compByCotNum = {};
   const compByNF     = {};
@@ -1903,6 +1904,18 @@ function renderComercial() {
       (nfComp     && logByNF[nfComp])     ||
       (nfCompNorm && logByNF[nfCompNorm]) || null;
     const valorFrete = logCard ? (logCard.frete || 0) : 0;
+
+    // ── DEBUG por cotação ──────────────────────────────────────────────
+    if (/sicoob/i.test(cot.title) || /mv4/i.test(cot.title)) {
+      console.log('--- COT', cot.title, '['+cot.id+'] ---');
+      console.log('  nfStr=['+nfStr+'] nfNorm=['+nfNorm+'] cnStr=['+cnStr+']');
+      console.log('  compCard:', compCard ? compCard.title+' nf='+compCard.nf : 'NÃO ENCONTRADO');
+      console.log('  logCard:', logCard ? logCard.title+' nf='+logCard.nf+' frete='+logCard.frete : 'NÃO ENCONTRADO');
+      console.log('  compByNF keys:', JSON.stringify(Object.keys(compByNF)));
+      console.log('  logByNF keys:', JSON.stringify(Object.keys(logByNF)));
+      console.log('  COT campos:', (cot.fields||[]).map(f=>f.name+'='+f.value).join(' | '));
+    }
+    // ── FIM DEBUG ──────────────────────────────────────────────────────
 
     // Campo "É comissionado?"
     const comissRaw =
