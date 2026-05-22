@@ -1420,6 +1420,18 @@ function fieldVal(card, name) {
   return f ? f.value : null;
 }
 
+// Normaliza número de NF: remove prefixo de letras, pontos e espaços, converte para inteiro string
+// "NF 1003", "nf1003", "1.003", " 1003 " → "1003"
+function normalNF(val) {
+  if (!val) return '';
+  const s = String(val).trim()
+    .replace(/^[A-Za-zÀ-ú\s]+/, '')  // remove prefixo de letras (NF, Nota, etc.)
+    .replace(/[.\s]/g, '')            // remove pontos e espaços internos
+    .trim();
+  const n = parseInt(s, 10);
+  return isNaN(n) ? String(val).trim() : String(n);
+}
+
 function toNum(v) {
   if (v === null || v === undefined) return 0;
   const s = String(v).trim().replace(/[R$\s%]/g, '');
@@ -1807,18 +1819,33 @@ function renderComercial() {
   // Cotações aprovadas no período
   const aprovadas = cots.filter(c => c.aprovada);
 
-  // Lookup: compras por cotacaoNum e por NF
+  // Lookup: compras por cotacaoNum e por NF (raw e normalizado)
   const compByCotNum = {};
   const compByNF     = {};
   allComps.forEach(comp => {
-    if (comp.cotacaoNum) compByCotNum[String(comp.cotacaoNum).trim()] = comp;
-    if (comp.nf)         compByNF[String(comp.nf).trim()]             = comp;
+    if (comp.cotacaoNum) {
+      const raw  = String(comp.cotacaoNum).trim();
+      const norm = normalNF(comp.cotacaoNum);
+      compByCotNum[raw]  = comp;
+      if (norm && norm !== raw) compByCotNum[norm] = comp;
+    }
+    if (comp.nf) {
+      const raw  = String(comp.nf).trim();
+      const norm = normalNF(comp.nf);
+      compByNF[raw]  = comp;
+      if (norm && norm !== raw) compByNF[norm] = comp;
+    }
   });
 
-  // Lookup: logística por NF
+  // Lookup: logística por NF (raw e normalizado)
   const logByNF = {};
   allLogs.forEach(log => {
-    if (log.nf) logByNF[String(log.nf).trim()] = log;
+    if (log.nf) {
+      const raw  = String(log.nf).trim();
+      const norm = normalNF(log.nf);
+      logByNF[raw]  = log;
+      if (norm && norm !== raw) logByNF[norm] = log;
+    }
   });
 
   const tbody = document.getElementById('comissaoBody');
@@ -1854,20 +1881,27 @@ function renderComercial() {
       cot.finished_at || null;
     const dataAprov = aprovRaw ? fmtDateBR(aprovRaw) : (cot.finished_at ? fmtDateBR(cot.finished_at) : '—');
 
-    const cnStr = String(cotNum(cot) || '').trim();
-    const nfStr = nfCot ? String(nfCot).trim() : '';
+    const cnStr    = String(cotNum(cot) || '').trim();
+    const nfStr    = nfCot ? String(nfCot).trim() : '';
+    const nfNorm   = normalNF(nfCot);
+    const cnNorm   = normalNF(cnStr);
 
-    // Busca compra por NF ou Nº cotação
+    // Busca compra por NF ou Nº cotação (raw e normalizado)
     const compCard =
-      (nfStr && compByNF[nfStr])    ||
-      (cnStr && compByCotNum[cnStr]) || null;
+      (nfStr   && compByNF[nfStr])      ||
+      (nfNorm  && compByNF[nfNorm])     ||
+      (cnStr   && compByCotNum[cnStr])   ||
+      (cnNorm  && compByCotNum[cnNorm])  || null;
     const valorCompra = compCard ? (compCard.valor || 0) : 0;
 
-    // Busca frete por NF
-    const nfComp = compCard?.nf ? String(compCard.nf).trim() : '';
+    // Busca frete por NF (raw e normalizado, da cotação e da compra)
+    const nfComp     = compCard?.nf ? String(compCard.nf).trim() : '';
+    const nfCompNorm = normalNF(compCard?.nf);
     const logCard =
-      (nfStr  && logByNF[nfStr])  ||
-      (nfComp && logByNF[nfComp]) || null;
+      (nfStr      && logByNF[nfStr])      ||
+      (nfNorm     && logByNF[nfNorm])     ||
+      (nfComp     && logByNF[nfComp])     ||
+      (nfCompNorm && logByNF[nfCompNorm]) || null;
     const valorFrete = logCard ? (logCard.frete || 0) : 0;
 
     // Campo "É comissionado?"
@@ -4124,5 +4158,4 @@ fetch('data.json?v=' + Date.now())
     }
   });
 </script>
-</body>
-</html>
+</b
