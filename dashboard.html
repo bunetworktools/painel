@@ -1577,7 +1577,15 @@ function comprasData() {
 
 function logisticaData() {
   return state.logistica.map(c => {
-    const frete = toNum(fieldVal(c, 'frete') || 0);
+    // Busca pelo campo exato de valor monetário do frete.
+    // IMPORTANTE: não usar só 'frete' pois matcheia "Evidência dos custos (frete)"
+    // (que tem URL como valor) antes de "Valor total do frete" (que tem o número).
+    const frete = toNum(
+      fieldVal(c, 'valor total do frete') ||
+      fieldVal(c, 'valor do frete')       ||
+      fieldVal(c, 'custo do frete')       ||
+      0
+    );
     const atraso = (fieldVal(c, 'atraso') || '').toLowerCase() === 'sim';
     const tipo = fieldVal(c, 'tipo de entrega') || '';
     const entrega = fieldVal(c, 'entrega') || '';
@@ -1893,7 +1901,11 @@ function renderComercial() {
       (nfNorm  && compByNF[nfNorm])     ||
       (cnStr   && compByCotNum[cnStr])   ||
       (cnNorm  && compByCotNum[cnNorm])  || null;
-    const valorCompra = compCard ? (compCard.valor || 0) : 0;
+    // Fallback: quando não há card de compras (ex: demanda não aberta automaticamente),
+    // usa o valor total da própria cotação como proxy do valor de compra
+    const valorCompra = compCard
+      ? (compCard.valor || 0)
+      : toNum(fieldVal(cot, 'valor total da cotação') || fieldVal(cot, 'valor total') || 0);
 
     // Busca frete por NF (raw e normalizado, da cotação e da compra)
     const nfComp     = compCard?.nf ? String(compCard.nf).trim() : '';
@@ -1904,18 +1916,6 @@ function renderComercial() {
       (nfComp     && logByNF[nfComp])     ||
       (nfCompNorm && logByNF[nfCompNorm]) || null;
     const valorFrete = logCard ? (logCard.frete || 0) : 0;
-
-    // ── DEBUG por cotação ──────────────────────────────────────────────
-    if (/sicoob/i.test(cot.title) || /mv4/i.test(cot.title)) {
-      console.log('--- COT', cot.title, '['+cot.id+'] ---');
-      console.log('  nfStr=['+nfStr+'] nfNorm=['+nfNorm+'] cnStr=['+cnStr+']');
-      console.log('  compCard:', compCard ? compCard.title+' nf='+compCard.nf : 'NÃO ENCONTRADO');
-      console.log('  logCard:', logCard ? logCard.title+' nf='+logCard.nf+' frete='+logCard.frete : 'NÃO ENCONTRADO');
-      console.log('  compByNF keys:', JSON.stringify(Object.keys(compByNF)));
-      console.log('  logByNF keys:', JSON.stringify(Object.keys(logByNF)));
-      console.log('  COT campos:', (cot.fields||[]).map(f=>f.name+'='+f.value).join(' | '));
-    }
-    // ── FIM DEBUG ──────────────────────────────────────────────────────
 
     // Campo "É comissionado?"
     const comissRaw =
