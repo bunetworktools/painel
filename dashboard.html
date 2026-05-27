@@ -957,6 +957,37 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
       </div>
     </div>
 
+    <!-- ── Filtros Globais da Aba Comercial ── -->
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;padding:12px 18px;background:var(--card);border:1px solid var(--border);border-radius:10px">
+      <span style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">🔎 Filtros</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <label style="font-size:12px;color:var(--muted);white-space:nowrap" for="selFaseCompra">Fase Compra</label>
+        <select id="selFaseCompra" onchange="setComissaoFaseFilter(this.value)"
+          style="font-size:12px;border:1px solid var(--border);border-radius:6px;padding:5px 10px;background:var(--card);color:var(--text);cursor:pointer;outline:none">
+          <option value="all">Todas</option>
+          <option value="concluida">Compra Concluída</option>
+          <option value="andamento">Em Andamento</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <label style="font-size:12px;color:var(--muted);white-space:nowrap" for="selComissionado">Comissionado</label>
+        <select id="selComissionado" onchange="setComissaoFilter(this.value)"
+          style="font-size:12px;border:1px solid var(--border);border-radius:6px;padding:5px 10px;background:var(--card);color:var(--text);cursor:pointer;outline:none">
+          <option value="all">Todos</option>
+          <option value="sim" selected>Sim</option>
+          <option value="nao">Não</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <label style="font-size:12px;color:var(--muted);white-space:nowrap" for="selVendedor">Vendedor</label>
+        <select id="selVendedor" onchange="setComissaoVendedorFilter(this.value)"
+          style="font-size:12px;border:1px solid var(--border);border-radius:6px;padding:5px 10px;background:var(--card);color:var(--text);cursor:pointer;outline:none">
+          <option value="all">Todos</option>
+        </select>
+      </div>
+      <span id="comissaoCount" class="rank-active-count" style="margin-left:auto"></span>
+    </div>
+
     <!-- ── SEÇÃO: Análise por Vendedor ── -->
     <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:24px">
       👤 Análise por Vendedor
@@ -1001,28 +1032,6 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
           <button class="btn btn-secondary btn-sm" onclick="exportComissaoExcel()" title="Exportar Excel">⬇️ Excel</button>
           <button class="btn btn-secondary btn-sm" onclick="exportComissaoPDF()" title="Imprimir / Salvar PDF">🖨️ PDF</button>
         </div>
-      </div>
-      <!-- Filtros -->
-      <div class="rank-filter-bar" id="comissaoFilterBar" style="flex-wrap:wrap;gap:10px 24px">
-        <div class="rank-filter-group">
-          <span class="rank-filter-label">Fase</span>
-          <button class="rank-filter-btn active" onclick="setComissaoFaseFilter('aprovada',this)">Aprovadas</button>
-          <button class="rank-filter-btn" onclick="setComissaoFaseFilter('all',this)">Todas</button>
-          <button class="rank-filter-btn" onclick="setComissaoFaseFilter('andamento',this)">Em andamento</button>
-          <button class="rank-filter-btn" onclick="setComissaoFaseFilter('reprovada',this)">Reprovadas</button>
-        </div>
-        <div class="rank-filter-group">
-          <span class="rank-filter-label">Comissionado?</span>
-          <button class="rank-filter-btn" onclick="setComissaoFilter('all',this)">Todos</button>
-          <button class="rank-filter-btn active" id="comFiltroSim" onclick="setComissaoFilter('sim',this)">Sim</button>
-          <button class="rank-filter-btn" onclick="setComissaoFilter('nao',this)">Não</button>
-        </div>
-        <div class="rank-filter-group" id="vendedorFilterGroup">
-          <span class="rank-filter-label">Vendedor</span>
-          <button class="rank-filter-btn active" onclick="setComissaoVendedorFilter('all',this)">Todos</button>
-          <!-- botões de vendedor adicionados dinamicamente -->
-        </div>
-        <span class="rank-active-count" id="comissaoCount"></span>
       </div>
       <div style="overflow-x:auto">
         <table id="comissaoTable" style="font-size:12px">
@@ -1832,29 +1841,23 @@ function renderCRM() {
 // ============================================================
 //  RENDER COMERCIAL (Comissão de Vendas)
 // ============================================================
-let comissaoData          = [];        // store para export
-let comissaoFiltro        = 'sim';     // Comissionado? filter
-let comissaoFiltroFase    = 'aprovada';// Fase filter
-let comissaoFiltroVendedor= 'all';     // Vendedor filter
+let comissaoData          = [];   // store para export
+let comissaoFiltro        = 'sim';// Comissionado? filter
+let comissaoFiltroFase    = 'all';// Fase compra filter ('all'|'concluida'|'andamento')
+let comissaoFiltroVendedor= 'all';// Vendedor filter
 
-function setComissaoFilter(val, btn) {
+function setComissaoFilter(val) {
   comissaoFiltro = val;
-  btn.closest('.rank-filter-group').querySelectorAll('.rank-filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
   renderComissaoTable();
 }
 
-function setComissaoFaseFilter(val, btn) {
+function setComissaoFaseFilter(val) {
   comissaoFiltroFase = val;
-  btn.closest('.rank-filter-group').querySelectorAll('.rank-filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
   renderComercial();
 }
 
-function setComissaoVendedorFilter(val, btn) {
+function setComissaoVendedorFilter(val) {
   comissaoFiltroVendedor = val;
-  document.querySelectorAll('#vendedorFilterGroup .rank-filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
   renderComercial();
 }
 
@@ -1954,31 +1957,13 @@ function renderComercial() {
   const allComps = comprasData();
   const allLogs  = logisticaData();
 
-  // Todas as cotações do período (para charts e taxa de conversão)
-  const cotsPeriodo = filteredByPeriod(allCots, c => c.created_at ? new Date(c.created_at) : null);
+  // Sync selects com o estado atual (caso renderComercial seja chamado por período)
+  const _selFase = document.getElementById('selFaseCompra');
+  if (_selFase) _selFase.value = comissaoFiltroFase;
+  const _selCom = document.getElementById('selComissionado');
+  if (_selCom) _selCom.value = comissaoFiltro;
 
-  // Filtro de fase para a tabela/métricas de comissão
-  const aprovadas = cotsPeriodo.filter(c => c.aprovada);
-
-  // Para gráficos: usa filtro de fase se selecionado
-  const cotsParaGraficos = comissaoFiltroFase === 'aprovada'  ? cotsPeriodo.filter(c => c.aprovada)
-    : comissaoFiltroFase === 'andamento' ? cotsPeriodo.filter(c => !c.aprovada && !c.reprovada)
-    : comissaoFiltroFase === 'reprovada' ? cotsPeriodo.filter(c => c.reprovada)
-    : cotsPeriodo;
-
-  // Filtro de fase para a tabela (usa cotsParaGraficos que já aplica o filtro de fase)
-  const cotsParaFase = comissaoFiltroFase === 'aprovada'  ? cotsPeriodo.filter(c => c.aprovada)
-    : comissaoFiltroFase === 'andamento' ? cotsPeriodo.filter(c => !c.aprovada && !c.reprovada)
-    : comissaoFiltroFase === 'reprovada' ? cotsPeriodo.filter(c => c.reprovada)
-    : cotsPeriodo;
-
-  // Filtro de vendedor (para toda a aba)
-  const cotsParaTabela  = comissaoFiltroVendedor === 'all' ? cotsParaFase
-    : cotsParaFase.filter(c => (c.vendedor || 'Be You') === comissaoFiltroVendedor);
-  const cotsParaGraficosV = comissaoFiltroVendedor === 'all' ? cotsParaGraficos
-    : cotsParaGraficos.filter(c => (c.vendedor || 'Be You') === comissaoFiltroVendedor);
-
-  // Lookup: compras por cotacaoNum e por NF
+  // Lookup: compras (necessário antes do filtro de fase)
   const compByCotNum = {};
   const compByNF     = {};
   allComps.forEach(comp => {
@@ -1995,6 +1980,42 @@ function renderComercial() {
       if (norm && norm !== raw) compByNF[norm] = comp;
     }
   });
+
+  // Helper: encontra o card de compra vinculado a uma cotação
+  const findComp = cot => {
+    const nfCot = fieldVal(cot, 'nº da nf') || fieldVal(cot, 'n° da nf') ||
+      fieldVal(cot, 'numero da nf') || fieldVal(cot, 'número da nf') ||
+      fieldVal(cot, 'nota fiscal')  || fieldVal(cot, 'nf') || null;
+    const cnStr  = String(cotNum(cot) || '').trim();
+    const nfStr  = nfCot ? String(nfCot).trim() : '';
+    const nfNorm = normalNF(nfCot);
+    const cnNorm = normalNF(cnStr);
+    return (nfStr  && compByNF[nfStr])      ||
+           (nfNorm && compByNF[nfNorm])     ||
+           (cnStr  && compByCotNum[cnStr])  ||
+           (cnNorm && compByCotNum[cnNorm]) || null;
+  };
+
+  // Todas as cotações do período
+  const cotsPeriodo = filteredByPeriod(allCots, c => c.created_at ? new Date(c.created_at) : null);
+  const aprovadas   = cotsPeriodo.filter(c => c.aprovada);
+
+  // Filtro de fase: baseado na fase do card de compras vinculado
+  const isConcluida = comp => !!comp?.current_phase?.name?.toLowerCase().includes('concluíd');
+  const cotsParaFase =
+    comissaoFiltroFase === 'concluida'
+      ? cotsPeriodo.filter(c => { const comp = findComp(c); return comp && isConcluida(comp); })
+      : comissaoFiltroFase === 'andamento'
+      ? cotsPeriodo.filter(c => { const comp = findComp(c); return comp && !isConcluida(comp); })
+      : cotsPeriodo;
+
+  const cotsParaGraficos = cotsParaFase; // gráficos usam o mesmo filtro de fase
+
+  // Filtro de vendedor (para toda a aba: gráficos + tabela)
+  const cotsParaTabela    = comissaoFiltroVendedor === 'all' ? cotsParaFase
+    : cotsParaFase.filter(c => (c.vendedor || 'Be You') === comissaoFiltroVendedor);
+  const cotsParaGraficosV = comissaoFiltroVendedor === 'all' ? cotsParaGraficos
+    : cotsParaGraficos.filter(c => (c.vendedor || 'Be You') === comissaoFiltroVendedor);
 
   // Lookup: logística por NF
   const logByNF = {};
@@ -2123,18 +2144,17 @@ function renderComercial() {
   // Coleta todos os vendedores do período (independente do filtro)
   const todosVendedores = [...new Set(cotsPeriodo.map(c => c.vendedor || 'Be You'))].sort();
 
-  // Popula filtro de vendedor dinamicamente
-  const vfg = document.getElementById('vendedorFilterGroup');
-  if (vfg) {
-    vfg.querySelectorAll('button[data-vend]').forEach(b => b.remove());
+  // Popula select de vendedor dinamicamente
+  const selVend = document.getElementById('selVendedor');
+  if (selVend) {
+    selVend.innerHTML = '<option value="all">Todos</option>';
     todosVendedores.forEach(v => {
-      const btn = document.createElement('button');
-      btn.className = 'rank-filter-btn' + (comissaoFiltroVendedor === v ? ' active' : '');
-      btn.setAttribute('data-vend', v);
-      btn.textContent = v;
-      btn.onclick = () => setComissaoVendedorFilter(v, btn);
-      vfg.appendChild(btn);
+      const opt = document.createElement('option');
+      opt.value = v; opt.textContent = v;
+      if (comissaoFiltroVendedor === v) opt.selected = true;
+      selVend.appendChild(opt);
     });
+    selVend.value = comissaoFiltroVendedor;
   }
 
   // Dados dos gráficos (usa cotsParaGraficosV já filtrado por fase + vendedor)
@@ -3791,12 +3811,26 @@ function mkDoughnut(id, labels, data, colors, onClick=null) {
   const defaultColors = ['rgba(37,99,235,0.8)','rgba(239,68,68,0.8)','rgba(16,185,129,0.8)','rgba(245,158,11,0.8)','rgba(139,92,246,0.8)','rgba(99,102,241,0.7)'];
   charts[id] = new Chart(ctx, {
     type:'doughnut',
-    data:{ labels, datasets:[{ data, backgroundColor:colors || defaultColors, borderWidth:2, borderColor:'#fff' }] },
+    data:{ labels, datasets:[{ data, backgroundColor:colors || defaultColors, borderWidth:0 }] },
     options:{ responsive:true, maintainAspectRatio:false,
       onClick: onClick ? (evt, elements) => {
         if (elements.length > 0) { const i = elements[0].index; onClick({ index:i, label:labels[i] }); }
       } : undefined,
-      plugins:{ legend:{ position:'bottom', labels:{ padding:12, font:{ size:11 } } }, datalabels:{ display:false } } }
+      plugins:{
+        legend:{ position:'bottom', labels:{ padding:12, font:{ size:11 } } },
+        datalabels:{
+          display: true,
+          color: '#fff',
+          font: { size: 11, weight: 'bold' },
+          formatter: (value, ctx) => {
+            const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+            if (!total || value === 0) return '';
+            const pct = Math.round(value / total * 100);
+            return pct < 5 ? '' : pct + '%';
+          }
+        }
+      }
+    }
   });
 }
 
