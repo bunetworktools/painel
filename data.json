@@ -70,7 +70,8 @@
           "name": "Comissionado",
           "value": ""
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1338404995",
@@ -186,6 +187,16 @@
           "name": "Vendedor",
           "value": "Gabriel Granatowicz"
         }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
+        },
+        {
+          "name": "Pendência",
+          "color": "#BD10E0"
+        }
       ]
     },
     {
@@ -280,7 +291,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/80b02f9c-2d71-40d4-92f5-c2817b0914f5/cotacao_3363_Mackenzie.pdf?expires_on=1779834481&signature=WEgE6%2FQdwvRUxtWPmiEXXzF4ylXDBM3lqHZp9E3vGdQ%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/80b02f9c-2d71-40d4-92f5-c2817b0914f5/cotacao_3363_Mackenzie.pdf?expires_on=1779843619&signature=U1ynX6bakl5nrDPOM%2BBsr%2FSZiO7R9lOTip2765GolOU%3D\"]"
         },
         {
           "name": "Fornecedor selecionado",
@@ -317,6 +328,12 @@
         {
           "name": "Método de envio da cotação",
           "value": "E-mail"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -420,7 +437,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/6f122175-42f5-472f-a636-bda8af9c3fb4/cotacao_3378_BancoPan.pdf?expires_on=1779834481&signature=KHpnriMV1DReWwoNgBh%2FBW6GDMIpkxkVobJOko5CU3M%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/6f122175-42f5-472f-a636-bda8af9c3fb4/cotacao_3378_BancoPan.pdf?expires_on=1779843619&signature=mVxaBvHFWTELNshv5b3NKwbMIOB8p7V%2FAzanSDHj%2FdQ%3D\"]"
         },
         {
           "name": "Responsável pela cotação",
@@ -453,6 +470,12 @@
         {
           "name": "Status do cliente",
           "value": "[\"Aguardando retorno\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -544,7 +567,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/b11a8837-792f-4937-8764-101a056a084e/cotacao_3369_RFGComercio.pdf?expires_on=1779834481&signature=eF%2FHN3s0MIRMhI5khM%2Bax3QmxMZiaD89PDL42pEgjzA%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/b11a8837-792f-4937-8764-101a056a084e/cotacao_3369_RFGComercio.pdf?expires_on=1779843619&signature=gejdQxWXH5LDfUaYfHB%2BnYNM%2Fy%2FeyJXjDOFWPphv7Ew%3D\"]"
         },
         {
           "name": "Fornecedor selecionado",
@@ -589,6 +612,12 @@
         {
           "name": "Status do cliente",
           "value": "[\"Aguardando retorno\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -680,7 +709,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/246f33d1-3efc-481e-ad74-9a31af4e1729/cotacao_3370_RFGComercioATUALIZADA2.pdf?expires_on=1779834481&signature=s%2Be5NRni4zDyAaCcWsimWspMm2GiFec0ZmH9pHm8%2B8I%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/246f33d1-3efc-481e-ad74-9a31af4e1729/cotacao_3370_RFGComercioATUALIZADA2.pdf?expires_on=1779843619&signature=X0kX6uIPi1UN6kyIEQw6gNpXuMZOkThdx5PF58d1lRs%3D\"]"
         },
         {
           "name": "Marca",
@@ -721,6 +750,12 @@
         {
           "name": "Link de compra",
           "value": "Opção 1: \nhttps://www.casasbahia.com.br/smart-tv-aiwa-43-android-full-hd-borda-ultrafina-hdr10/p/1579089757?utm_medium=Cpc&utm_source=GP_PLA&IdSku=1579089757&idLojista=233924&tipoLojista=3P&gclsrc=aw.ds&&utm_campaign=cb_mkp_gg_shopping_sellers_abaixo10&gad_source=1&gad_campaignid=22788743736&gbraid=0AAAAADtAamhiVIkX8j4STcQCazId4yNgk&gclid=CjwKCAjwt7XQBhBkEiwAtStpp-O3qczUGe7GtFpa_hbWe2vmOqLODEXroIKJAOreUHIZk-_lHQ517hoC0aMQAvD_BwE\n\nOpção 2: \nhttps://www.mercadolivre.com.br/smart-tv-aiwa-43-android-full-hd-borda-ultrafina-hdr10-dolby-audio-aws-tv-43-bl-02-a/p/MLB20662382?pdp_filters=item_id%3AMLB4512319006&from=gshop&matt_tool=41621158&matt_word=&matt_source=google&matt_campaign_id=22090354520&matt_ad_group_id=173090616236&matt_match_type=&matt_network=g&matt_device=c&matt_creative=727882733700&matt_keyword=&matt_ad_position=&matt_ad_type=pla&matt_merchant_id=735125422&matt_product_id=MLB20662382-product&matt_product_partition_id=2417613606924&matt_target_id=pla-2417613606924&cq_src=google_ads&cq_cmp=22090354520&cq_net=g&cq_plt=gp&cq_med=pla&gad_source=1&gad_campaignid=22090354520&gbraid=0AAAAAD93qcDkirWNTVdYnu5j-6e0nGu_7&gclid=CjwKCAjwt7XQBhBkEiwAtStpp1_X-AgKXlEoE67cF6GzeF3thYt849t0d7_0PLj038HDk4ZWE1uG1xoC9lUQAvD_BwE\n"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -828,7 +863,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/9ef5e2d3-d6e6-4278-9be7-b6b4f8f1ca6f/cotacao_3371_RFGComercioATUALIZADA2.pdf?expires_on=1779834481&signature=7g7a0oswaQSsx0Lzokw8J0%2FVocah%2FaiyyMlnzFnY7ps%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/9ef5e2d3-d6e6-4278-9be7-b6b4f8f1ca6f/cotacao_3371_RFGComercioATUALIZADA2.pdf?expires_on=1779843619&signature=dUEzvBCU%2BBTfJpxyjqTGgcAHxcoMznNGZozdqJ9FDJU%3D\"]"
         },
         {
           "name": "Valor total da cotação",
@@ -853,6 +888,12 @@
         {
           "name": "Link de compra",
           "value": "Opção 1 : \nhttps://www.kabum.com.br/produto/509582/caixa-de-som-jbl-bluetooth-charge-5-wi-fi-preta?gclsrc=aw.ds&gad_source=1&gad_campaignid=23668965799&gbraid=0AAAAADx-HyHBi2C1ia2DUw2JzRKg6ZIcS&gclid=CjwKCAjwt7XQBhBkEiwAtStpp8fpAxzth83AM2zLgU3uiX0bpo6jCd-_yHeI7jQfcawdt2xJi_DcchoCpQ8QAvD_BwE\n\nOpção 2: \nhttps://www.magazineluiza.com.br/caixa-de-som-bluetooth-jbl-charge-5-wi-fi-harman/p/kf10hc92jk/ea/jbla/?&seller_id=harmandobrasil&utm_source=google&utm_medium=cpc&utm_term=84433&utm_campaign=google_eco_per_ven_pla_tc_sor_3p_ea-ga-tb-wea-a-0326&utm_content=&partner_id=84433&gclsrc=aw.ds&gad_source=1&gad_campaignid=23605400080&gbraid=0AAAAAD4zZmRndAZ4bAKjLRpCbEHn6vHkG&gclid=CjwKCAjwt7XQBhBkEiwAtStppzeIJf3aJIPO8qDyZv9jKh6zW016fSo0xuwJqNJ3hXmHxsEhYjKaOxoCy_UQAvD_BwE"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -944,7 +985,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/167696e9-f920-4122-92b9-3e5e45211a78/cotacao_3374_UniaoQuimica.pdf?expires_on=1779834481&signature=%2BKpRbZLgzQXAuHYQYE90IRLi9gJ%2Fc7CwxL5Py0qFZXo%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/167696e9-f920-4122-92b9-3e5e45211a78/cotacao_3374_UniaoQuimica.pdf?expires_on=1779843619&signature=%2F639F7uJx6H7KN1pbTwEToZE9Kc%2BflgE5F2uqPueQJw%3D\"]"
         },
         {
           "name": "Motivo da escolha do fornecedor",
@@ -989,6 +1030,12 @@
         {
           "name": "Vendedor",
           "value": "Felipe Torqueiro"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -1072,7 +1119,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/32dfe0f8-7230-40d9-9c2e-ef5b8e848d77/cotacao_3375_Picpay.pdf?expires_on=1779834481&signature=Ltzim3QsyYp070hasQ%2Fkh4EdMMbejYDAS9YEwRLpZt4%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/32dfe0f8-7230-40d9-9c2e-ef5b8e848d77/cotacao_3375_Picpay.pdf?expires_on=1779843619&signature=wbCwlf6%2BgLTJlK7seucVasRPitJI3c1IxW%2FksD5qenU%3D\"]"
         },
         {
           "name": "Fornecedor selecionado",
@@ -1121,6 +1168,12 @@
         {
           "name": "Link de compra",
           "value": "https://www.mercadolivre.com.br/tela-privacidade-para-monitor-24-169-filtro-privativo/up/MLBU3218524487?pdp_filters=item_id%3AMLB4085981541&from=gshop&matt_tool=83591963&matt_word=&matt_source=google&matt_campaign_id=22090193903&matt_ad_group_id=174661984524&matt_match_type=&matt_network=g&matt_device=c&matt_creative=727914181360&matt_keyword=&matt_ad_position=&matt_ad_type=pla&matt_merchant_id=5510068691&matt_product_id=MLBU3218524487&matt_product_partition_id=2390058776560&matt_target_id=pla-2390058776560&cq_src=google_ads&cq_cmp=22090193903&cq_net=g&cq_plt=gp&cq_med=pla&gad_source=1&gad_campaignid=22090193903&gbraid=0AAAAAD93qcAhXhBEtQwrdH0zkQ__ghguG&gclid=CjwKCAjwt7XQBhBkEiwAtStpp0U_aayAs0hEG3WcUPvwqutkYrB9ovh94bxKpI7HOgrBx9B4gC3lGBoCfGIQAvD_BwE"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -1224,7 +1277,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/d285e975-e361-4734-a547-446c88f7a98b/cotacao_3377_RFGComercio.pdf?expires_on=1779834481&signature=CfSlQuG8vewwyjgLac7yBOwVCjICXOgfUhokLR%2FEkzo%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/d285e975-e361-4734-a547-446c88f7a98b/cotacao_3377_RFGComercio.pdf?expires_on=1779843619&signature=BA4u70I0YtV1IqJeQYGFaXKP8wF6TJc9sBETr9ySs0E%3D\"]"
         },
         {
           "name": "Responsável pela cotação",
@@ -1257,6 +1310,12 @@
         {
           "name": "Status do cliente",
           "value": "[\"Aguardando retorno\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -1352,7 +1411,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/6b2c05ae-4025-4ff1-b19c-57d6a5abb002/cotacao_3380_Mackenzie.pdf?expires_on=1779834481&signature=A2zUEeeXwwIpYOuXGICLiBi34d22GhYEN9wY%2Fo%2F9nis%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/6b2c05ae-4025-4ff1-b19c-57d6a5abb002/cotacao_3380_Mackenzie.pdf?expires_on=1779843619&signature=qn%2FcJAGEy6R%2Fn6ssgB8QuG8TQl2HuAaZafS5rypDNj4%3D\"]"
         },
         {
           "name": "Responsável pela cotação",
@@ -1385,6 +1444,12 @@
         {
           "name": "Link de compra",
           "value": "https://safara.com.br/compre/no-break-rack-apc-smart-ups-rt-5kva-mono230-srt5kxli/?utm_source=chatgpt.com"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -1484,7 +1549,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/ebdc18d1-768d-4897-b488-c77e8668ce8c/cotacao_3381_Mackenzie.pdf?expires_on=1779834481&signature=jry1S6z9vgWrqSpqehb8SEEKL%2BFliGxmG%2B9JLm8DCZg%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/ebdc18d1-768d-4897-b488-c77e8668ce8c/cotacao_3381_Mackenzie.pdf?expires_on=1779843619&signature=CqN436UvCnbeWTLpoXKPRr51Txtz%2FRGAGfC9ihOGjZA%3D\"]"
         },
         {
           "name": "Valor total da cotação",
@@ -1513,6 +1578,12 @@
         {
           "name": "Data limite para retorno",
           "value": "28/05/2026 08:00"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -1608,7 +1679,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/4df8fb9c-761a-429e-b2d6-931cf589d27d/cotacao_3382_Mackenzie.pdf?expires_on=1779834481&signature=tOBNzAAS2VL%2FeewApe9t7tTmkUl%2F9tZ0qXdKS4oUrkE%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/4df8fb9c-761a-429e-b2d6-931cf589d27d/cotacao_3382_Mackenzie.pdf?expires_on=1779843619&signature=DC87%2FjOCYsDvor5ehA7V9CfWCDWijypkv5bszjOUmNc%3D\"]"
         },
         {
           "name": "Comissionado",
@@ -1645,6 +1716,12 @@
         {
           "name": "Status do cliente",
           "value": "[\"Aguardando retorno\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -1744,7 +1821,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/742da0e9-251d-480c-9afe-a8c64bc005cc/cotacao_3385_Mackenzie.pdf?expires_on=1779834481&signature=8RyYymKuSm%2F7Tc8hRPSXl6AzWAa7SQx8IZFmU3Y8LfY%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/742da0e9-251d-480c-9afe-a8c64bc005cc/cotacao_3385_Mackenzie.pdf?expires_on=1779843619&signature=ED5ILrUXju8fvv02V3CnsPIneN6SmYSUNnnk1JqKk5I%3D\"]"
         },
         {
           "name": "N° da cotação",
@@ -1773,6 +1850,12 @@
         {
           "name": "Status do cliente",
           "value": "[\"Aguardando retorno\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -1864,7 +1947,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/8331fa14-cdc8-40c5-beb0-5c994831d0dc/cotacao_3387_UniaoQuimica.pdf?expires_on=1779834481&signature=d07gf0wb2mZHtjYJZ576a7wdt0fQLYGGVuRRppQzRqM%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/8331fa14-cdc8-40c5-beb0-5c994831d0dc/cotacao_3387_UniaoQuimica.pdf?expires_on=1779843619&signature=G0LT06eux69e6yXR9bOoXYa%2Bf5Dyw739QZVzzeDie%2Fg%3D\"]"
         },
         {
           "name": "Outra marca, qual?",
@@ -1913,6 +1996,12 @@
         {
           "name": "Status do cliente",
           "value": "[\"Aguardando retorno\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -1972,7 +2061,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/cb8e1801-07d2-4534-8e53-f27794d5f793/cotacao_3390_RFGComercio.pdf?expires_on=1779834481&signature=EtUML1CUAH11JH8VY76NOW%2BWErEK4zYaxM8ugA24OWU%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/cb8e1801-07d2-4534-8e53-f27794d5f793/cotacao_3390_RFGComercio.pdf?expires_on=1779843619&signature=OGPDYUJwEcam1sAMCmoqVEwRyuIK8Y24VRqs2txkl8Y%3D\"]"
         },
         {
           "name": "Cliente",
@@ -2046,6 +2135,12 @@
           "name": "Link de compra",
           "value": "https://br.genuinemodules.com/ftlf8528p3bcv"
         }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
+        }
       ]
     },
     {
@@ -2060,7 +2155,7 @@
       "fields": [
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/515f5435-ee12-4720-88b7-9208c890f71a/cotacao_3391_BancoOriginal.pdf?expires_on=1779834481&signature=Pqc4Cpk2EslHjmpZKDPMa%2BJhPrKxg2bSUNtyPaoJAok%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/515f5435-ee12-4720-88b7-9208c890f71a/cotacao_3391_BancoOriginal.pdf?expires_on=1779843619&signature=dYZwBrHGAoR2R%2BI4LFqK0EHl4IjhxWhgpFJ5x6PDITs%3D\"]"
         },
         {
           "name": "Forma de pagamento",
@@ -2174,6 +2269,12 @@
           "name": "Status do cliente",
           "value": "[\"Aguardando retorno\"]"
         }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
+        }
       ]
     },
     {
@@ -2264,7 +2365,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/0ed296b0-7d10-4b93-bd9a-7bf432179d2b/cotacao_3395_MAckenzie.pdf?expires_on=1779834481&signature=hqd3%2F%2F3WXKLhbGBZ%2F55wY%2BqcWFl0bezLdVmkplUR7nQ%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/0ed296b0-7d10-4b93-bd9a-7bf432179d2b/cotacao_3395_MAckenzie.pdf?expires_on=1779843619&signature=q8TTLhOvEwAylLDpDDZwaWaB8W1FuSnhBdpsRtYJGYk%3D\"]"
         },
         {
           "name": "N° da cotação",
@@ -2305,6 +2406,12 @@
         {
           "name": "Status do cliente",
           "value": "[\"Aguardando retorno\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando retorno",
+          "color": "#8E2A56"
         }
       ]
     },
@@ -2396,7 +2503,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/eb2b4afa-8816-45ee-bfe3-3edb0515924b/cotacao_3290_Picpay_ATUALIZADA2.pdf?expires_on=1779834481&signature=lgCgaojrl52ESwbl4TnZ4zwt4l3KGn%2B8jQWSvHMVbkc%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/eb2b4afa-8816-45ee-bfe3-3edb0515924b/cotacao_3290_Picpay_ATUALIZADA2.pdf?expires_on=1779843619&signature=R52v7JNU4d85xFSuxz8NhglA28EODE3%2BvJJ64FsTo9s%3D\"]"
         },
         {
           "name": "Responsável pela cotação",
@@ -2424,7 +2531,7 @@
         },
         {
           "name": "Anexar NF",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/ac19f17d-b3bd-4002-95ea-8872b2f1cb92/1125.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834481&signature=lmuieztMtsUFE3x5SrbM4BRq%2B1FAEcjgd%2FxtgtG%2BlgI%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/ac19f17d-b3bd-4002-95ea-8872b2f1cb92/1125.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843619&signature=ElFPg9tlZhuxu3EW1aacYuhlj8p6KBclWjG3PHXnXyY%3D\"]"
         },
         {
           "name": "Abrir demanda automaticamente para compras?",
@@ -2465,6 +2572,16 @@
         {
           "name": "Status do cliente",
           "value": "[\"Cotação aprovada\", \"Aguardando PO\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Cotação aprovada",
+          "color": "#18BA06"
+        },
+        {
+          "name": "Aguardando PO",
+          "color": "#C865E8"
         }
       ]
     },
@@ -2568,7 +2685,7 @@
         },
         {
           "name": "Anexar cotação",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/a72cf62a-3ce0-4eb9-a195-3ff9e0d7561f/cotacao_3344_Picpay.pdf?expires_on=1779834481&signature=zRQadFkSXaOiwwTBiEML2GW0bJ4AHnDP45e2w7Turyo%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/a72cf62a-3ce0-4eb9-a195-3ff9e0d7561f/cotacao_3344_Picpay.pdf?expires_on=1779843619&signature=GYj%2BBQK%2BfeOMbAw5KTKWNF5jSvKZltYCUBhjtcB023E%3D\"]"
         },
         {
           "name": "Fornecedor selecionado",
@@ -2600,11 +2717,11 @@
         },
         {
           "name": "Anexar PO",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/016e84ae-35fa-4519-8877-f4e30aadb8f6/1101.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834481&signature=mwKHp44MNcId3AZ6wjLTiLoJSo12d%2Fxj5oisKcC8BqI%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/016e84ae-35fa-4519-8877-f4e30aadb8f6/1101.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843619&signature=dgvQfVzrDbyq6CzsttkPzUXBRiky1blv9bmZdn4clrU%3D\"]"
         },
         {
           "name": "Anexar NF",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/e0f89293-65be-4963-97cf-c9f2277b582a/1101.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834481&signature=cwg52TMIUHw4NcHMwsDVAE%2FyOhnLTXgtYvtg5rdAlDw%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/e0f89293-65be-4963-97cf-c9f2277b582a/1101.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843619&signature=%2Fw1EYoSnjafdPKV3xch9Q4bSm22M6ZMDSIZvnQ6opCw%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -2633,6 +2750,16 @@
         {
           "name": "Ordem de compra recebida?",
           "value": "Aguardando recebimento"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Cotação aprovada",
+          "color": "#18BA06"
+        },
+        {
+          "name": "Aguardando PO",
+          "color": "#C865E8"
         }
       ]
     },
@@ -47618,11 +47745,11 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/752e2ce8-f8ed-4442-8878-30b881cb8d0f/cotacao_3286_DentsuCreative.pdf?expires_on=1779834482&signature=rc4UePssL%2FqIjWtvQDGQwA1iDYK8rkEpeY4fIWM9cf8%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/752e2ce8-f8ed-4442-8878-30b881cb8d0f/cotacao_3286_DentsuCreative.pdf?expires_on=1779843620&signature=JIPRNIvzRxy0FchLS7FoQJNQ95ORzTNTqMkkHzOZPEQ%3D\"]"
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/9eeed292-f079-4b48-82cf-a91f61fd724d/1076.DENTSULATINAMERICAPROPAGANDALTDA.pdf?expires_on=1779834482&signature=VK24z0jkbZk8nv6TbgaIu2sj%2FMT%2FXGM3geyD5hszwkg%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/9eeed292-f079-4b48-82cf-a91f61fd724d/1076.DENTSULATINAMERICAPROPAGANDALTDA.pdf?expires_on=1779843620&signature=u1IarOXLhFowXZknk4DHDUoy%2Bnpf9k65%2F1qGQRflEG4%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -47656,6 +47783,12 @@
           "name": "Responsável pela compra",
           "value": "[\"nathan Tavares \"]"
         }
+      ],
+      "labels": [
+        {
+          "name": "Vini responsável",
+          "color": "#FFAB00"
+        }
       ]
     },
     {
@@ -47678,7 +47811,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/4efbb766-2920-4994-9565-84d80b338d61/cotacao_3313_Dentsu.pdf?expires_on=1779834482&signature=IU5EqWcKBSrc9SWKAl3VgWhDi%2FfKVx%2F194ER7V93xhA%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/4efbb766-2920-4994-9565-84d80b338d61/cotacao_3313_Dentsu.pdf?expires_on=1779843620&signature=d1Aoz167i3LWWv1tdbEm4ulMzcyMQYmEhiyi9g5q%2FJU%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -47686,7 +47819,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/5e124be6-d731-4d02-9a33-f90cf235338b/1082.DENTSULATINAMERICAPROPAGANDALTDA.pdf?expires_on=1779834482&signature=eUnhpnwviei5JTW08zAB%2FTVOJjy2txu2C9eiNRq3lqM%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/5e124be6-d731-4d02-9a33-f90cf235338b/1082.DENTSULATINAMERICAPROPAGANDALTDA.pdf?expires_on=1779843620&signature=dn%2BcCYnyLlgrTKiz2CICg4tp%2Bz%2BNyc0L7DCA7kg32Qc%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -47703,6 +47836,12 @@
         {
           "name": "Responsável pela compra",
           "value": "[\"nathan Tavares \"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Vini responsável",
+          "color": "#FFAB00"
         }
       ]
     },
@@ -47726,11 +47865,11 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/7e814286-8344-4dda-aae1-c5edc2cd326f/cotacao_3331_CITSOFTWARESA.pdf?expires_on=1779834482&signature=JWblZgBaxCDjHY5CWgvyJihbPEywDsTM6lheD3H7nwE%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/7e814286-8344-4dda-aae1-c5edc2cd326f/cotacao_3331_CITSOFTWARESA.pdf?expires_on=1779843620&signature=MmsmGepeARfHcRxpnVUJ71Z9lBq81h%2BZjTJwHmgWE04%3D\"]"
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/cebed85f-6e89-4cd0-879d-40091355cafb/1094.CITSOFTWARESA.pdf?expires_on=1779834482&signature=hFyggmA836YzCRvUP93sGY2PYsO7FoTs7g4mPTvTmWk%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/cebed85f-6e89-4cd0-879d-40091355cafb/1094.CITSOFTWARESA.pdf?expires_on=1779843620&signature=TddT3OPBdwoJ11cjRHeK0BExeGeQx9ED%2FLy0UIFRAOY%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -47747,6 +47886,12 @@
         {
           "name": "Data limite de entrega",
           "value": "22/05/2026"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Vini responsável",
+          "color": "#FFAB00"
         }
       ]
     },
@@ -47770,7 +47915,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/83b0b1c1-33c7-4140-8fe6-b6a06565c500/cotacao_3351_Picpay.pdf?expires_on=1779834482&signature=%2FB7PwL1PB3ROZ0umLa1gO43xIsZQlos7hTNri3ZqPgk%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/83b0b1c1-33c7-4140-8fe6-b6a06565c500/cotacao_3351_Picpay.pdf?expires_on=1779843620&signature=H4%2F83Qj%2FaCdPa%2BDvnrvHh9XdC327VTCkosVXj6eE3Ds%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -47778,7 +47923,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/b6e482b0-ee68-484f-b673-b6f59d351af7/1103.PICPAYINSTITUICAODEPAGAMENTOS_A.pdf?expires_on=1779834482&signature=2lI5bmIA6z5Mh6NlnEsXS%2F1xSrWEbssKogFBp7o5Kl4%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/b6e482b0-ee68-484f-b673-b6f59d351af7/1103.PICPAYINSTITUICAODEPAGAMENTOS_A.pdf?expires_on=1779843620&signature=iHsKCA6msWlDrHySZHBLhVpGyJOX7x7ZoHS4imPrkp8%3D\"]"
         },
         {
           "name": "Endereço de entrega",
@@ -47796,7 +47941,8 @@
           "name": "Responsável pela compra",
           "value": "[\"nathan Tavares \"]"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1353007978",
@@ -47818,7 +47964,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/aa57f39c-cffc-4cac-886d-e96d0110de20/cotacao_3360_CIT.pdf?expires_on=1779834482&signature=KYwellCIeDArmIeMGPT0qfa9O1l7ZWOSlvyb%2FK2Ivgk%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/aa57f39c-cffc-4cac-886d-e96d0110de20/cotacao_3360_CIT.pdf?expires_on=1779843620&signature=17Y44iqmrbIglBEvznaQlQB%2BCM5xL9LYl%2FU1%2B3AdcJY%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -47826,7 +47972,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/8d289bc6-b6a8-4c64-951e-2a638bd9b6b5/1112.CITSOFTWARESA.pdf?expires_on=1779834482&signature=dP0QVI5LZ7huyNbfdw92e6QtnwG9j3YQHRiRNcRhzSs%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/8d289bc6-b6a8-4c64-951e-2a638bd9b6b5/1112.CITSOFTWARESA.pdf?expires_on=1779843620&signature=uamovdSpFLNIMxkCwwNKT3TF1nUB%2FkhRDi26M2GDJW8%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -47839,6 +47985,12 @@
         {
           "name": "Data limite de entrega",
           "value": "19/05/2026"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Vini responsável",
+          "color": "#FFAB00"
         }
       ]
     },
@@ -47862,7 +48014,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/768bdaf8-6306-4dfb-abd7-d9417f19b4c7/cotacao_3361_CIT.pdf?expires_on=1779834482&signature=hFV%2B0FjOejBJAMME5UjfPZutn%2BV%2BRM%2FNPc9ruA3lYDA%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/768bdaf8-6306-4dfb-abd7-d9417f19b4c7/cotacao_3361_CIT.pdf?expires_on=1779843620&signature=64hO9kApEKSTLi4OnkDjhW3z3tVbZNwGDXlcLoksPoY%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -47870,7 +48022,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/0a21ad28-d14b-48c9-a2fc-d52006ca909b/1113_CITSOFTWARESA.pdf?expires_on=1779834482&signature=JGQ%2BJrAx9pEkBqy9zXn%2BCzfTONULV68IiP109QKOZWc%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/0a21ad28-d14b-48c9-a2fc-d52006ca909b/1113_CITSOFTWARESA.pdf?expires_on=1779843620&signature=R9ErOLxUWYHDDGq73r%2F5DRqjjIPd%2B%2BKowVUTqJPi1FA%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -47883,6 +48035,12 @@
         {
           "name": "Data limite de entrega",
           "value": "19/06/2026"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Vini responsável",
+          "color": "#FFAB00"
         }
       ]
     },
@@ -47906,7 +48064,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/edb54fe6-c1c9-474b-a555-1b46f9949936/cotacao_3364_Picpay.pdf?expires_on=1779834482&signature=qPzrMyJj0pM96x1Sj79QeS7qrugVnnjccabWWQKM7ig%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/edb54fe6-c1c9-474b-a555-1b46f9949936/cotacao_3364_Picpay.pdf?expires_on=1779843620&signature=pWV91kitlAyctF1VtDlD0XHKQwU8LXgSjqLgr12SfMg%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -47914,7 +48072,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/3c0ed7b2-6981-4491-bf07-aa191d3b96e2/1114.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=iGn6p0beElSDvBnJR7OqtMV5%2B6ZM897x2BqGo46JFxg%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/3c0ed7b2-6981-4491-bf07-aa191d3b96e2/1114.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=HCfd2yZqsOht19lEhgMU4gealfin67o6%2F%2BZoR17uoyY%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -47928,7 +48086,8 @@
           "name": "Data limite de entrega",
           "value": "29/05/2026"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1354326297",
@@ -47950,7 +48109,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/476b8f07-3cb7-4dce-a915-580de7989f54/cotacao_3365_Picpay.pdf?expires_on=1779834482&signature=IEM%2FRSYXc5v7It9uo6gB9zamj4s%2FCflpvkeFV7oobp8%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/476b8f07-3cb7-4dce-a915-580de7989f54/cotacao_3365_Picpay.pdf?expires_on=1779843620&signature=fuxmPIzfXCQf80aXMPcpPDT0IhdLuVo4BBvbKa344DI%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -47958,7 +48117,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/254d4b43-5aee-4e71-b641-b0c60c16a23c/1115.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=0kdw7vpSHyonzDMaiYd%2Fy4P89tWpBbO0SHuZbim5SmA%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/254d4b43-5aee-4e71-b641-b0c60c16a23c/1115.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=2ks1RTZErME8vWgorh%2BHbIz0U8L3Ib7oVH%2B7a39Tmr8%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -47972,7 +48131,8 @@
           "name": "Data limite de entrega",
           "value": "29/05/2026"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1354328373",
@@ -47994,7 +48154,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/1fa4b4f6-3e2f-4f9e-8fd7-14b8044a856c/cotacao_3366_Picpay.pdf?expires_on=1779834482&signature=dNWId4pRSHWtNbyJ7ua4RzCT91j1cVihdlvYLsoXW2U%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/1fa4b4f6-3e2f-4f9e-8fd7-14b8044a856c/cotacao_3366_Picpay.pdf?expires_on=1779843620&signature=DTvuMhmpGFAfkJBX0fjNZXCbb7XlAPgVYpMwBTXfdTs%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48002,7 +48162,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/1c2b105f-fa38-464f-960e-f94a268bc4d5/1116.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=yPbOvZgtXG3DV10WEQSMhWvxFZKxD8k98%2B2%2By9ZoFb8%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/1c2b105f-fa38-464f-960e-f94a268bc4d5/1116.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=6UHSi4ohzG1YMot4i5vt7ow9gmjWaJ%2BiHkQoZYXemb0%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48016,7 +48176,8 @@
           "name": "Data limite de entrega",
           "value": "29/05/2026"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1354678881",
@@ -48038,7 +48199,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/6b819c3a-b785-472a-8d7b-4932d1ac2b3c/cotacao_3372_Picpay.pdf?expires_on=1779834482&signature=V0R4Sl1STd6C2cTLsmaGg6KVU8CiBFm0J3aexgN0v%2Fs%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/6b819c3a-b785-472a-8d7b-4932d1ac2b3c/cotacao_3372_Picpay.pdf?expires_on=1779843620&signature=DQ%2B8WawkZ57itDpOuKip0%2F3nzNxatQ6F3yLi7vnNzjM%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48046,7 +48207,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/b9e73e17-80aa-4c75-b683-53aa9cccee40/1120.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=taMgaSwLaKZ3xnJqlQtaFz9XusrYN4OwLSBoWxdrLVQ%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/b9e73e17-80aa-4c75-b683-53aa9cccee40/1120.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=ePQPjQ7Wbw%2FU43er5o5iXXK4PclMQ%2Bop9QAl0Gf3lJ4%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48060,7 +48221,8 @@
           "name": "Data limite de entrega",
           "value": "27/05/2026"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1354683863",
@@ -48082,7 +48244,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/697927ff-7837-4c47-aea2-2f0e3325c716/cotacao_3373_Picpay.pdf?expires_on=1779834482&signature=qQ%2F8aXv5ZvXRgctbaewtRb%2FoPXu8kq%2Bhu9gArYXsS54%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/697927ff-7837-4c47-aea2-2f0e3325c716/cotacao_3373_Picpay.pdf?expires_on=1779843620&signature=9q8BTzdqNyS6BefzDrm8qsC%2B3HAUnVfXZei3paTXtIQ%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48090,7 +48252,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/58d5de23-b8f4-40e1-b3d4-5d6df36f5af4/1121.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=b82Mt8vOH%2B%2BEebhC9AhmINHynzeh8By%2FkKZU9yOQc38%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/58d5de23-b8f4-40e1-b3d4-5d6df36f5af4/1121.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=m77UpWqZUeUUQb8%2FvFovWeOuex9pFu9tdtcdyliJ3KM%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48104,7 +48266,8 @@
           "name": "Data limite de entrega",
           "value": "27/05/2026"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1355972950",
@@ -48126,7 +48289,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/36b9a816-8207-4f65-8582-4573191ae3b7/cotacao_3383_INOVTI.pdf?expires_on=1779834482&signature=VEN4ye3ESlXB6Y6gV%2BWcRqFens4r0P1F1i8ImtZJccg%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/36b9a816-8207-4f65-8582-4573191ae3b7/cotacao_3383_INOVTI.pdf?expires_on=1779843620&signature=wvgZPRqVAmfX8WofyI%2FHjaSOiPPc9vwJk%2BkHw%2BgEyoU%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48134,7 +48297,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/10862569-b23f-4d5f-af97-aa493fe85ea0/1127.INOVTISOLUCOESEMINFORMATICALTDA.pdf?expires_on=1779834482&signature=PriRXwQHdbr7FZnjT5kP5qiwMA6YFqds3MrpZIjjYLM%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/10862569-b23f-4d5f-af97-aa493fe85ea0/1127.INOVTISOLUCOESEMINFORMATICALTDA.pdf?expires_on=1779843620&signature=3EDdWD6djztJS33xEjLMJOx0SVjlPTc611G6moLwM3s%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48148,7 +48311,8 @@
           "name": "Data limite de entrega",
           "value": "10/06/2026"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1356065649",
@@ -48170,7 +48334,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/d3d82ab5-0cf9-496f-b989-43c90b5e939a/cotacao_3388_Picpay.pdf?expires_on=1779834482&signature=LO9Hl3t1yHn4Yu4EyE%2BY03NrZ8ZqEvZTrOFdpp0ZIzU%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/d3d82ab5-0cf9-496f-b989-43c90b5e939a/cotacao_3388_Picpay.pdf?expires_on=1779843620&signature=0QgZG%2Bt1wFobDacMnxv9HCj6lPGUXXlH6FF8%2FIwe66c%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48178,7 +48342,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/cb2a7cbe-fb7b-45d9-95df-b84dd0de0028/1128.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=kEL3y5eEWJLxf7ynvz9U%2Bywlx8Z9BS4ILaAa0GftPSQ%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/cb2a7cbe-fb7b-45d9-95df-b84dd0de0028/1128.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=mnDko2Ziq3fYEeGKMt%2FNK1HqiuuQC3Rvrdiz2VTQQTo%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48192,7 +48356,8 @@
           "name": "Data limite de entrega",
           "value": "29/05/2026"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1356086681",
@@ -48214,7 +48379,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/611e2446-7fa2-4e2a-a39f-446302f8f60d/cotacao_3389_Picpay.pdf?expires_on=1779834482&signature=ZGwtwM2h80wGnEC2CIsZjJMu4XfMD0%2BuhXHS5mPX%2F28%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/611e2446-7fa2-4e2a-a39f-446302f8f60d/cotacao_3389_Picpay.pdf?expires_on=1779843620&signature=vW%2Bv7vkSNmfpQB7lTuu8cvUzA7xWno6%2FfG2ZHKaz%2FdA%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48222,7 +48387,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/2e026ce5-b2f3-40de-b5fe-517430cba6fb/1129PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=p%2Fw47H1aymkzRg2Sscz7JWFcP%2Ffk6c8M4DUbiGVFVd4%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/2e026ce5-b2f3-40de-b5fe-517430cba6fb/1129PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=CPSnM9UXx3B%2FUDSBithm0W8ExeKi7Tmmyu1G8lVu7Dc%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48236,7 +48401,8 @@
           "name": "Data limite de entrega",
           "value": "29/05/2026"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1356782974",
@@ -48258,7 +48424,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/d18da8d0-680b-4c4c-81ae-fcc2d33377e8/cotacao_3392_Picpay.pdf?expires_on=1779834482&signature=FCLs5IWOj9hyPSTMuEqQFiYRcDAaiJdYPuOGBcK%2Ffac%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/d18da8d0-680b-4c4c-81ae-fcc2d33377e8/cotacao_3392_Picpay.pdf?expires_on=1779843620&signature=RZacEab9YgqxnaGlAi%2FRphDULusnoJtZsI22dIOC%2B9A%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48266,7 +48432,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/5006a81d-ab21-4dc7-a5c3-902ad7af017c/1130.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=%2FyN82Q10fZ89EGbQ%2Ff01D6DpvpVEMKlvhTs8QCbYyT0%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/5006a81d-ab21-4dc7-a5c3-902ad7af017c/1130.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=BTGDprXn7qTWvJ2I87nCrrlELgumjVK26jlsDVxCgMA%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48280,7 +48446,8 @@
           "name": "Data limite de entrega",
           "value": "29/05/2026"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1356809864",
@@ -48302,7 +48469,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/aa23245d-cb14-442b-a91f-e1b15b6491e6/cotacao_3393_Picpay.pdf?expires_on=1779834482&signature=7wcEkt%2BMPnAI%2BHRa0YamQnUmTk7sCBdDR6DvbrFPMKM%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/aa23245d-cb14-442b-a91f-e1b15b6491e6/cotacao_3393_Picpay.pdf?expires_on=1779843620&signature=uguXSZbWC8guk8yzEX7nWBCpnxYwrlfE1QYFMlFZ9Ek%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48310,7 +48477,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/8be0ad10-bdd1-46f5-866a-b47d6538d3a9/1131.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=hYe4%2FPNvR7uKiy51nr300da9sTerniNfwnYA6Jcs2zQ%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/8be0ad10-bdd1-46f5-866a-b47d6538d3a9/1131.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=6qzlkLtzJFu%2FlDPizaHYmNSkI4YB%2BKY9LnQ8UUEv4wM%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48324,7 +48491,8 @@
           "name": "Data limite de entrega",
           "value": "29/05/2026"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1356815651",
@@ -48346,7 +48514,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/7689f469-a168-4a2a-9174-bbfe82f68336/cotacao_3393_Picpay.pdf?expires_on=1779834482&signature=gXxMjOhYJrMg%2BNJG6yogG3u1ejhmAxeIe3P56FV0JoA%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/7689f469-a168-4a2a-9174-bbfe82f68336/cotacao_3393_Picpay.pdf?expires_on=1779843620&signature=KwC33pXgPQyeBGrmerwyVhHfSgEn2I3qnnQ8bR6DOrs%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48366,9 +48534,10 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/5f756d5a-ddb8-4108-b396-5056700375ef/1131.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=ijDGITyo%2FY%2BbS%2Fqwt3O1dG0wMrQFkLRM1AnvUdjOxq4%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/5f756d5a-ddb8-4108-b396-5056700375ef/1131.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=Tz6n4qCIMSz20%2F3dab6GL3Y7p1XyShj24zrLaDpKPzU%3D\"]"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1352587961",
@@ -48390,7 +48559,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/6708f355-3dcc-4845-9722-2850557cb866/cotacao_3357_Picpay.pdf?expires_on=1779834482&signature=vxcraUGeWFjGutiZ4LbFCZm%2F87k9zdnHtOhJzySyMqo%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/6708f355-3dcc-4845-9722-2850557cb866/cotacao_3357_Picpay.pdf?expires_on=1779843620&signature=gfjjGpies%2BgOC3VBEg968FbMLOPMa4Q5IrmOjyAPOYU%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48398,7 +48567,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/cfa634ce-7ed8-4492-824d-a23c3d64ab7e/1109.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=SkzcPmTkizaV82E9hXlmWpH5gt54yF6XOPK4YKLlj%2F0%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/cfa634ce-7ed8-4492-824d-a23c3d64ab7e/1109.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=dmVdQAcTgUk6BJg%2BSWg9jUVeRpuj9pNUcAboWvyMzgQ%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48420,7 +48589,8 @@
           "name": "Responsável pela compra",
           "value": "[\"nathan Tavares \"]"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1354672669",
@@ -48442,7 +48612,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/246bba25-9479-443d-88e9-539786179caf/cotacao_3367_Picpay.pdf?expires_on=1779834482&signature=3q01KNzfZbWOfGnT%2FxdC7MWjiqeJi49iCtrpz2uSLF8%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/246bba25-9479-443d-88e9-539786179caf/cotacao_3367_Picpay.pdf?expires_on=1779843620&signature=LQv4d6ebKmDwT1z%2BQOMS5bqPb5cB%2FRpXUCo5UW7z5f8%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48450,7 +48620,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/e7fe51e0-5b94-4106-9704-46377a09e575/1117.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=ljH%2Be6h3h1S%2BtR64t%2BQfM1pGhSh%2FcVNVHMVHIEb9btg%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/e7fe51e0-5b94-4106-9704-46377a09e575/1117.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=BHHHhrX%2B%2BgtAxV%2B0UDaDiupX5bqNS6TnNsOWpC7xMxI%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48467,6 +48637,16 @@
         {
           "name": "Responsável pela compra",
           "value": "[\"nathan Tavares \"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Em negociação",
+          "color": "#DAE52A"
+        },
+        {
+          "name": "Pendência",
+          "color": "#D114BC"
         }
       ]
     },
@@ -48490,7 +48670,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/be1c1891-e10f-42a2-a767-6758d2c9a9f5/cotacao_3332_BancoOriginalATUALIZADA3.pdf?expires_on=1779834482&signature=o74IST9Q2aYVDSdBu46nmbuCQa6OfPZIM1uKhbE6O3k%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/be1c1891-e10f-42a2-a767-6758d2c9a9f5/cotacao_3332_BancoOriginalATUALIZADA3.pdf?expires_on=1779843620&signature=ZNH0sB5rbcPU2UwpVDM9EeiDObkZAyBx%2BrewhsGSgl8%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48498,7 +48678,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/0aa13a5d-a066-4941-8cec-a9ff1b2c5b2e/1122.BANCOORIGINALSA.pdf?expires_on=1779834482&signature=OC72UbbMmMYmm57ZlQo37RricMLr4HVmlmGkHHpzuUs%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/0aa13a5d-a066-4941-8cec-a9ff1b2c5b2e/1122.BANCOORIGINALSA.pdf?expires_on=1779843620&signature=ii5nTqxzr0soMggZM7IecxRkYIFoSPOSTkYAiixFcXU%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48519,6 +48699,16 @@
         {
           "name": "Aprovação direta?",
           "value": "Não"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Em negociação",
+          "color": "#DAE52A"
+        },
+        {
+          "name": "Pendência",
+          "color": "#D114BC"
         }
       ]
     },
@@ -48542,7 +48732,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/49c3cb40-38c0-41b2-9381-671ef957d0d9/cotacao_3290_Picpay_ATUALIZADA2.pdf?expires_on=1779834482&signature=L1IxXrjDu8jxZjWfPPedfsa99nj9j%2F9JfNS%2F3qJNNSE%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/49c3cb40-38c0-41b2-9381-671ef957d0d9/cotacao_3290_Picpay_ATUALIZADA2.pdf?expires_on=1779843620&signature=c%2F7frQ%2B%2FfVHJX2ts6QeFXbB4IhEmMDtmEOO6gkKIu4s%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48550,7 +48740,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/003dd65b-9eb9-4b87-a129-a3cbeace4629/1125.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=Qm4LaVCK4ofL7hQvxmBVDhn65Aebx9of0IoZQrXyspA%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/003dd65b-9eb9-4b87-a129-a3cbeace4629/1125.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=DTcmWQO%2B9zyDSL4RWIxJ0C8ISRk9shO9swzmhxyA%2B%2F4%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48567,6 +48757,12 @@
         {
           "name": "Responsável pela compra",
           "value": "[\"nathan Tavares \"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Vini responsável",
+          "color": "#FFAB00"
         }
       ]
     },
@@ -48590,7 +48786,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/98cf02c3-e30d-497c-8495-e70161f1395c/cotacao_3386_Picpay.pdf?expires_on=1779834482&signature=N3I%2FyEGsfZAnIkaf4N1twlTL%2Fkdos91ZZ7b8%2BvH8Y5o%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/98cf02c3-e30d-497c-8495-e70161f1395c/cotacao_3386_Picpay.pdf?expires_on=1779843620&signature=N4BWT2LUVhjpDjtqv96chKD55LYF43v8HODWV2WUsZQ%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48598,7 +48794,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/d9a1ca3d-11d0-4fd3-b686-1088ceac1c5d/1126.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=mYjuz2jRvkrvH89IOMyYoUuCXjzIb79Ndr7HMUf5mJk%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/d9a1ca3d-11d0-4fd3-b686-1088ceac1c5d/1126.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843620&signature=nxPZow7Mnq6o%2Fg6k8fR2G1Cdh%2BfF11O06hlKE4IBRRY%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48615,6 +48811,16 @@
         {
           "name": "Responsável pela compra",
           "value": "[\"nathan Tavares \"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Em negociação",
+          "color": "#DAE52A"
+        },
+        {
+          "name": "Pendência",
+          "color": "#D114BC"
         }
       ]
     },
@@ -48642,11 +48848,11 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/c91730aa-cce0-4ad4-b55a-e40c734150a2/cotacao_2956_Picpay.pdf?expires_on=1779834482&signature=BUyx8El05cd09S44q4%2FCd%2BAhO%2BOCBbIy%2FlYSGg%2B8rDM%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/c91730aa-cce0-4ad4-b55a-e40c734150a2/cotacao_2956_Picpay.pdf?expires_on=1779843621&signature=Uc8pM4o92xq0RRVw8UspWavZId1qZwoU8rrNYTLyAJY%3D\"]"
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/baea0cf6-ba9e-40b1-8fcb-7c84b9a38922/938.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834482&signature=S5gboL42uCh4HAMy%2F%2FTlIr%2FtA2Gl4XBwkI3r3wMrPnM%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/baea0cf6-ba9e-40b1-8fcb-7c84b9a38922/938.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843621&signature=JWXDA3dVIuQVsW27UbL4af%2B6Q6wPX8%2BGSw%2BkeOuqrz0%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48720,6 +48926,16 @@
           "name": "Pendência de compra",
           "value": "Falta de caixa"
         }
+      ],
+      "labels": [
+        {
+          "name": "Vini responsável",
+          "color": "#FFAB00"
+        },
+        {
+          "name": "Compra parcial",
+          "color": "#69437E"
+        }
       ]
     },
     {
@@ -48746,11 +48962,11 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/6d096248-5ced-4bbe-b2b7-e2c3c8133262/cotacao_3107_BVCorretora.pdf?expires_on=1779834482&signature=mBqotuocM3wC59eEZX%2BAq3A40JtHotO3t3R1hdY9HEU%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/6d096248-5ced-4bbe-b2b7-e2c3c8133262/cotacao_3107_BVCorretora.pdf?expires_on=1779843621&signature=ChXNz3rtKIlBKbGhh8c9WOuJVcNFUeqeOWx1z81iAE0%3D\"]"
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/de73d17e-20d6-4eb4-a760-ffee05dd1b89/1002.BVCORRETORADESEGUROSS.A..pdf?expires_on=1779834482&signature=IKMgLuzyWf2bRYbGGBPf0Yx3NcBHyrntJqZizwYVak4%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/de73d17e-20d6-4eb4-a760-ffee05dd1b89/1002.BVCORRETORADESEGUROSS.A..pdf?expires_on=1779843621&signature=5QYb14G6HRO8b%2BdLlPjvlqBXU4DbPdxrM5Ipya2al%2FA%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48808,6 +49024,12 @@
           "name": "Outro, qual?",
           "value": "Entrega somente em agosto "
         }
+      ],
+      "labels": [
+        {
+          "name": "Compra parcial",
+          "color": "#69437E"
+        }
       ]
     },
     {
@@ -48834,11 +49056,11 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/12818814-ef53-4c22-bcc8-1ae7ede56907/cotacao_3222_DWS.pdf?expires_on=1779834482&signature=5TbExoxIdpu2oi9dymNHQcyDsedielF6sqC4cG1yHn4%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/12818814-ef53-4c22-bcc8-1ae7ede56907/cotacao_3222_DWS.pdf?expires_on=1779843621&signature=b6LvXpdpIhUqZC7oLJrNxBwDdzPXHmboMeTWZMHxQRg%3D\"]"
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/0a1bcea5-2205-4424-a22d-f211ec446a5b/1047DWSBRASILLTDA..pdf?expires_on=1779834482&signature=U3EjGeKYVCI569%2BAJliR395B%2BsHB1bY06T1FX5TWjdc%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/0a1bcea5-2205-4424-a22d-f211ec446a5b/1047DWSBRASILLTDA..pdf?expires_on=1779843621&signature=EH6gF1GgsygmOXO1IUcqauf12EOk4TSDDP4f%2BMiQT2Q%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48900,6 +49122,16 @@
           "name": "Outro, qual?",
           "value": "Falta comprar o apple care "
         }
+      ],
+      "labels": [
+        {
+          "name": "Vini responsável",
+          "color": "#FFAB00"
+        },
+        {
+          "name": "Compra parcial",
+          "color": "#69437E"
+        }
       ]
     },
     {
@@ -48922,7 +49154,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/61b86d22-f4ec-4830-b685-83ed09e9837c/cotacao_3312_Dentsu.pdf?expires_on=1779834482&signature=59RI3sa%2BK%2FsHgjN2obBsg5DrVi4nbdgzBZIo7sYqHJs%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/61b86d22-f4ec-4830-b685-83ed09e9837c/cotacao_3312_Dentsu.pdf?expires_on=1779843621&signature=i3YaV6iZm4ppRDMjGWkt8q%2FcB%2FDD2DLgFMayqtMaGDE%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -48930,7 +49162,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/8b92c77a-e22b-4014-9e98-1bc299adda4d/1081.DENTSULATINAMERICAPROPAGANDALTDA.pdf?expires_on=1779834482&signature=ncTsydAatEWgBGlqxL%2FPrEFuA6hy85a4IEVrGhY7zp4%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/8b92c77a-e22b-4014-9e98-1bc299adda4d/1081.DENTSULATINAMERICAPROPAGANDALTDA.pdf?expires_on=1779843621&signature=XDzL9yJbeU8tKfWeF7d2y3KRbTKtgbzT3U1JX5CtbJk%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -48980,6 +49212,12 @@
           "name": "Pendência de compra",
           "value": "Sem estoque"
         }
+      ],
+      "labels": [
+        {
+          "name": "Compra parcial",
+          "color": "#69437E"
+        }
       ]
     },
     {
@@ -49006,7 +49244,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/7e0742d5-2f41-4bfa-9592-6a74efb6ebdd/1092.IPROSPECTSEARCHMARKETINGLTDA.pdf?expires_on=1779834482&signature=qr5miGUopbD5O0gOX34S8f%2FzoByMBVWHO4zKZozbNto%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/7e0742d5-2f41-4bfa-9592-6a74efb6ebdd/1092.IPROSPECTSEARCHMARKETINGLTDA.pdf?expires_on=1779843621&signature=fVWIrbZbwo8XnHSMKnCAmy45URBK5oJtuwdlNONo4sw%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -49022,7 +49260,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/ca282e7b-7ac1-4187-98f4-dc73ba026c98/cotacao_3329_Iprospect.pdf?expires_on=1779834482&signature=KUWGUrX2bhbVXajXHikSTdUMdqhj%2BIV7L%2FyH1A%2BhNZA%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/ca282e7b-7ac1-4187-98f4-dc73ba026c98/cotacao_3329_Iprospect.pdf?expires_on=1779843621&signature=1AQVus%2FRVNJiMh4RgzN7YF0AziAzWaFirm9d0rVhVxk%3D\"]"
         },
         {
           "name": "Responsável pela compra",
@@ -49052,6 +49290,16 @@
           "name": "Outro, qual?",
           "value": "Falta comprar o apple care "
         }
+      ],
+      "labels": [
+        {
+          "name": "Vini responsável",
+          "color": "#FFAB00"
+        },
+        {
+          "name": "Compra parcial",
+          "color": "#69437E"
+        }
       ]
     },
     {
@@ -49074,7 +49322,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/7d2ab5d4-8e8c-459a-a05d-7c9f4aaf36c0/cotacao_3347_LIONX.pdf?expires_on=1779834482&signature=qrQcc%2FUIY4011Uj%2BB%2BSvdx9cqQbks%2FlERBFD1t16WJc%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/7d2ab5d4-8e8c-459a-a05d-7c9f4aaf36c0/cotacao_3347_LIONX.pdf?expires_on=1779843621&signature=wh8Cd7W5fYnunVH5aSHUwYtBB86%2B7b1U1y%2BTfb14Oew%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -49082,7 +49330,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/bc3690f1-2804-4e89-8cdf-5ae893653b83/1104.LIONXDOBRASILTECNOLOGIALTDA.pdf?expires_on=1779834482&signature=c8FpSOP1h6vzruudfk949yl9Qi%2FlIhmGl51VoNfiN4Y%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/bc3690f1-2804-4e89-8cdf-5ae893653b83/1104.LIONXDOBRASILTECNOLOGIALTDA.pdf?expires_on=1779843621&signature=ol2Aq9CzpxBdNnESvc0MFjVNST9ktKmR6nmA5nFPdug%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -49124,6 +49372,12 @@
           "name": "Todos os produtos da cotação foram comprados e enviados para logística?",
           "value": "Sim"
         }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#D114BC"
+        }
       ]
     },
     {
@@ -49146,7 +49400,7 @@
         },
         {
           "name": "Cotação aprovada",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/43abc933-f2c0-4074-8980-99941ff0ad93/cotacao_3348_INOVTI.pdf?expires_on=1779834482&signature=cJ9RY%2B%2BznBjGRkS5McOfvJtA9RgL6pukpPz7vAUnEGA%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/43abc933-f2c0-4074-8980-99941ff0ad93/cotacao_3348_INOVTI.pdf?expires_on=1779843621&signature=JBSxZ5mDUT0uNEC1FQiNXU4c2aTVdeBnXkdf4S3a8oE%3D\"]"
         },
         {
           "name": "N° da NF",
@@ -49154,7 +49408,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/0a5f3a8b-17f4-4781-be31-90dea8d58fe6/1108.INOVTISOLUCOESEMINFORMATICALTDA.pdf?expires_on=1779834482&signature=wukvNs6kEKl68%2FXpapSSiV77DW4UvbGyk5ohTz2PrIQ%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/0a5f3a8b-17f4-4781-be31-90dea8d58fe6/1108.INOVTISOLUCOESEMINFORMATICALTDA.pdf?expires_on=1779843621&signature=80d2RNi2rLN8kGoSsdtNzXJ892U0NuHTzqNGxC1HvzM%3D\"]"
         },
         {
           "name": "Itens da cotação",
@@ -49195,6 +49449,12 @@
         {
           "name": "Produtos e condições",
           "value": "[\"Suporte para notebook - Suporte para Notebook UP Table V2 até 17\\\" Preto - 1 unidade\", \"Adaptador 8 em 1 HUBS USB C Extensor Hdmi 4K USB 3.0 RJ45 PD- 1 unidade\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#D114BC"
         }
       ]
     },
@@ -62529,7 +62789,13 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/4d93a81d-e419-4cd3-8d56-e685dde53fb5/1100.TAMLINHASAEREASSA..pdf?expires_on=1779834483&signature=UaruHXOBjCguebOUXa3IMK6Iy1z96O2GuvuRkw%2Fl3a4%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/4d93a81d-e419-4cd3-8d56-e685dde53fb5/1100.TAMLINHASAEREASSA..pdf?expires_on=1779843621&signature=vINzrO3mdgrkNPMSQNuoyk%2FhtIggqciAKz83Yi%2F7qhY%3D\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando entrega de todos os itens da NF",
+          "color": "#3A69E2"
         }
       ]
     },
@@ -62581,7 +62847,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/348b0296-f1c2-4d9a-b03b-4a35f43e1dc8/1106.bazgrupozcapital.com.br.pdf?expires_on=1779834483&signature=MolYhhKt6mlSbtzsSRrgvCHsrHfA%2BqtThrPb0F2CGjM%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/348b0296-f1c2-4d9a-b03b-4a35f43e1dc8/1106.bazgrupozcapital.com.br.pdf?expires_on=1779843621&signature=kjiNRM%2B78yxEF2t2d1%2FDsO20099xxmUa21%2ByXv%2B%2FZc0%3D\"]"
         },
         {
           "name": "Teve atraso no recebimento?",
@@ -62590,6 +62856,12 @@
         {
           "name": "Avaliação sobre a integridade da embalagem",
           "value": "Boa"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#E01059"
         }
       ]
     },
@@ -62641,7 +62913,13 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/99e9ecf0-08c1-4197-bc73-ac38171c2140/1107.bazgrupozcapital.com.br1.pdf?expires_on=1779834483&signature=p38Fy6LcIFyp24c72X9GHXXuBV5q%2FQAFAeBwo3OrSmE%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/99e9ecf0-08c1-4197-bc73-ac38171c2140/1107.bazgrupozcapital.com.br1.pdf?expires_on=1779843621&signature=hD32sKWO78thChny%2BFHd5M9O3tP4HnBgy2F7Us0b3ds%3D\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando entrega",
+          "color": "#8B572A"
         }
       ]
     },
@@ -62693,7 +62971,13 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/cd793c38-b765-461a-852f-0fad0562268d/1105.SAVETIMETECNOLOGIADEPAGAMENTOLTDA1.pdf?expires_on=1779834483&signature=l3ZVD0ztIzmMDlcuV8XL11dXqpWWZokU5pDEO1Yc%2BG8%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/cd793c38-b765-461a-852f-0fad0562268d/1105.SAVETIMETECNOLOGIADEPAGAMENTOLTDA1.pdf?expires_on=1779843621&signature=AvCnC9DtpHR5YaDKFkDp0burBEBUanjFeaHlIDJlRPE%3D\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#E01059"
         }
       ]
     },
@@ -62745,7 +63029,13 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/21bb0f3a-3ff8-4c76-be97-cd8667ddec4a/1108.INOVTISOLUCOESEMINFORMATICALTDA2.pdf?expires_on=1779834483&signature=beNXERA%2BRxi8sdIDoCPt8Eu466Qkk%2BDa3sBOpXKgxb4%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/21bb0f3a-3ff8-4c76-be97-cd8667ddec4a/1108.INOVTISOLUCOESEMINFORMATICALTDA2.pdf?expires_on=1779843621&signature=8pvJUSJprXnhVAseAG%2FCLoxuJKjVBpcOTFIcfLBai%2B8%3D\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#E01059"
         }
       ]
     },
@@ -62797,7 +63087,13 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/547b55f2-db4f-4487-b576-b07336995344/1104.LIONXDOBRASILTECNOLOGIALTDA3.pdf?expires_on=1779834483&signature=pKNZedWzwBkGb%2FF%2BuxMDCDK3UPCA70TSLbKQB008LsY%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/547b55f2-db4f-4487-b576-b07336995344/1104.LIONXDOBRASILTECNOLOGIALTDA3.pdf?expires_on=1779843621&signature=GMu41ybB6PUkaTaNJNASsKvB2%2BtCfhaPc4Vk0IpQDe4%3D\"]"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#E01059"
         }
       ]
     },
@@ -62849,9 +63145,10 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/601a83d4-ba68-4bcd-a307-f832f1815530/1108.INOVTISOLUCOESEMINFORMATICALTDA4.pdf?expires_on=1779834483&signature=dw0p5dBa8PxwhZu32y6%2FUwD0rs07rTH7rfA1VZiHSGE%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/601a83d4-ba68-4bcd-a307-f832f1815530/1108.INOVTISOLUCOESEMINFORMATICALTDA4.pdf?expires_on=1779843621&signature=E1u6w%2B6D5hqefiC9aqGwDsNP3jsoV4S683VHWABCG4Y%3D\"]"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1356639583",
@@ -62901,9 +63198,10 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/7744bda3-6fc7-43fd-93bd-7d5dffa0faa6/1104.LIONXDOBRASILTECNOLOGIALTDA4.pdf?expires_on=1779834483&signature=xwcLJlr%2Fh8WLYDZvBS7MthGleilSTls6AEy4UZYeHIQ%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/7744bda3-6fc7-43fd-93bd-7d5dffa0faa6/1104.LIONXDOBRASILTECNOLOGIALTDA4.pdf?expires_on=1779843621&signature=s4tNK8neSOb6a5dxZR0PtqI357dBLttSLN6slIUYUdE%3D\"]"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1345768123",
@@ -62917,7 +63215,7 @@
       "fields": [
         {
           "name": "Evidência da entrega",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/d33fb006-d06b-4556-8b1d-61af80afdb5c/EVIDENCIADERECEBIMENTODANF1002.jpeg?expires_on=1779834483&signature=zp0gF1BHHzBlEcQt9qQGRXjRv9DEYY5aTWFfOef%2Bb4c%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/d33fb006-d06b-4556-8b1d-61af80afdb5c/EVIDENCIADERECEBIMENTODANF1002.jpeg?expires_on=1779843621&signature=QfjXQWCXAZ6nsiWkYQ0II2qGlyqWEjFLZNnK0oEz6Yg%3D\"]"
         },
         {
           "name": "Todos os itens da NF foram entregues?",
@@ -62961,7 +63259,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/93509e69-ee58-4561-9456-b60e6509d31a/1002.BVCORRETORADESEGUROSS.A.3.pdf?expires_on=1779834483&signature=h%2Fotx4RFsWc%2Bi9excjMO9ZuD5f%2FREGeLIvmlaj4T7zU%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/93509e69-ee58-4561-9456-b60e6509d31a/1002.BVCORRETORADESEGUROSS.A.3.pdf?expires_on=1779843621&signature=3DCUbuBYbNFM6DHgmrfYtAx6jbR7JVN8qozVmC501OY%3D\"]"
         },
         {
           "name": "Teve atraso no recebimento?",
@@ -63001,7 +63299,7 @@
         },
         {
           "name": "Foto da embalagem - Be You",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/c33b82d0-6ad6-4e75-b1df-8eb973f2da86/JBLCAIXADESOMQUARTOLOTENF1002.jpeg?expires_on=1779834483&signature=t8aAc1AuwBKYWNYYNfyHoazRHuhuvsu1RwwFu91dwjs%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/c33b82d0-6ad6-4e75-b1df-8eb973f2da86/JBLCAIXADESOMQUARTOLOTENF1002.jpeg?expires_on=1779843621&signature=bbdFOf4P19LO7DBZtBWFSKmiCCG8kOVyrFZ6a30waqA%3D\"]"
         },
         {
           "name": "Qual transportadora acionada?",
@@ -63010,6 +63308,12 @@
         {
           "name": "Previsão de entrega para o cliente",
           "value": "31/07/2026 16:00"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Aguardando entrega de todos os itens da NF",
+          "color": "#3A69E2"
         }
       ]
     },
@@ -63061,7 +63365,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/2313b8eb-7135-4c07-adeb-10c7e79a4e35/1104.LIONXDOBRASILTECNOLOGIALTDA.pdf?expires_on=1779834483&signature=fwzV6fLAHP7NVFvl0Dh%2FXQwKznhSO5h1F7aAeqdnkIs%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/2313b8eb-7135-4c07-adeb-10c7e79a4e35/1104.LIONXDOBRASILTECNOLOGIALTDA.pdf?expires_on=1779843621&signature=rUstgi61uwBMb4rKnCPZ0JLDZYBPHCkEhFhwTZtkdMM%3D\"]"
         },
         {
           "name": "Teve atraso no recebimento?",
@@ -63074,6 +63378,12 @@
         {
           "name": "Serial number",
           "value": "NAO SE APLICA"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#E01059"
         }
       ]
     },
@@ -63125,7 +63435,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/1206e5ad-4d30-469c-b7d5-718ef24034cb/1108.INOVTISOLUCOESEMINFORMATICALTDA.pdf?expires_on=1779834483&signature=dF%2BQUBQL4jTDSKDnIPpVZrGQMJ107kRYJZnT6QOA5Do%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/1206e5ad-4d30-469c-b7d5-718ef24034cb/1108.INOVTISOLUCOESEMINFORMATICALTDA.pdf?expires_on=1779843621&signature=e0Wv020eIvHJbbKtvtG%2FCugRYn4BTO8omhbcSrtA0Ww%3D\"]"
         },
         {
           "name": "Avaliação sobre a integridade da embalagem",
@@ -63138,6 +63448,12 @@
         {
           "name": "Serial number",
           "value": "NAO SE APLICA"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#E01059"
         }
       ]
     },
@@ -63189,7 +63505,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/074f6048-6209-454d-822e-8bf909ff1cea/1104.LIONXDOBRASILTECNOLOGIALTDA1.pdf?expires_on=1779834483&signature=4vt%2B2gg5D2a6w96ZQZmcnoMsTtdjYH%2BEgpeWLL%2FSkhU%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/074f6048-6209-454d-822e-8bf909ff1cea/1104.LIONXDOBRASILTECNOLOGIALTDA1.pdf?expires_on=1779843621&signature=DmUm29i4YChzbKbjBDrIzpEY5cTqO7xkz1wvVCLenEk%3D\"]"
         },
         {
           "name": "Serial number",
@@ -63202,6 +63518,12 @@
         {
           "name": "Avaliação sobre a integridade da embalagem",
           "value": "Boa"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#E01059"
         }
       ]
     },
@@ -63253,7 +63575,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/3c5a286a-658a-459d-9c9d-8ce89cad29bf/1108.INOVTISOLUCOESEMINFORMATICALTDA1.pdf?expires_on=1779834483&signature=uyJi90EYyW40mGJ7ZM0d2z2789DnlPLL8xe8s9by2ZY%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/3c5a286a-658a-459d-9c9d-8ce89cad29bf/1108.INOVTISOLUCOESEMINFORMATICALTDA1.pdf?expires_on=1779843621&signature=TUSjAluKFSQx%2F04RstqjyAJsLjK3ibEG6XJvnKND65c%3D\"]"
         },
         {
           "name": "Avaliação sobre a integridade da embalagem",
@@ -63266,6 +63588,12 @@
         {
           "name": "Teve atraso no recebimento?",
           "value": "Não"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#E01059"
         }
       ]
     },
@@ -63313,7 +63641,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/dbc899a0-9def-4177-b559-2e43627401e2/1104.LIONXDOBRASILTECNOLOGIALTDA2.pdf?expires_on=1779834483&signature=ShPs25fvunHIi9dpPS36M6amUd%2F5bbWty6o2EbnGtS4%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/dbc899a0-9def-4177-b559-2e43627401e2/1104.LIONXDOBRASILTECNOLOGIALTDA2.pdf?expires_on=1779843621&signature=a%2BMvZyu8KJuMhis1v8LW1ZqJZIT9TVPfH7cFswxUvRU%3D\"]"
         },
         {
           "name": "Data limite para entrega",
@@ -63326,6 +63654,12 @@
         {
           "name": "Avaliação sobre a integridade da embalagem",
           "value": "Boa"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#E01059"
         }
       ]
     },
@@ -63377,7 +63711,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/7172125c-9c58-4d75-b638-e5dd0efb421c/1108.INOVTISOLUCOESEMINFORMATICALTDA3.pdf?expires_on=1779834483&signature=jEauyL8yS8J%2FEewQAxt0Ecn9EE1m1Zoj8Pl0MMP1o34%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/7172125c-9c58-4d75-b638-e5dd0efb421c/1108.INOVTISOLUCOESEMINFORMATICALTDA3.pdf?expires_on=1779843621&signature=jMGmVRA4dpiwzKL2U13OknIIRUewgbhtfmqzr%2BTe8FY%3D\"]"
         },
         {
           "name": "Avaliação sobre a integridade da embalagem",
@@ -63386,6 +63720,12 @@
         {
           "name": "Teve atraso no recebimento?",
           "value": "Não"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#E01059"
         }
       ]
     },
@@ -63437,7 +63777,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/d2982d79-bbe6-4a22-8edd-26608f0e56ba/1090.LIONXDOBRASILTECNOLOGIALTDA2.pdf?expires_on=1779834483&signature=jCyY2uGC%2FOZ9VZhcLO9Gp4%2FAwul60bfUivSrQgZUlnE%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/d2982d79-bbe6-4a22-8edd-26608f0e56ba/1090.LIONXDOBRASILTECNOLOGIALTDA2.pdf?expires_on=1779843621&signature=ANJByoLmNz5dlBknBeOJwRZMFrOA6C%2BIUMvkGLkmR8E%3D\"]"
         },
         {
           "name": "Avaliação sobre a integridade da embalagem",
@@ -63451,7 +63791,8 @@
           "name": "Serial number",
           "value": "K9WG7R79YF\nDJTX3YFT7W"
         }
-      ]
+      ],
+      "labels": []
     },
     {
       "id": "1355451697",
@@ -63501,7 +63842,7 @@
         },
         {
           "name": "NF do cliente",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/1e5a0423-4530-4f20-9028-b1969d29c14f/1123.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779834483&signature=0T4unHhoFxVDtbzr0yWCeoR12LQXQa9Z686teEAbSK8%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/1e5a0423-4530-4f20-9028-b1969d29c14f/1123.PICPAYINSTITUICAODEPAGAMENTOSA.pdf?expires_on=1779843622&signature=oViK6WlCGTkNdxkOYJHyVMIBfVz6FXSi4vta1DCwSQE%3D\"]"
         },
         {
           "name": "Avaliação sobre a integridade da embalagem",
@@ -63517,7 +63858,7 @@
         },
         {
           "name": "Foto da embalagem - Be You",
-          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/854672ac-86d7-443e-9bcf-05ec051699ab/Capturadetela2026-04-13165747.png?expires_on=1779834483&signature=ToTmgDXls%2FQl7fRWb3Fqo3gdeRCPlMhEMo%2F%2BQgv%2FFho%3D\"]"
+          "value": "[\"https://app.pipefy.com/storage/v1/signed/uploads/854672ac-86d7-443e-9bcf-05ec051699ab/Capturadetela2026-04-13165747.png?expires_on=1779843622&signature=lIB5NzaaCCtART3A5gPwC74zOlbuGDOg%2FSX8ek3Kcxs%3D\"]"
         },
         {
           "name": "Observações",
@@ -63538,6 +63879,16 @@
         {
           "name": "Previsão de entrega para o cliente",
           "value": "26/05/2026 20:00"
+        }
+      ],
+      "labels": [
+        {
+          "name": "Pendência",
+          "color": "#E01059"
+        },
+        {
+          "name": "Entrega internacional",
+          "color": "#1F9EF2"
         }
       ]
     },
@@ -81946,5 +82297,5 @@
       ]
     }
   ],
-  "syncedAt": "2026-05-26T22:13:00.217Z"
+  "syncedAt": "2026-05-27T00:45:17.562Z"
 }
