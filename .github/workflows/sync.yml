@@ -1,22 +1,15 @@
 name: Sync Pipefy Data
 
-# Sync INCREMENTAL: roda 2x/dia buscando so fases ativas.
-# Cards que saem de fases ativas sao preservados do data.json (mergeCards corrigido).
-#
-# Sync FULL (recuperacao): busca TODAS as fases (ativas + finalizadas).
-# Usar quando o data.json estiver incompleto ou apos falha de bootstrap.
-# Rodar via: Actions -> "Sync Pipefy Data" -> Run workflow -> marcar "Full sync"
-
 on:
   schedule:
-      - cron: '0 11 * * 1-5'
-          - cron: '0 17 * * 1-5'
-            workflow_dispatch:
-                inputs:
-                      full_sync:
-                              description: 'Full sync - busca TODAS as fases (use para recuperar dados ausentes)'
-                                      required: false
-                                              default: false
+    - cron: '0 11 * * 1-5'
+    - cron: '0 17 * * 1-5'
+  workflow_dispatch:
+    inputs:
+      full_sync:
+        description: 'Full sync - busca TODAS as fases'
+        required: false
+        default: false
         type: boolean
 
 permissions:
@@ -25,16 +18,13 @@ permissions:
 jobs:
   sync:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repositorio
         uses: actions/checkout@v4
-
       - name: Configurar Node.js 22
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-
       - name: Buscar dados do Pipefy
         env:
           PIPEFY_TOKEN:      ${{ secrets.PIPEFY_TOKEN }}
@@ -43,11 +33,10 @@ jobs:
           PIPE_LOGISTICA_ID: ${{ secrets.PIPE_LOGISTICA_ID }}
           FULL_SYNC:         ${{ github.event.inputs.full_sync || 'false' }}
         run: node fetch-data.js
-
       - name: Commit e push do data.json
         run: |
-          git config user.name  'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git stash
           git pull --rebase
           git stash pop
@@ -55,5 +44,9 @@ jobs:
           if git diff --staged --quiet; then
             echo 'Sem mudancas, nenhum commit necessario.'
           else
-            git commit -m 'chore: sync Pipefy ' && git push
+            git commit -m "chore: sync Pipefy $(date -u '+%Y-%m-%d %H:%M UTC')"
+            for attempt in 1 2 3; do
+              git pull --rebase && git push && break
+              sleep $(($attempt * 5))
+            done
           fi
