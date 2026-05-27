@@ -957,10 +957,46 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
       </div>
     </div>
 
+    <!-- ── SEÇÃO: Análise por Vendedor ── -->
+    <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:24px">
+      👤 Análise por Vendedor
+    </div>
+    <div class="charts" style="grid-template-columns:1fr 1fr;margin-bottom:20px">
+      <div class="chart-card">
+        <div class="chart-title">📋 Cotações Abertas por Vendedor
+          <span class="chart-subtitle">Total criadas no período</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartVendAbertas"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">✅ Cotações Aprovadas por Vendedor
+          <span class="chart-subtitle">Total aprovadas no período</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartVendAprovadas"></canvas></div>
+      </div>
+    </div>
+    <div class="charts" style="grid-template-columns:1fr 1fr;margin-bottom:32px">
+      <div class="chart-card">
+        <div class="chart-title">📊 Abertas vs Aprovadas por Vendedor
+          <span class="chart-subtitle">Qtd + % conversão</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartVendBarConv"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">💰 Valor Aprovado por Mês e Vendedor
+          <span class="chart-subtitle">R$ total das cotações aprovadas</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartVendValorMes"></canvas></div>
+      </div>
+    </div>
+
     <!-- Tabela de comissão -->
     <div class="table-card" style="margin-bottom:32px">
-      <div class="table-header" style="justify-content:space-between">
-        <span>💼 Relatório de Comissão de Vendas</span>
+      <div class="table-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <span>💼 Relatório de Comissão de Vendas</span>
+          <span id="comissaoHeaderStats" style="font-size:12px;font-weight:400;color:var(--muted)"></span>
+        </div>
         <div style="display:flex;gap:6px">
           <button class="btn btn-secondary btn-sm" onclick="exportComissaoExcel()" title="Exportar Excel">⬇️ Excel</button>
           <button class="btn btn-secondary btn-sm" onclick="exportComissaoPDF()" title="Imprimir / Salvar PDF">🖨️ PDF</button>
@@ -1007,39 +1043,6 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
           </tr></thead>
           <tbody id="comissaoBody"></tbody>
         </table>
-      </div>
-    </div>
-
-    <!-- ── SEÇÃO: Análise por Vendedor ── -->
-    <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:24px">
-      👤 Análise por Vendedor
-    </div>
-    <div class="charts" style="grid-template-columns:1fr 1fr;margin-bottom:20px">
-      <div class="chart-card">
-        <div class="chart-title">📋 Cotações Abertas por Vendedor
-          <span class="chart-subtitle">Total criadas no período</span>
-        </div>
-        <div class="chart-wrap tall"><canvas id="chartVendAbertas"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">✅ Cotações Aprovadas por Vendedor
-          <span class="chart-subtitle">Total aprovadas no período</span>
-        </div>
-        <div class="chart-wrap tall"><canvas id="chartVendAprovadas"></canvas></div>
-      </div>
-    </div>
-    <div class="charts" style="grid-template-columns:1fr 1fr;margin-bottom:32px">
-      <div class="chart-card">
-        <div class="chart-title">📊 Abertas vs Aprovadas por Vendedor
-          <span class="chart-subtitle">Qtd + % conversão</span>
-        </div>
-        <div class="chart-wrap tall"><canvas id="chartVendBarConv"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">💰 Valor Aprovado por Mês e Vendedor
-          <span class="chart-subtitle">R$ total das cotações aprovadas</span>
-        </div>
-        <div class="chart-wrap tall"><canvas id="chartVendValorMes"></canvas></div>
       </div>
     </div>
 
@@ -1873,6 +1876,20 @@ function renderComissaoTable() {
   const countEl = document.getElementById('comissaoCount');
   if (countEl) countEl.textContent = visible.length + ' registro(s)';
 
+  // Pré-calcula totais para o cabeçalho
+  let preSumLucro = 0, preSumComissao = 0;
+  visible.forEach(r => {
+    preSumLucro += r.lucro;
+    if (r.comissionado === 'Sim') preSumComissao += r.comissao;
+  });
+  const statsEl = document.getElementById('comissaoHeaderStats');
+  if (statsEl) {
+    const lucroSign = preSumLucro >= 0 ? '+' : '';
+    const lucroCol  = preSumLucro >= 0 ? 'var(--green-d)' : 'var(--red-d)';
+    const comCol    = preSumComissao >= 0 ? 'var(--green-d)' : 'var(--red-d)';
+    statsEl.innerHTML = `Lucro: <strong style="color:${lucroCol}">${lucroSign}${fmtBRL(preSumLucro)}</strong>&ensp;·&ensp;Comissão: <strong style="color:${comCol}">${fmtBRL(preSumComissao)}</strong>`;
+  }
+
   if (visible.length === 0) {
     tbody.innerHTML = `<tr><td colspan="13" style="text-align:center;color:var(--muted);padding:24px">Nenhum registro para o filtro selecionado</td></tr>`;
     return;
@@ -1905,8 +1922,8 @@ function renderComissaoTable() {
       <td style="text-align:right">${fmtBRL(r.valorCot)}</td>
       <td style="text-align:right">${r.valorCompra > 0 ? fmtBRL(r.valorCompra) : '<span style="color:var(--muted)">—</span>'}</td>
       <td style="text-align:right">${r.valorFrete > 0 ? fmtBRL(r.valorFrete) : '<span style="color:var(--muted)">—</span>'}</td>
-      <td style="text-align:right;color:var(--red-d)">${fmtBRL(r.impostoVenda)}</td>
-      <td style="text-align:right;color:var(--red-d)">${fmtBRL(r.impostoNFEntrada)}</td>
+      <td style="text-align:right">${fmtBRL(r.impostoVenda)}</td>
+      <td style="text-align:right">${fmtBRL(r.impostoNFEntrada)}</td>
       <td style="text-align:center">${comissTag}</td>
       <td style="text-align:right;font-weight:700;color:${lucroColor}">${lucroSign}${fmtBRL(r.lucro)}</td>
       <td style="text-align:right;font-weight:700;color:${comissColor}">${r.comissionado === 'Sim' ? fmtBRL(r.comissao) : '<span style="color:var(--muted)">—</span>'}</td>
@@ -1923,8 +1940,8 @@ function renderComissaoTable() {
     <td style="text-align:right">${fmtBRL(sumCot)}</td>
     <td style="text-align:right">${fmtBRL(sumCompra)}</td>
     <td style="text-align:right">${fmtBRL(sumFrete)}</td>
-    <td style="text-align:right;color:var(--red-d)">${fmtBRL(sumImpVenda)}</td>
-    <td style="text-align:right;color:var(--red-d)">${fmtBRL(sumImpNF)}</td>
+    <td style="text-align:right">${fmtBRL(sumImpVenda)}</td>
+    <td style="text-align:right">${fmtBRL(sumImpNF)}</td>
     <td></td>
     <td style="text-align:right;color:${sumLucro >= 0 ? 'var(--green-d)':'var(--red-d)'}">${lucroTotalSign}${fmtBRL(sumLucro)}</td>
     <td style="text-align:right;color:${sumComissao >= 0 ? 'var(--green-d)':'var(--red-d)'}">${fmtBRL(sumComissao)}</td>
@@ -1949,9 +1966,15 @@ function renderComercial() {
     : comissaoFiltroFase === 'reprovada' ? cotsPeriodo.filter(c => c.reprovada)
     : cotsPeriodo;
 
+  // Filtro de fase para a tabela (usa cotsParaGraficos que já aplica o filtro de fase)
+  const cotsParaFase = comissaoFiltroFase === 'aprovada'  ? cotsPeriodo.filter(c => c.aprovada)
+    : comissaoFiltroFase === 'andamento' ? cotsPeriodo.filter(c => !c.aprovada && !c.reprovada)
+    : comissaoFiltroFase === 'reprovada' ? cotsPeriodo.filter(c => c.reprovada)
+    : cotsPeriodo;
+
   // Filtro de vendedor (para toda a aba)
-  const cotsParaTabela  = comissaoFiltroVendedor === 'all' ? aprovadas
-    : aprovadas.filter(c => (c.vendedor || 'Be You') === comissaoFiltroVendedor);
+  const cotsParaTabela  = comissaoFiltroVendedor === 'all' ? cotsParaFase
+    : cotsParaFase.filter(c => (c.vendedor || 'Be You') === comissaoFiltroVendedor);
   const cotsParaGraficosV = comissaoFiltroVendedor === 'all' ? cotsParaGraficos
     : cotsParaGraficos.filter(c => (c.vendedor || 'Be You') === comissaoFiltroVendedor);
 
