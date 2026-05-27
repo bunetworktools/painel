@@ -929,7 +929,7 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
     </div>
 
     <!-- Métricas de comissão -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px">
       <div class="metric" style="border-left:3px solid var(--green)">
         <div class="metric-label">💰 Cotações Comissionadas</div>
         <div class="metric-value" id="comTotal" style="font-size:24px">—</div>
@@ -937,18 +937,23 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
       </div>
       <div class="metric" style="border-left:3px solid var(--blue)">
         <div class="metric-label">📈 Lucro Operacional Total</div>
-        <div class="metric-value" id="comLucroTotal" style="font-size:22px">—</div>
-        <div class="metric-delta">cotação − compra − frete</div>
+        <div class="metric-value" id="comLucroTotal" style="font-size:20px">—</div>
+        <div class="metric-delta">cotação − compra − frete − impostos</div>
       </div>
       <div class="metric" style="border-left:3px solid var(--purple)">
         <div class="metric-label">🎯 Total de Comissões</div>
-        <div class="metric-value" id="comComissaoTotal" style="font-size:22px">—</div>
+        <div class="metric-value" id="comComissaoTotal" style="font-size:20px">—</div>
         <div class="metric-delta">50% do lucro operacional</div>
       </div>
       <div class="metric" style="border-left:3px solid var(--yellow)">
         <div class="metric-label">✅ % Comissionadas</div>
         <div class="metric-value" id="comPctComissionadas" style="font-size:24px">—</div>
         <div class="metric-delta" id="comPctDelta">das cotações aprovadas</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--green)">
+        <div class="metric-label">📊 Taxa de Conversão (Com.)</div>
+        <div class="metric-value" id="comTaxaConv" style="font-size:24px">—</div>
+        <div class="metric-delta" id="comTaxaConvDelta">comissionadas / total período</div>
       </div>
     </div>
 
@@ -961,25 +966,40 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
           <button class="btn btn-secondary btn-sm" onclick="exportComissaoPDF()" title="Imprimir / Salvar PDF">🖨️ PDF</button>
         </div>
       </div>
-      <!-- Filtro de comissionamento -->
-      <div class="rank-filter-bar" id="comissaoFilterBar">
+      <!-- Filtros -->
+      <div class="rank-filter-bar" id="comissaoFilterBar" style="flex-wrap:wrap;gap:10px 24px">
+        <div class="rank-filter-group">
+          <span class="rank-filter-label">Fase</span>
+          <button class="rank-filter-btn active" onclick="setComissaoFaseFilter('aprovada',this)">Aprovadas</button>
+          <button class="rank-filter-btn" onclick="setComissaoFaseFilter('all',this)">Todas</button>
+          <button class="rank-filter-btn" onclick="setComissaoFaseFilter('andamento',this)">Em andamento</button>
+          <button class="rank-filter-btn" onclick="setComissaoFaseFilter('reprovada',this)">Reprovadas</button>
+        </div>
         <div class="rank-filter-group">
           <span class="rank-filter-label">Comissionado?</span>
           <button class="rank-filter-btn" onclick="setComissaoFilter('all',this)">Todos</button>
-          <button class="rank-filter-btn active" id="comFiltroSim" onclick="setComissaoFilter('sim',this)">✅ Sim</button>
-          <button class="rank-filter-btn" onclick="setComissaoFilter('nao',this)">— Não</button>
+          <button class="rank-filter-btn active" id="comFiltroSim" onclick="setComissaoFilter('sim',this)">Sim</button>
+          <button class="rank-filter-btn" onclick="setComissaoFilter('nao',this)">Não</button>
+        </div>
+        <div class="rank-filter-group" id="vendedorFilterGroup">
+          <span class="rank-filter-label">Vendedor</span>
+          <button class="rank-filter-btn active" onclick="setComissaoVendedorFilter('all',this)">Todos</button>
+          <!-- botões de vendedor adicionados dinamicamente -->
         </div>
         <span class="rank-active-count" id="comissaoCount"></span>
       </div>
       <div style="overflow-x:auto">
-        <table id="comissaoTable" style="font-size:13px">
+        <table id="comissaoTable" style="font-size:12px">
           <thead><tr>
             <th>Cliente</th>
+            <th>Vendedor</th>
             <th style="text-align:center">Nº NF</th>
             <th>Data Aprovação</th>
             <th style="text-align:right">Valor Cotação</th>
             <th style="text-align:right">Valor Compra</th>
             <th style="text-align:right">Valor Frete</th>
+            <th style="text-align:right">Imp. Venda (10%)</th>
+            <th style="text-align:right">Imp. NF Entrada (2%)</th>
             <th style="text-align:center">Comissionado?</th>
             <th style="text-align:right">Lucro Operacional</th>
             <th style="text-align:right">Comissão (50%)</th>
@@ -987,6 +1007,39 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
           </tr></thead>
           <tbody id="comissaoBody"></tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- ── SEÇÃO: Análise por Vendedor ── -->
+    <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:24px">
+      👤 Análise por Vendedor
+    </div>
+    <div class="charts" style="grid-template-columns:1fr 1fr;margin-bottom:20px">
+      <div class="chart-card">
+        <div class="chart-title">📋 Cotações Abertas por Vendedor
+          <span class="chart-subtitle">Total criadas no período</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartVendAbertas"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">✅ Cotações Aprovadas por Vendedor
+          <span class="chart-subtitle">Total aprovadas no período</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartVendAprovadas"></canvas></div>
+      </div>
+    </div>
+    <div class="charts" style="grid-template-columns:1fr 1fr;margin-bottom:32px">
+      <div class="chart-card">
+        <div class="chart-title">📊 Abertas vs Aprovadas por Vendedor
+          <span class="chart-subtitle">Qtd + % conversão</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartVendBarConv"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">💰 Valor Aprovado por Mês e Vendedor
+          <span class="chart-subtitle">R$ total das cotações aprovadas</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartVendValorMes"></canvas></div>
       </div>
     </div>
 
@@ -1420,6 +1473,30 @@ function fieldVal(card, name) {
   return f ? f.value : null;
 }
 
+// Busca campo por nome EXATO (case-insensitive) — evita matches parciais indesejados
+function fieldValExact(card, name) {
+  const n = name.toLowerCase();
+  const f = card.fields?.find(f => f.name?.toLowerCase() === n);
+  return f ? f.value : null;
+}
+
+// Normaliza valor de campo Pipefy do tipo select/radio que pode chegar como
+// string JSON array: '["Felipe Torqueiro"]' → 'Felipe Torqueiro'
+function parseSelectVal(raw) {
+  if (!raw) return '';
+  const s = String(raw).trim();
+  // Formato array JSON: ["Valor"] ou [Valor]
+  if (s.startsWith('[')) {
+    try {
+      const arr = JSON.parse(s);
+      if (Array.isArray(arr) && arr.length > 0) return String(arr[0]).trim();
+    } catch {
+      return s.replace(/^\["|"\]$|^\["?|"?\]$/g, '').trim();
+    }
+  }
+  return s;
+}
+
 // Normaliza número de NF: remove prefixo de letras, pontos e espaços, converte para inteiro string
 // "NF 1003", "nf1003", "1.003", " 1003 " → "1003"
 function normalNF(val) {
@@ -1547,7 +1624,16 @@ function cotacoesData() {
     const aprovada = fase.toLowerCase().includes('aprovad');
     const reprovada = fase.toLowerCase().includes('reprovad');
     const m = monthOf(c.created_at);
-    return { ...c, valor, motivo, fase, aprovada, reprovada, mes: m };
+    // Campo vendedor = "Vendedor" (select Pipefy → ["Gabriel Granatowicz"] ou "Felipe Torqueiro")
+    const vendedorRaw = parseSelectVal(
+      fieldValExact(c, 'vendedor') ||
+      fieldVal(c, 'vendedor')      || ''
+    );
+    // Felipe Torqueiro ou Gabriel Granatowicz → externo; qualquer outro → Be You (interno)
+    const vendedor =
+      /felipe/i.test(vendedorRaw)  ? 'Felipe Torqueiro'    :
+      /gabriel/i.test(vendedorRaw) ? 'Gabriel Granatowicz' : '';
+    return { ...c, valor, motivo, fase, aprovada, reprovada, mes: m, vendedor };
   });
 }
 
@@ -1743,75 +1829,104 @@ function renderCRM() {
 // ============================================================
 //  RENDER COMERCIAL (Comissão de Vendas)
 // ============================================================
-let comissaoData = []; // store for export
-let comissaoFiltro = 'sim'; // default: show only "Sim"
+let comissaoData          = [];        // store para export
+let comissaoFiltro        = 'sim';     // Comissionado? filter
+let comissaoFiltroFase    = 'aprovada';// Fase filter
+let comissaoFiltroVendedor= 'all';     // Vendedor filter
 
 function setComissaoFilter(val, btn) {
   comissaoFiltro = val;
-  document.querySelectorAll('#comissaoFilterBar .rank-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.closest('.rank-filter-group').querySelectorAll('.rank-filter-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderComissaoTable();
 }
 
+function setComissaoFaseFilter(val, btn) {
+  comissaoFiltroFase = val;
+  btn.closest('.rank-filter-group').querySelectorAll('.rank-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderComercial();
+}
+
+function setComissaoVendedorFilter(val, btn) {
+  comissaoFiltroVendedor = val;
+  document.querySelectorAll('#vendedorFilterGroup .rank-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderComercial();
+}
+
 function renderComissaoTable() {
   const tbody = document.getElementById('comissaoBody');
-  if (!tbody || !comissaoData.length) return;
+  if (!tbody) return;
+  if (!comissaoData.length) {
+    tbody.innerHTML = `<tr><td colspan="13" style="text-align:center;color:var(--muted);padding:24px">Nenhum registro para o filtro selecionado</td></tr>`;
+    return;
+  }
   tbody.innerHTML = '';
 
   const visible = comissaoData.filter(r => {
-    if (comissaoFiltro === 'sim') return r.comissionado === 'Sim';
-    if (comissaoFiltro === 'nao') return r.comissionado === 'Não';
+    if (comissaoFiltro === 'sim' && r.comissionado !== 'Sim') return false;
+    if (comissaoFiltro === 'nao' && r.comissionado !== 'Não') return false;
     return true;
   });
 
   const countEl = document.getElementById('comissaoCount');
   if (countEl) countEl.textContent = visible.length + ' registro(s)';
 
-  let sumCot = 0, sumCompra = 0, sumFrete = 0, sumLucro = 0, sumComissao = 0;
+  if (visible.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="13" style="text-align:center;color:var(--muted);padding:24px">Nenhum registro para o filtro selecionado</td></tr>`;
+    return;
+  }
+
+  let sumCot=0, sumCompra=0, sumFrete=0, sumImpVenda=0, sumImpNF=0, sumLucro=0, sumComissao=0;
 
   visible.forEach(r => {
-    sumCot     += r.valorCot;
-    sumCompra  += r.valorCompra;
-    sumFrete   += r.valorFrete;
-    sumLucro   += r.lucro;
+    sumCot      += r.valorCot;
+    sumCompra   += r.valorCompra;
+    sumFrete    += r.valorFrete;
+    sumImpVenda += r.impostoVenda;
+    sumImpNF    += r.impostoNFEntrada;
+    sumLucro    += r.lucro;
     if (r.comissionado === 'Sim') sumComissao += r.comissao;
 
-    const lucroColor  = r.lucro    >= 0 ? 'var(--green-d)' : 'var(--red-d)';
-    const comissColor = r.comissao >= 0 ? 'var(--green-d)' : 'var(--red-d)';
-    const comissTag   = r.comissionado === 'Sim'
-      ? '<span class="tag tag-green">✅ Sim</span>'
-      : '<span class="tag tag-gray">— Não</span>';
+    const lucroSign  = r.lucro > 0 ? '+' : '';
+    const lucroColor = r.lucro >= 0 ? 'var(--green-d)' : 'var(--red-d)';
+    const comissColor= r.comissao >= 0 ? 'var(--green-d)' : 'var(--red-d)';
+    const comissTag  = r.comissionado === 'Sim'
+      ? '<span style="color:var(--green-d);font-weight:600">Sim</span>'
+      : '<span style="color:var(--muted)">Não</span>';
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><strong>${r.cliente}</strong></td>
-      <td style="text-align:center;font-size:12px;color:var(--muted)">${r.nf || '—'}</td>
-      <td style="font-size:12px">${r.dataAprov || '—'}</td>
+      <td style="font-size:11px;color:var(--muted)">${r.vendedor}</td>
+      <td style="text-align:center;font-size:11px;color:var(--muted)">${r.nf || '—'}</td>
+      <td style="font-size:11px">${r.dataAprov || '—'}</td>
       <td style="text-align:right">${fmtBRL(r.valorCot)}</td>
       <td style="text-align:right">${r.valorCompra > 0 ? fmtBRL(r.valorCompra) : '<span style="color:var(--muted)">—</span>'}</td>
-      <td style="text-align:right">${r.valorFrete  > 0 ? fmtBRL(r.valorFrete)  : '<span style="color:var(--muted)">—</span>'}</td>
+      <td style="text-align:right">${r.valorFrete > 0 ? fmtBRL(r.valorFrete) : '<span style="color:var(--muted)">—</span>'}</td>
+      <td style="text-align:right;color:var(--red-d)">${fmtBRL(r.impostoVenda)}</td>
+      <td style="text-align:right;color:var(--red-d)">${fmtBRL(r.impostoNFEntrada)}</td>
       <td style="text-align:center">${comissTag}</td>
-      <td style="text-align:right;font-weight:700;color:${lucroColor}">${fmtBRL(r.lucro)}</td>
+      <td style="text-align:right;font-weight:700;color:${lucroColor}">${lucroSign}${fmtBRL(r.lucro)}</td>
       <td style="text-align:right;font-weight:700;color:${comissColor}">${r.comissionado === 'Sim' ? fmtBRL(r.comissao) : '<span style="color:var(--muted)">—</span>'}</td>
       <td style="text-align:center">${r.compLink}</td>`;
     tbody.appendChild(tr);
   });
 
-  if (visible.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:24px">Nenhum registro para o filtro selecionado</td></tr>`;
-    return;
-  }
-
   // Linha de totais
+  const lucroTotalSign = sumLucro > 0 ? '+' : '';
   const trTot = document.createElement('tr');
   trTot.style.cssText = 'background:rgba(124,58,237,.08);font-weight:700';
   trTot.innerHTML = `
-    <td colspan="3" style="text-align:right;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.3px">TOTAIS</td>
+    <td colspan="4" style="text-align:right;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.3px">TOTAIS</td>
     <td style="text-align:right">${fmtBRL(sumCot)}</td>
     <td style="text-align:right">${fmtBRL(sumCompra)}</td>
     <td style="text-align:right">${fmtBRL(sumFrete)}</td>
+    <td style="text-align:right;color:var(--red-d)">${fmtBRL(sumImpVenda)}</td>
+    <td style="text-align:right;color:var(--red-d)">${fmtBRL(sumImpNF)}</td>
     <td></td>
-    <td style="text-align:right;color:${sumLucro >= 0 ? 'var(--green-d)':'var(--red-d)'}">${fmtBRL(sumLucro)}</td>
+    <td style="text-align:right;color:${sumLucro >= 0 ? 'var(--green-d)':'var(--red-d)'}">${lucroTotalSign}${fmtBRL(sumLucro)}</td>
     <td style="text-align:right;color:${sumComissao >= 0 ? 'var(--green-d)':'var(--red-d)'}">${fmtBRL(sumComissao)}</td>
     <td></td>`;
   tbody.appendChild(trTot);
@@ -1822,58 +1937,57 @@ function renderComercial() {
   const allComps = comprasData();
   const allLogs  = logisticaData();
 
-  const cots  = filteredByPeriod(allCots,  c => c.created_at ? new Date(c.created_at) : null);
+  // Todas as cotações do período (para charts e taxa de conversão)
+  const cotsPeriodo = filteredByPeriod(allCots, c => c.created_at ? new Date(c.created_at) : null);
 
-  // Cotações aprovadas no período
-  const aprovadas = cots.filter(c => c.aprovada);
+  // Filtro de fase para a tabela/métricas de comissão
+  const aprovadas = cotsPeriodo.filter(c => c.aprovada);
 
+  // Para gráficos: usa filtro de fase se selecionado
+  const cotsParaGraficos = comissaoFiltroFase === 'aprovada'  ? cotsPeriodo.filter(c => c.aprovada)
+    : comissaoFiltroFase === 'andamento' ? cotsPeriodo.filter(c => !c.aprovada && !c.reprovada)
+    : comissaoFiltroFase === 'reprovada' ? cotsPeriodo.filter(c => c.reprovada)
+    : cotsPeriodo;
 
-  // Lookup: compras por cotacaoNum e por NF (raw e normalizado)
+  // Filtro de vendedor (para toda a aba)
+  const cotsParaTabela  = comissaoFiltroVendedor === 'all' ? aprovadas
+    : aprovadas.filter(c => (c.vendedor || 'Be You') === comissaoFiltroVendedor);
+  const cotsParaGraficosV = comissaoFiltroVendedor === 'all' ? cotsParaGraficos
+    : cotsParaGraficos.filter(c => (c.vendedor || 'Be You') === comissaoFiltroVendedor);
+
+  // Lookup: compras por cotacaoNum e por NF
   const compByCotNum = {};
   const compByNF     = {};
   allComps.forEach(comp => {
     if (comp.cotacaoNum) {
-      const raw  = String(comp.cotacaoNum).trim();
+      const raw = String(comp.cotacaoNum).trim();
       const norm = normalNF(comp.cotacaoNum);
-      compByCotNum[raw]  = comp;
+      compByCotNum[raw] = comp;
       if (norm && norm !== raw) compByCotNum[norm] = comp;
     }
     if (comp.nf) {
-      const raw  = String(comp.nf).trim();
+      const raw = String(comp.nf).trim();
       const norm = normalNF(comp.nf);
-      compByNF[raw]  = comp;
+      compByNF[raw] = comp;
       if (norm && norm !== raw) compByNF[norm] = comp;
     }
   });
 
-  // Lookup: logística por NF (raw e normalizado)
+  // Lookup: logística por NF
   const logByNF = {};
   allLogs.forEach(log => {
     if (log.nf) {
-      const raw  = String(log.nf).trim();
+      const raw = String(log.nf).trim();
       const norm = normalNF(log.nf);
-      logByNF[raw]  = log;
+      logByNF[raw] = log;
       if (norm && norm !== raw) logByNF[norm] = log;
     }
   });
 
-  const tbody = document.getElementById('comissaoBody');
-  if (!tbody) return;
   comissaoData = [];
+  let totalLucroOp = 0, totalComissao = 0, countComiss = 0;
 
-  if (aprovadas.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:24px">Nenhuma cotação aprovada no período selecionado</td></tr>`;
-    ['comTotal','comLucroTotal','comComissaoTotal','comPctComissionadas'].forEach(id => {
-      if (el(id)) el(id).textContent = '—';
-    });
-    return;
-  }
-
-  let totalLucroOp  = 0;
-  let totalComissao = 0;
-  let countComiss   = 0;
-
-  aprovadas.forEach(cot => {
+  cotsParaTabela.forEach(cot => {
     const valorCot = cot.valor || 0;
 
     // NF da cotação
@@ -1882,7 +1996,7 @@ function renderComercial() {
       fieldVal(cot, 'numero da nf') || fieldVal(cot, 'número da nf') ||
       fieldVal(cot, 'nota fiscal')  || fieldVal(cot, 'nf') || null;
 
-    // Data de aprovação da cotação
+    // Data de aprovação
     const aprovRaw =
       fieldVal(cot, 'data e hora da aprovação') ||
       fieldVal(cot, 'data da aprovação') ||
@@ -1890,24 +2004,22 @@ function renderComercial() {
       cot.finished_at || null;
     const dataAprov = aprovRaw ? fmtDateBR(aprovRaw) : (cot.finished_at ? fmtDateBR(cot.finished_at) : '—');
 
-    const cnStr    = String(cotNum(cot) || '').trim();
-    const nfStr    = nfCot ? String(nfCot).trim() : '';
-    const nfNorm   = normalNF(nfCot);
-    const cnNorm   = normalNF(cnStr);
+    const cnStr  = String(cotNum(cot) || '').trim();
+    const nfStr  = nfCot ? String(nfCot).trim() : '';
+    const nfNorm = normalNF(nfCot);
+    const cnNorm = normalNF(cnStr);
 
-    // Busca compra por NF ou Nº cotação (raw e normalizado)
+    // Busca compra
     const compCard =
-      (nfStr   && compByNF[nfStr])      ||
-      (nfNorm  && compByNF[nfNorm])     ||
-      (cnStr   && compByCotNum[cnStr])   ||
-      (cnNorm  && compByCotNum[cnNorm])  || null;
-    // Fallback: quando não há card de compras (ex: demanda não aberta automaticamente),
-    // usa o valor total da própria cotação como proxy do valor de compra
+      (nfStr  && compByNF[nfStr])      ||
+      (nfNorm && compByNF[nfNorm])     ||
+      (cnStr  && compByCotNum[cnStr])  ||
+      (cnNorm && compByCotNum[cnNorm]) || null;
     const valorCompra = compCard
       ? (compCard.valor || 0)
       : toNum(fieldVal(cot, 'valor total da cotação') || fieldVal(cot, 'valor total') || 0);
 
-    // Busca frete por NF (raw e normalizado, da cotação e da compra)
+    // Busca frete
     const nfComp     = compCard?.nf ? String(compCard.nf).trim() : '';
     const nfCompNorm = normalNF(compCard?.nf);
     const logCard =
@@ -1916,6 +2028,10 @@ function renderComercial() {
       (nfComp     && logByNF[nfComp])     ||
       (nfCompNorm && logByNF[nfCompNorm]) || null;
     const valorFrete = logCard ? (logCard.frete || 0) : 0;
+
+    // Impostos sobre o valor da cotação
+    const impostoVenda     = valorCot * 0.10;          // 10% sobre valor da NF
+    const impostoNFEntrada = valorCot * 0.50 * 0.04;   // 4% sobre 50% da NF = 2% do total
 
     // Campo "É comissionado?"
     const comissRaw =
@@ -1926,25 +2042,30 @@ function renderComercial() {
       ? /^(sim|yes|s|true|1)$/i.test(String(comissRaw).trim())
       : false;
 
-    const lucro    = valorCot - valorCompra - valorFrete;
+    // Lucro = cotação − compra − frete − impostos
+    const lucro    = valorCot - valorCompra - valorFrete - impostoVenda - impostoNFEntrada;
     const comissao = lucro / 2;
 
-    totalLucroOp  += lucro;
+    totalLucroOp += lucro;
     if (isComissionado) { totalComissao += comissao; countComiss++; }
 
-    // Link: usa card de compras se disponível, senão cotação
+    // Vendedor: usa "Be You" se não informado
+    const vendedor = cot.vendedor || 'Be You';
+
+    // Link
     const compLink = compCard
-      ? `<a href="https://app.pipefy.com/open-cards/${compCard.id}" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none;font-size:16px" title="Abrir card de compras no Pipefy">🔗</a>`
+      ? `<a href="https://app.pipefy.com/open-cards/${compCard.id}" target="_blank" rel="noopener" style="color:var(--blue);text-decoration:none;font-size:15px" title="Abrir card de compras no Pipefy">🔗</a>`
       : cardLink(cot);
 
-    // NF display (da compra ou da cotação)
     const nfDisplay = (compCard?.nf) || nfCot || null;
 
     comissaoData.push({
       cliente: cardTitle(cot),
+      vendedor,
       nf: nfDisplay,
       dataAprov,
       valorCot, valorCompra, valorFrete,
+      impostoVenda, impostoNFEntrada,
       comissionado: isComissionado ? 'Sim' : 'Não',
       lucro, comissao,
       compLink,
@@ -1952,16 +2073,114 @@ function renderComercial() {
     });
   });
 
-  // Render with current filter
   renderComissaoTable();
 
+  // ── Métricas ──
   const pctComiss = aprovadas.length > 0 ? countComiss / aprovadas.length : 0;
+  const taxaConvComiss = cotsPeriodo.length > 0
+    ? comissaoData.filter(r => r.comissionado === 'Sim').length / cotsPeriodo.length
+    : 0;
   if (el('comTotal'))            el('comTotal').textContent            = countComiss;
   if (el('comTotalDelta'))       el('comTotalDelta').textContent       = 'de ' + aprovadas.length + ' cotações aprovadas';
   if (el('comLucroTotal'))       el('comLucroTotal').textContent       = fmtBRL(totalLucroOp);
   if (el('comComissaoTotal'))    el('comComissaoTotal').textContent    = fmtBRL(totalComissao);
   if (el('comPctComissionadas')) el('comPctComissionadas').textContent = fmtPct(pctComiss);
   if (el('comPctDelta'))         el('comPctDelta').textContent         = countComiss + ' de ' + aprovadas.length + ' aprovadas';
+  if (el('comTaxaConv'))         el('comTaxaConv').textContent         = fmtPct(taxaConvComiss);
+  if (el('comTaxaConvDelta'))    el('comTaxaConvDelta').textContent    =
+    comissaoData.filter(r => r.comissionado === 'Sim').length + ' comissionadas / ' + cotsPeriodo.length + ' cotações';
+
+  // ── Gráficos por Vendedor ──
+  const VEND_COLORS = [
+    'rgba(124,58,237,0.82)','rgba(16,185,129,0.82)','rgba(245,158,11,0.82)',
+    'rgba(239,68,68,0.82)','rgba(59,130,246,0.82)','rgba(236,72,153,0.82)',
+    'rgba(20,184,166,0.82)','rgba(249,115,22,0.82)','rgba(99,102,241,0.82)'
+  ];
+
+  // Coleta todos os vendedores do período (independente do filtro)
+  const todosVendedores = [...new Set(cotsPeriodo.map(c => c.vendedor || 'Be You'))].sort();
+
+  // Popula filtro de vendedor dinamicamente
+  const vfg = document.getElementById('vendedorFilterGroup');
+  if (vfg) {
+    vfg.querySelectorAll('button[data-vend]').forEach(b => b.remove());
+    todosVendedores.forEach(v => {
+      const btn = document.createElement('button');
+      btn.className = 'rank-filter-btn' + (comissaoFiltroVendedor === v ? ' active' : '');
+      btn.setAttribute('data-vend', v);
+      btn.textContent = v;
+      btn.onclick = () => setComissaoVendedorFilter(v, btn);
+      vfg.appendChild(btn);
+    });
+  }
+
+  // Dados dos gráficos (usa cotsParaGraficosV já filtrado por fase + vendedor)
+  const vendAbMap  = {}; // abertas (total do período)
+  const vendApMap  = {}; // aprovadas
+  cotsParaGraficosV.forEach(c => {
+    const v = c.vendedor || 'Be You';
+    vendAbMap[v] = (vendAbMap[v] || 0) + 1;
+    if (c.aprovada) vendApMap[v] = (vendApMap[v] || 0) + 1;
+  });
+  const vLabels = Object.keys(vendAbMap).sort();
+  const vColors = vLabels.map((_, i) => VEND_COLORS[i % VEND_COLORS.length]);
+
+  // Pizza: cotações abertas
+  mkDoughnut('chartVendAbertas', vLabels, vLabels.map(v => vendAbMap[v] || 0), vColors);
+
+  // Pizza: cotações aprovadas
+  mkDoughnut('chartVendAprovadas', vLabels, vLabels.map(v => vendApMap[v] || 0), vColors);
+
+  // Barras: abertas vs aprovadas + % conversão como datalabel
+  destroyChart('chartVendBarConv');
+  const ctxVBC = document.getElementById('chartVendBarConv');
+  if (ctxVBC && vLabels.length) {
+    charts['chartVendBarConv'] = new Chart(ctxVBC, {
+      type: 'bar',
+      data: {
+        labels: vLabels,
+        datasets: [
+          { label: 'Não aprovadas', data: vLabels.map(v => (vendAbMap[v]||0)-(vendApMap[v]||0)), backgroundColor:'rgba(124,58,237,0.35)', borderRadius:2 },
+          { label: 'Aprovadas',     data: vLabels.map(v => vendApMap[v]||0), backgroundColor:'rgba(16,185,129,0.82)', borderRadius:2 }
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{ position:'bottom', labels:{ font:{size:11}, boxWidth:12 } },
+          datalabels:{
+            anchor:'end', align:'top',
+            formatter:(v, ctx) => {
+              if (ctx.datasetIndex !== 1) return '';
+              const total = vendAbMap[vLabels[ctx.dataIndex]] || 0;
+              return total ? Math.round((v/total)*100)+'%' : '';
+            },
+            font:{size:10,weight:'700'}, color:'#10b981'
+          }
+        },
+        scales:{
+          x:{ stacked:true },
+          y:{ stacked:true, beginAtZero:true, ticks:{ callback: v => Number.isInteger(v)?v:'' } }
+        }
+      }
+    });
+  }
+
+  // Barras empilhadas: valor aprovado por mês por vendedor
+  const vendValMes = {};
+  vLabels.forEach(v => { vendValMes[v] = Array(12).fill(0); });
+  cotsParaGraficosV.filter(c => c.aprovada).forEach(c => {
+    const v = c.vendedor || 'Be You';
+    const m = c.created_at ? new Date(c.created_at).getMonth() : -1;
+    if (m >= 0 && vendValMes[v]) vendValMes[v][m] += c.valor || 0;
+  });
+  mkStackedBar('chartVendValorMes', activeMonths,
+    vLabels.map((v, i) => ({
+      label: v,
+      data: sliceM(vendValMes[v] || Array(12).fill(0)),
+      color: VEND_COLORS[i % VEND_COLORS.length]
+    }))
+  );
 }
 
 function exportComissaoExcel() {
@@ -1973,10 +2192,11 @@ function exportComissaoExcel() {
       if (comissaoFiltro === 'nao') return r.comissionado === 'Não';
       return true;
     });
-    const cols = ['Cliente','Nº NF','Data Aprovação','Valor Cotação','Valor Compra','Valor Frete','Comissionado?','Lucro Operacional','Comissão (50%)'];
+    const cols = ['Cliente','Vendedor','Nº NF','Data Aprovação','Valor Cotação','Valor Compra','Valor Frete','Imposto sobre Venda (10%)','Imposto NF Entrada (2%)','Comissionado?','Lucro Operacional','Comissão (50%)'];
     const rows = visible.map(r => [
-      r.cliente, r.nf || '—', r.dataAprov || '—',
+      r.cliente, r.vendedor, r.nf || '—', r.dataAprov || '—',
       r.valorCot, r.valorCompra, r.valorFrete,
+      r.impostoVenda, r.impostoNFEntrada,
       r.comissionado, r.lucro,
       r.comissionado === 'Sim' ? r.comissao : ''
     ]);
@@ -1991,7 +2211,7 @@ function exportComissaoExcel() {
 
 function exportComissaoPDF() {
   if (!comissaoData.length) { alert('Nenhum dado para exportar.'); return; }
-  const pw = window.open('','_blank','width=1000,height=700');
+  const pw = window.open('','_blank','width=1200,height=800');
   if (!pw) { alert('Permita pop-ups para gerar o PDF.'); return; }
   const fr = n => (n != null && !isNaN(n))
     ? 'R$' + Number(n).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})
@@ -2001,51 +2221,65 @@ function exportComissaoPDF() {
     if (comissaoFiltro === 'nao') return r.comissionado === 'Não';
     return true;
   });
-  let sCot=0,sComp=0,sFret=0,sLuc=0,sCom=0;
-  visible.forEach(r => { sCot+=r.valorCot; sComp+=r.valorCompra; sFret+=r.valorFrete; sLuc+=r.lucro; if(r.comissionado==='Sim') sCom+=r.comissao; });
+  let sCot=0,sComp=0,sFret=0,sImpV=0,sImpN=0,sLuc=0,sCom=0;
+  visible.forEach(r => {
+    sCot+=r.valorCot; sComp+=r.valorCompra; sFret+=r.valorFrete;
+    sImpV+=r.impostoVenda; sImpN+=r.impostoNFEntrada;
+    sLuc+=r.lucro; if(r.comissionado==='Sim') sCom+=r.comissao;
+  });
   const lTotal = sLuc>=0?'#059669':'#dc2626', cTotal = sCom>=0?'#059669':'#dc2626';
   const rows = visible.map(r => {
     const lc = r.lucro >= 0 ? '#059669' : '#dc2626';
     const cc = r.comissao >= 0 ? '#059669' : '#dc2626';
+    const ls = r.lucro > 0 ? '+' : '';
     return `<tr>
       <td>${r.cliente}</td>
+      <td>${r.vendedor}</td>
       <td class="c">${r.nf || '—'}</td>
       <td>${r.dataAprov || '—'}</td>
       <td class="r">${fr(r.valorCot)}</td>
       <td class="r">${r.valorCompra > 0 ? fr(r.valorCompra) : '—'}</td>
       <td class="r">${r.valorFrete  > 0 ? fr(r.valorFrete)  : '—'}</td>
+      <td class="r" style="color:#dc2626">${fr(r.impostoVenda)}</td>
+      <td class="r" style="color:#dc2626">${fr(r.impostoNFEntrada)}</td>
       <td class="c">${r.comissionado}</td>
-      <td class="r" style="color:${lc};font-weight:700">${fr(r.lucro)}</td>
+      <td class="r" style="color:${lc};font-weight:700">${ls}${fr(r.lucro)}</td>
       <td class="r" style="color:${cc};font-weight:700">${r.comissionado==='Sim' ? fr(r.comissao) : '—'}</td>
     </tr>`;
   }).join('');
+  const ls = sLuc > 0 ? '+' : '';
   const totRow = `<tr style="background:#f0ebff;font-weight:700">
-    <td colspan="3" style="text-align:right;font-size:10px;color:#666">TOTAIS</td>
+    <td colspan="4" style="text-align:right;font-size:10px;color:#666">TOTAIS</td>
     <td class="r">${fr(sCot)}</td><td class="r">${fr(sComp)}</td><td class="r">${fr(sFret)}</td>
+    <td class="r" style="color:#dc2626">${fr(sImpV)}</td>
+    <td class="r" style="color:#dc2626">${fr(sImpN)}</td>
     <td></td>
-    <td class="r" style="color:${lTotal}">${fr(sLuc)}</td>
+    <td class="r" style="color:${lTotal}">${ls}${fr(sLuc)}</td>
     <td class="r" style="color:${cTotal}">${fr(sCom)}</td>
   </tr>`;
+  const vendedorInfo = comissaoFiltroVendedor !== 'all' ? ` | Vendedor: ${comissaoFiltroVendedor}` : '';
   pw.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8">
     <title>Comissão de Vendas</title>
     <style>
-      body{font-family:Arial,sans-serif;font-size:11px;color:#1a1a2e;margin:20px}
-      h2{font-size:15px;margin-bottom:4px;color:#7c3aed}
-      p.meta{font-size:10px;color:#666;margin-bottom:12px}
+      body{font-family:Arial,sans-serif;font-size:10px;color:#1a1a2e;margin:16px}
+      h2{font-size:14px;margin-bottom:3px;color:#7c3aed}
+      p.meta{font-size:9px;color:#666;margin-bottom:10px}
       table{border-collapse:collapse;width:100%}
-      th{background:#7c3aed;color:#fff;padding:6px 8px;text-align:left;font-size:10px;white-space:nowrap}
+      th{background:#7c3aed;color:#fff;padding:5px 6px;text-align:left;font-size:9px;white-space:nowrap}
       th.r,td.r{text-align:right} th.c,td.c{text-align:center}
-      td{border-bottom:1px solid #e2e8f0;padding:5px 8px;vertical-align:middle}
+      td{border-bottom:1px solid #e2e8f0;padding:4px 6px;vertical-align:middle}
       tr:nth-child(even) td{background:#f8f8ff}
       @media print{body{margin:0}}
     </style></head><body>
     <h2>💼 Comissão de Vendas</h2>
-    <p class="meta">${visible.length} registro(s) — gerado em ${new Date().toLocaleString('pt-BR')}</p>
+    <p class="meta">${visible.length} registro(s)${vendedorInfo} — gerado em ${new Date().toLocaleString('pt-BR')}</p>
     <table>
       <thead><tr>
-        <th>Cliente</th><th class="c">Nº NF</th><th>Data Aprovação</th>
+        <th>Cliente</th><th>Vendedor</th><th class="c">Nº NF</th><th>Data Aprovação</th>
         <th class="r">Valor Cotação</th><th class="r">Valor Compra</th>
-        <th class="r">Valor Frete</th><th class="c">Comissionado?</th>
+        <th class="r">Valor Frete</th>
+        <th class="r">Imp. Venda (10%)</th><th class="r">Imp. NF Entrada (2%)</th>
+        <th class="c">Comissionado?</th>
         <th class="r">Lucro Operacional</th><th class="r">Comissão (50%)</th>
       </tr></thead>
       <tbody>${rows}${totRow}</tbody>
