@@ -957,37 +957,6 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
       </div>
     </div>
 
-    <!-- ── Filtros Globais da Aba Comercial ── -->
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:20px;padding:12px 18px;background:var(--card);border:1px solid var(--border);border-radius:10px">
-      <span style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">🔎 Filtros</span>
-      <div style="display:flex;align-items:center;gap:6px">
-        <label style="font-size:12px;color:var(--muted);white-space:nowrap" for="selFaseCompra">Fase Compra</label>
-        <select id="selFaseCompra" onchange="setComissaoFaseFilter(this.value)"
-          style="font-size:12px;border:1px solid var(--border);border-radius:6px;padding:5px 10px;background:var(--card);color:var(--text);cursor:pointer;outline:none">
-          <option value="all">Todas</option>
-          <option value="concluida">Compra Concluída</option>
-          <option value="andamento">Em Andamento</option>
-        </select>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px">
-        <label style="font-size:12px;color:var(--muted);white-space:nowrap" for="selComissionado">Comissionado</label>
-        <select id="selComissionado" onchange="setComissaoFilter(this.value)"
-          style="font-size:12px;border:1px solid var(--border);border-radius:6px;padding:5px 10px;background:var(--card);color:var(--text);cursor:pointer;outline:none">
-          <option value="all">Todos</option>
-          <option value="sim" selected>Sim</option>
-          <option value="nao">Não</option>
-        </select>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px">
-        <label style="font-size:12px;color:var(--muted);white-space:nowrap" for="selVendedor">Vendedor</label>
-        <select id="selVendedor" onchange="setComissaoVendedorFilter(this.value)"
-          style="font-size:12px;border:1px solid var(--border);border-radius:6px;padding:5px 10px;background:var(--card);color:var(--text);cursor:pointer;outline:none">
-          <option value="all">Todos</option>
-        </select>
-      </div>
-      <span id="comissaoCount" class="rank-active-count" style="margin-left:auto"></span>
-    </div>
-
     <!-- ── SEÇÃO: Análise por Vendedor ── -->
     <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:24px">
       👤 Análise por Vendedor
@@ -1021,6 +990,37 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
       </div>
     </div>
 
+    <!-- ── Filtros do Relatório de Comissão ── -->
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px;padding:10px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px">
+      <span style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">🔎 Filtros</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <label style="font-size:12px;color:var(--muted);white-space:nowrap" for="selFaseCompra">Fase Compra</label>
+        <select id="selFaseCompra" onchange="setComissaoFaseFilter(this.value)"
+          style="font-size:12px;border:1px solid var(--border);border-radius:6px;padding:4px 8px;background:var(--card);color:var(--text);cursor:pointer;outline:none">
+          <option value="all">Todas</option>
+          <option value="concluida">Compra Concluída</option>
+          <option value="andamento">Em Andamento</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <label style="font-size:12px;color:var(--muted);white-space:nowrap" for="selComissionado">Comissionado</label>
+        <select id="selComissionado" onchange="setComissaoFilter(this.value)"
+          style="font-size:12px;border:1px solid var(--border);border-radius:6px;padding:4px 8px;background:var(--card);color:var(--text);cursor:pointer;outline:none">
+          <option value="all">Todos</option>
+          <option value="sim" selected>Sim</option>
+          <option value="nao">Não</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <label style="font-size:12px;color:var(--muted);white-space:nowrap" for="selVendedor">Vendedor</label>
+        <select id="selVendedor" onchange="setComissaoVendedorFilter(this.value)"
+          style="font-size:12px;border:1px solid var(--border);border-radius:6px;padding:4px 8px;background:var(--card);color:var(--text);cursor:pointer;outline:none">
+          <option value="all">Todos</option>
+        </select>
+      </div>
+      <span id="comissaoCount" class="rank-active-count" style="margin-left:auto"></span>
+    </div>
+
     <!-- Tabela de comissão -->
     <div class="table-card" style="margin-bottom:32px">
       <div class="table-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
@@ -1034,21 +1034,36 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
         </div>
       </div>
       <div style="overflow-x:auto">
-        <table id="comissaoTable" style="font-size:12px">
+        <table id="comissaoTable" style="font-size:11px;width:100%;table-layout:fixed">
+          <colgroup>
+            <col style="width:17%"><!-- Cliente -->
+            <col style="width:8%"> <!-- Vendedor -->
+            <col style="width:5%"> <!-- Nº NF -->
+            <col style="width:6%"> <!-- Data -->
+            <col style="width:8%"> <!-- Cotação -->
+            <col style="width:8%"> <!-- Compra -->
+            <col style="width:6%"> <!-- Frete -->
+            <col style="width:7%"> <!-- Imp. Venda -->
+            <col style="width:7%"> <!-- Imp. NF -->
+            <col style="width:5%"> <!-- Comis. -->
+            <col style="width:9%"> <!-- Lucro Op. -->
+            <col style="width:8%"> <!-- Comissão -->
+            <col style="width:3%"> <!-- Link -->
+          </colgroup>
           <thead><tr>
-            <th>Cliente</th>
-            <th>Vendedor</th>
-            <th style="text-align:center">Nº NF</th>
-            <th>Data Aprovação</th>
-            <th style="text-align:right">Valor Cotação</th>
-            <th style="text-align:right">Valor Compra</th>
-            <th style="text-align:right">Valor Frete</th>
-            <th style="text-align:right">Imp. Venda (10%)</th>
-            <th style="text-align:right">Imp. NF Entrada (2%)</th>
-            <th style="text-align:center">Comissionado?</th>
-            <th style="text-align:right">Lucro Operacional</th>
-            <th style="text-align:right">Comissão (50%)</th>
-            <th style="text-align:center">Link</th>
+            <th style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Cliente</th>
+            <th style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Vendedor</th>
+            <th style="text-align:center;white-space:nowrap">Nº NF</th>
+            <th style="white-space:nowrap">Data</th>
+            <th style="text-align:right;white-space:nowrap">Cotação</th>
+            <th style="text-align:right;white-space:nowrap">Compra</th>
+            <th style="text-align:right;white-space:nowrap">Frete</th>
+            <th style="text-align:right;white-space:nowrap">Imp. Venda</th>
+            <th style="text-align:right;white-space:nowrap">Imp. NF</th>
+            <th style="text-align:center;white-space:nowrap">Comis.?</th>
+            <th style="text-align:right;white-space:nowrap">Lucro Op.</th>
+            <th style="text-align:right;white-space:nowrap">Comissão</th>
+            <th style="text-align:center">🔗</th>
           </tr></thead>
           <tbody id="comissaoBody"></tbody>
         </table>
@@ -1890,7 +1905,7 @@ function renderComissaoTable() {
     const lucroSign = preSumLucro >= 0 ? '+' : '';
     const lucroCol  = preSumLucro >= 0 ? 'var(--green-d)' : 'var(--red-d)';
     const comCol    = preSumComissao >= 0 ? 'var(--green-d)' : 'var(--red-d)';
-    statsEl.innerHTML = `Lucro: <strong style="color:${lucroCol}">${lucroSign}${fmtBRL(preSumLucro)}</strong>&ensp;·&ensp;Comissão: <strong style="color:${comCol}">${fmtBRL(preSumComissao)}</strong>`;
+    statsEl.innerHTML = `<strong>${visible.length}</strong> cot.&ensp;·&ensp;Lucro: <strong style="color:${lucroCol}">${lucroSign}${fmtBRL(preSumLucro)}</strong>&ensp;·&ensp;Comissão: <strong style="color:${comCol}">${fmtBRL(preSumComissao)}</strong>`;
   }
 
   if (visible.length === 0) {
@@ -1913,23 +1928,23 @@ function renderComissaoTable() {
     const lucroColor = r.lucro >= 0 ? 'var(--green-d)' : 'var(--red-d)';
     const comissColor= r.comissao >= 0 ? 'var(--green-d)' : 'var(--red-d)';
     const comissTag  = r.comissionado === 'Sim'
-      ? '<span style="color:var(--green-d);font-weight:600">Sim</span>'
+      ? '<span style="font-weight:600">Sim</span>'
       : '<span style="color:var(--muted)">Não</span>';
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><strong>${r.cliente}</strong></td>
-      <td style="font-size:11px;color:var(--muted)">${r.vendedor}</td>
-      <td style="text-align:center;font-size:11px;color:var(--muted)">${r.nf || '—'}</td>
-      <td style="font-size:11px">${r.dataAprov || '—'}</td>
-      <td style="text-align:right">${fmtBRL(r.valorCot)}</td>
-      <td style="text-align:right">${r.valorCompra > 0 ? fmtBRL(r.valorCompra) : '<span style="color:var(--muted)">—</span>'}</td>
-      <td style="text-align:right">${r.valorFrete > 0 ? fmtBRL(r.valorFrete) : '<span style="color:var(--muted)">—</span>'}</td>
-      <td style="text-align:right">${fmtBRL(r.impostoVenda)}</td>
-      <td style="text-align:right">${fmtBRL(r.impostoNFEntrada)}</td>
-      <td style="text-align:center">${comissTag}</td>
-      <td style="text-align:right;font-weight:700;color:${lucroColor}">${lucroSign}${fmtBRL(r.lucro)}</td>
-      <td style="text-align:right;font-weight:700;color:${comissColor}">${r.comissionado === 'Sim' ? fmtBRL(r.comissao) : '<span style="color:var(--muted)">—</span>'}</td>
+      <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.cliente}"><strong>${r.cliente}</strong></td>
+      <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted)" title="${r.vendedor}">${r.vendedor}</td>
+      <td style="text-align:center;white-space:nowrap;color:var(--muted)">${r.nf || '—'}</td>
+      <td style="white-space:nowrap">${r.dataAprov || '—'}</td>
+      <td style="text-align:right;white-space:nowrap">${fmtBRL(r.valorCot)}</td>
+      <td style="text-align:right;white-space:nowrap">${r.valorCompra > 0 ? fmtBRL(r.valorCompra) : '<span style="color:var(--muted)">—</span>'}</td>
+      <td style="text-align:right;white-space:nowrap">${r.valorFrete > 0 ? fmtBRL(r.valorFrete) : '<span style="color:var(--muted)">—</span>'}</td>
+      <td style="text-align:right;white-space:nowrap">${fmtBRL(r.impostoVenda)}</td>
+      <td style="text-align:right;white-space:nowrap">${fmtBRL(r.impostoNFEntrada)}</td>
+      <td style="text-align:center;white-space:nowrap">${comissTag}</td>
+      <td style="text-align:right;white-space:nowrap;font-weight:700;color:${lucroColor}">${lucroSign}${fmtBRL(r.lucro)}</td>
+      <td style="text-align:right;white-space:nowrap;font-weight:700;color:${comissColor}">${r.comissionado === 'Sim' ? fmtBRL(r.comissao) : '<span style="color:var(--muted)">—</span>'}</td>
       <td style="text-align:center">${r.compLink}</td>`;
     tbody.appendChild(tr);
   });
