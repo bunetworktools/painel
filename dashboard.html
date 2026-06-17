@@ -436,10 +436,10 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
   <div class="tabs">
     <div class="tab active" onclick="switchTab('geral')">🏠 Visão Geral</div>
     <div class="tab" onclick="switchTab('crm')">💼 Comercial</div>
-    <div class="tab" onclick="switchTab('faturamento')">💰 Faturamento</div>
     <div class="tab" onclick="switchTab('cotacoes')">📋 Cotações</div>
     <div class="tab" onclick="switchTab('compras')">🛒 Compras</div>
     <div class="tab" onclick="switchTab('logistica')">🚚 Logística</div>
+    <div class="tab" onclick="switchTab('faturamento')">💰 Faturamento</div>
     <div class="tab" onclick="switchTab('clientes')">🔄 Reativação de Clientes</div>
   </div>
 
@@ -454,11 +454,11 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
     <button class="period-btn" onclick="setPeriod('Q3')">Q3</button>
     <button class="period-btn" onclick="setPeriod('Q4')">Q4</button>
     <div class="period-sep"></div>
-    <button class="period-btn" onclick="setPeriod('Mês Atual')">Mês Atual</button>
     <button class="period-btn" onclick="setPeriod('Mês Anterior')">Mês Anterior</button>
+    <button class="period-btn" onclick="setPeriod('Mês Atual')">Mês Atual</button>
     <div class="period-sep"></div>
-    <button class="period-btn" onclick="setPeriod('Semana Atual')">Sem. Atual</button>
     <button class="period-btn" onclick="setPeriod('Semana Anterior')">Sem. Anterior</button>
+    <button class="period-btn" onclick="setPeriod('Semana Atual')">Sem. Atual</button>
     <div class="period-sep"></div>
     <span style="font-size:12px;color:var(--muted);font-weight:500">De</span>
     <input type="date" id="customStart" class="date-input">
@@ -498,27 +498,49 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
         <div class="metric-delta" id="gmConvDelta">aprovadas / finalizadas</div>
       </div>
     </div>
-    <!-- Linha B: Compras/Entregas/Tickets (4 colunas) -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px">
-      <div class="metric" style="cursor:pointer;border-left:3px solid #f97316;padding:22px 20px" onclick="openReport('compras')">
-        <div class="metric-label">🛒 Compras Realizadas</div>
-        <div class="metric-value" id="gmCompras" style="font-size:32px">—</div>
-        <div class="metric-delta" id="gmComprasDelta">volume no período</div>
+    <!-- Linha B: Operações (7 widgets, 2 sub-linhas) -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px">
+      <div class="metric" style="cursor:pointer;border-left:3px solid #f97316;padding:14px 16px" onclick="openReport('compras')">
+        <div class="metric-label" style="font-size:11px">🛒 Compras Realizadas</div>
+        <div class="metric-value" id="gmCompras" style="font-size:24px">—</div>
+        <div class="metric-delta" id="gmComprasDelta" style="font-size:11px">volume no período</div>
       </div>
-      <div class="metric" style="cursor:pointer;border-left:3px solid #6366f1;padding:22px 20px" onclick="openReport('entregas')">
-        <div class="metric-label">🚚 Entregas Concluídas</div>
-        <div class="metric-value" id="gmEntregas" style="font-size:32px">—</div>
-        <div class="metric-delta">no período</div>
+      <div class="metric" style="cursor:pointer;border-left:3px solid #6366f1;padding:14px 16px" onclick="openReport('entregas')">
+        <div class="metric-label" style="font-size:11px">🚚 Entregas Concluídas</div>
+        <div class="metric-value" id="gmEntregas" style="font-size:24px">—</div>
+        <div class="metric-delta" style="font-size:11px">no período</div>
       </div>
-      <div class="metric" style="border-left:3px solid #a855f7;padding:22px 20px">
-        <div class="metric-label">🎫 Ticket Médio Cotação</div>
-        <div class="metric-value" id="gmTicketCot" style="font-size:28px">—</div>
-        <div class="metric-delta" id="gmTicketCotDelta">cotações fechadas</div>
+      <div class="metric" style="border-left:3px solid #a855f7;padding:14px 16px">
+        <div class="metric-label" style="font-size:11px">🎫 Ticket Médio Cotação</div>
+        <div class="metric-value" id="gmTicketCot" style="font-size:20px">—</div>
+        <div class="metric-delta" id="gmTicketCotDelta" style="font-size:11px">cotações aprovadas</div>
       </div>
-      <div class="metric" style="border-left:3px solid #0ea5e9;padding:22px 20px">
-        <div class="metric-label">🎫 Ticket Médio Compra</div>
-        <div class="metric-value" id="gmTicket" style="font-size:28px">—</div>
-        <div class="metric-delta" id="gmTicketDelta">por compra concluída</div>
+      <div class="metric" style="border-left:3px solid #0ea5e9;padding:14px 16px">
+        <div class="metric-label" style="font-size:11px">🎫 Ticket Médio Compra</div>
+        <div class="metric-value" id="gmTicket" style="font-size:20px">—</div>
+        <div class="metric-delta" id="gmTicketDelta" style="font-size:11px">por compra concluída</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px">
+      <div class="metric" style="border-left:3px solid #7c3aed;padding:14px 16px">
+        <div class="metric-label" style="font-size:11px">⏱ Tempo Médio Cotações</div>
+        <div class="metric-value" id="gmTMCot" style="font-size:24px">—</div>
+        <div class="metric-delta" style="font-size:11px">dias por cotação</div>
+      </div>
+      <div class="metric" style="border-left:3px solid #f97316;padding:14px 16px">
+        <div class="metric-label" style="font-size:11px">⏱ Tempo Médio Compras</div>
+        <div class="metric-value" id="gmTMComp" style="font-size:24px">—</div>
+        <div class="metric-delta" style="font-size:11px">dias por compra</div>
+      </div>
+      <div class="metric" style="border-left:3px solid #6366f1;padding:14px 16px">
+        <div class="metric-label" style="font-size:11px">⏱ Tempo Médio Logística</div>
+        <div class="metric-value" id="gmTMLogi" style="font-size:24px">—</div>
+        <div class="metric-delta" style="font-size:11px">dias por entrega</div>
+      </div>
+      <div class="metric" style="border-left:3px solid #10b981;padding:14px 16px">
+        <div class="metric-label" style="font-size:11px">🔄 Jornada Total Média</div>
+        <div class="metric-value" id="gmTMTotal" style="font-size:24px">—</div>
+        <div class="metric-delta" style="font-size:11px">cot. + compra + entrega</div>
       </div>
     </div>
 
@@ -697,32 +719,134 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
 
   <!-- TAB: COTAÇÕES -->
   <div class="tab-panel" id="tab-cotacoes">
+    <!-- Métricas principais -->
     <div class="metrics">
       <div class="metric"><div class="metric-label">Total Recebidas</div><div class="metric-value" id="ctTotal">—</div><div class="metric-delta">2026</div></div>
       <div class="metric"><div class="metric-label">Aprovadas</div><div class="metric-value" id="ctAprov">—</div><div class="metric-delta" id="ctAprovPct">—</div></div>
       <div class="metric"><div class="metric-label">Reprovadas</div><div class="metric-value" id="ctReprov">—</div><div class="metric-delta" id="ctReprovPct">—</div></div>
       <div class="metric"><div class="metric-label">Em Andamento</div><div class="metric-value" id="ctOpen">—</div><div class="metric-delta">Abertas agora</div></div>
+      <div class="metric" style="border-left:3px solid var(--yellow)"><div class="metric-label">⚠️ Atrasadas</div><div class="metric-value" id="ctAtrasadas" style="color:var(--yellow)">—</div><div class="metric-delta">Abertas sem envio &gt;2 dias</div></div>
+      <div class="metric" style="border-left:3px solid var(--red)"><div class="metric-label">🔴 Vencidas</div><div class="metric-value" id="ctVencidas" style="color:var(--red-d)">—</div><div class="metric-delta">Enviadas sem retorno &gt;7 dias</div></div>
+    </div>
+    <div class="metrics" style="margin-top:-8px">
       <div class="metric"><div class="metric-label">Tempo Médio Envio</div><div class="metric-value" id="ctTMEnvio">—</div><div class="metric-delta">Solicitação → Enviada</div></div>
       <div class="metric"><div class="metric-label">Tempo Médio Decisão</div><div class="metric-value" id="ctTMDecisao">—</div><div class="metric-delta">Enviada → Aprovada</div></div>
+      <div class="metric"><div class="metric-label">Tempo Médio Total</div><div class="metric-value" id="ctTMTotal">—</div><div class="metric-delta">Criação → Conclusão</div></div>
+      <div class="metric" style="border-left:3px solid var(--orange,#f97316)"><div class="metric-label">📋 Aprovadas sem NF</div><div class="metric-value" id="ctSemNF" style="color:var(--orange,#f97316)">—</div><div class="metric-delta">NF não registrada</div></div>
     </div>
+
+    <!-- Charts: Volume / Status / Conversão / Tempo Médio -->
     <div class="charts">
       <div class="chart-card">
-        <div class="chart-title">Volume por Mês</div>
+        <div class="chart-title">📦 Volume por Mês</div>
         <div class="chart-wrap"><canvas id="chartCotVol"></canvas></div>
       </div>
       <div class="chart-card">
-        <div class="chart-title">Aprovadas × Reprovadas</div>
+        <div class="chart-title">✅ Aprovadas × Reprovadas</div>
         <div class="chart-wrap"><canvas id="chartCotStatus"></canvas></div>
       </div>
       <div class="chart-card">
-        <div class="chart-title">Taxa de Conversão Mensal</div>
+        <div class="chart-title">📈 Taxa de Conversão Mensal</div>
         <div class="chart-wrap"><canvas id="chartCotConv"></canvas></div>
       </div>
       <div class="chart-card">
-        <div class="chart-title">Motivos de Reprovação</div>
-        <div class="chart-wrap"><canvas id="chartCotMotivo"></canvas></div>
+        <div class="chart-title">⏱ Tempo Médio Mensal <span class="chart-subtitle">dias criação → conclusão</span></div>
+        <div class="chart-wrap"><canvas id="chartCotTempoMensal"></canvas></div>
       </div>
     </div>
+
+    <!-- Charts: Motivos / Retorno / OC / LPU -->
+    <div class="charts">
+      <div class="chart-card">
+        <div class="chart-title">❌ Motivos de Reprovação</div>
+        <div class="chart-wrap"><canvas id="chartCotMotivo"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">🔄 Retorno do Cliente <span class="chart-subtitle">Aprovado / Reprovado / Sem retorno</span></div>
+        <div class="chart-wrap"><canvas id="chartCotRetorno"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">📝 Precisa de OC? <span class="chart-subtitle">Ordem de compra</span></div>
+        <div class="chart-wrap"><canvas id="chartCotOC"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">🏷️ Tem LPU? <span class="chart-subtitle">Preço fixo</span></div>
+        <div class="chart-wrap"><canvas id="chartCotLPU"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Charts: Pagamento / Envio -->
+    <div class="charts" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="chart-card">
+        <div class="chart-title">💳 Forma de Pagamento</div>
+        <div class="chart-wrap"><canvas id="chartCotFormaPag"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">📅 Condição de Pagamento</div>
+        <div class="chart-wrap"><canvas id="chartCotCondPag"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">📤 Método de Envio da Cotação</div>
+        <div class="chart-wrap"><canvas id="chartCotMetodoEnvio"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Rankings horizontais: Produtos / Marcas / Fornecedores -->
+    <div class="charts" style="grid-template-columns:1fr 1fr 1fr">
+      <div class="chart-card">
+        <div class="chart-title">🛒 Produtos Mais Solicitados <span class="chart-subtitle">Top 8</span></div>
+        <div class="chart-wrap tall"><canvas id="chartCotProdutos"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">🏭 Marcas Mais Solicitadas <span class="chart-subtitle">Top 8</span></div>
+        <div class="chart-wrap tall"><canvas id="chartCotMarcas"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">🤝 Fornecedores Mais Cotados <span class="chart-subtitle">Top 8</span></div>
+        <div class="chart-wrap tall"><canvas id="chartCotFornecedores"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Alertas: Atrasadas + Vencidas -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+      <div class="table-card" style="border-left:3px solid var(--yellow)">
+        <div class="table-header" style="color:var(--yellow)">
+          ⚠️ Cotações Atrasadas
+          <span id="ctAtrasadaBadge" class="tag tag-yellow" style="font-size:11px">0</span>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="font-size:11px"><thead><tr>
+            <th>Cliente</th><th>Criada em</th><th>Dias em Aberto</th><th>Link</th>
+          </tr></thead><tbody id="ctAtrasadaBody"></tbody></table>
+        </div>
+      </div>
+      <div class="table-card" style="border-left:3px solid var(--red)">
+        <div class="table-header" style="color:var(--red-d)">
+          🔴 Cotações Vencidas
+          <span id="ctVencidaBadge" class="tag tag-red" style="font-size:11px">0</span>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="font-size:11px"><thead><tr>
+            <th>Cliente</th><th>Enviada em</th><th>Dias sem Retorno</th><th>Valor</th><th>Link</th>
+          </tr></thead><tbody id="ctVencidaBody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Aprovadas sem NF -->
+    <div class="table-card" style="margin-bottom:20px;border-left:3px solid var(--orange,#f97316)">
+      <div class="table-header">
+        📋 Aprovadas sem NF
+        <span id="ctSemNFBadge" class="tag tag-yellow" style="font-size:11px">0</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table style="font-size:11px"><thead><tr>
+          <th>Cliente</th><th>Data Aprovação</th><th>Valor Cotação</th><th>Vendedor</th><th>Link</th>
+        </tr></thead><tbody id="ctSemNFBody"></tbody></table>
+      </div>
+    </div>
+
+    <!-- Ranking de Clientes -->
     <div class="table-card">
       <div class="table-header">🏆 Ranking de Clientes — Cotações (Pipefy)</div>
       <table><thead><tr>
@@ -765,6 +889,32 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
         <div class="chart-wrap"><canvas id="chartCpQtd"></canvas></div>
       </div>
     </div>
+    <!-- Compras vs Cotação: alertas de margem -->
+    <div class="table-card" style="margin-bottom:20px">
+      <div class="table-header">
+        ⚠️ Compras vs Cotação — Análise de Margem
+        <span id="cpAlertBadge" class="tag tag-red" style="font-size:11px;display:none">0 alertas</span>
+      </div>
+      <div style="overflow-x:auto">
+        <table id="cpVsCotTable" style="font-size:11px;width:100%;table-layout:fixed">
+          <colgroup>
+            <col style="width:22%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:5%">
+          </colgroup>
+          <thead><tr>
+            <th>Cliente</th>
+            <th style="text-align:right">Val. Cotação</th>
+            <th style="text-align:right">Val. Compra</th>
+            <th style="text-align:right">Lucro Op.</th>
+            <th style="text-align:right">Margem</th>
+            <th style="text-align:center">NF</th>
+            <th style="text-align:center">Status</th>
+            <th style="text-align:center">🔗</th>
+          </tr></thead>
+          <tbody id="cpVsCotBody"></tbody>
+        </table>
+      </div>
+    </div>
+
     <div class="table-card">
       <div class="table-header">📋 Compras por Cliente — 2026</div>
       <table><thead><tr>
@@ -1398,10 +1548,12 @@ async function pipefyGQL(query, variables = {}) {
 
 async function fetchAllCards(pipeId) {
   const cards = [];
-  let cursor = null;
-  let page = 1;
+  const seenIds = new Set();
+
+  // ── 1. Cards em fases ATIVAS (allCards só retorna não-done) ──
+  let cursor = null, page = 1;
   do {
-    setLoading(true, `Buscando cards… página ${page++}`);
+    setLoading(true, `Buscando cards ativos… página ${page++}`);
     const data = await pipefyGQL(`
       query($id: ID!, $after: String) {
         allCards(pipeId: $id, first: 50, after: $after) {
@@ -1415,9 +1567,49 @@ async function fetchAllCards(pipeId) {
         }
       }`, { id: pipeId, after: cursor });
     const pg = data.allCards;
-    cards.push(...pg.edges.map(e => e.node));
+    pg.edges.forEach(e => {
+      if (!seenIds.has(e.node.id)) { seenIds.add(e.node.id); cards.push(e.node); }
+    });
     cursor = pg.pageInfo.hasNextPage ? pg.pageInfo.endCursor : null;
   } while (cursor);
+
+  // ── 2. Cards em fases DONE (Aprovada, Reprovada, Concluída etc.) ──
+  // allCards NÃO retorna esses — precisamos buscá-los por fase
+  try {
+    const pipeInfo = await pipefyGQL(`
+      query($id: ID!) {
+        pipe(id: $id) { phases { id name done } }
+      }`, { id: pipeId });
+    const donePhases = pipeInfo.pipe.phases.filter(p => p.done);
+    for (const phase of donePhases) {
+      let pc = null, pp = 1;
+      do {
+        setLoading(true, `Buscando fase "${phase.name}"… página ${pp++}`);
+        const phData = await pipefyGQL(`
+          query($id: ID!, $after: String) {
+            phase(id: $id) {
+              cards(first: 50, after: $after) {
+                pageInfo { hasNextPage endCursor }
+                edges { node {
+                  id title
+                  current_phase { name }
+                  created_at finished_at updated_at
+                  fields { name value }
+                }}
+              }
+            }
+          }`, { id: phase.id, after: pc });
+        const pg = phData.phase.cards;
+        pg.edges.forEach(e => {
+          if (!seenIds.has(e.node.id)) { seenIds.add(e.node.id); cards.push(e.node); }
+        });
+        pc = pg.pageInfo.hasNextPage ? pg.pageInfo.endCursor : null;
+      } while (pc);
+    }
+  } catch(e) {
+    console.warn('Aviso: não foi possível buscar fases done:', e.message);
+  }
+
   return cards;
 }
 
@@ -1538,12 +1730,33 @@ function normalNF(val) {
 
 function toNum(v) {
   if (v === null || v === undefined) return 0;
+  if (typeof v === 'number') return v;
   const s = String(v).trim().replace(/[R$\s%]/g, '');
   if (!s) return 0;
-  // Brazilian format: dots = thousands separator, comma = decimal
-  // "1.632.223,65" → remove dots → "1632223,65" → replace comma → "1632223.65"
-  const cleaned = s.replace(/\./g, '').replace(',', '.');
-  return parseFloat(cleaned) || 0;
+
+  const hasDot   = s.includes('.');
+  const hasComma = s.includes(',');
+
+  if (hasComma && hasDot) {
+    // Brazilian display format: "1.234.567,89" → dot=thousands, comma=decimal
+    return parseFloat(s.replace(/\./g, '').replace(',', '.')) || 0;
+  }
+  if (hasComma && !hasDot) {
+    // Comma-only: comma as decimal separator → "8235,36"
+    return parseFloat(s.replace(',', '.')) || 0;
+  }
+  if (hasDot && !hasComma) {
+    // Dot-only: Pipefy API returns English decimal format "8235.36"
+    // If multiple dots (e.g. "1.234.567") → thousands separators, remove them
+    const parts = s.split('.');
+    if (parts.length > 2) return parseFloat(s.replace(/\./g, '')) || 0;
+    // Single dot: decimal if last segment ≠ 3 digits, thousands if exactly 3
+    return parts[1].length === 3
+      ? parseFloat(s.replace(/\./g, '')) || 0   // "8.235" → 8235
+      : parseFloat(s) || 0;                      // "8235.36" → 8235.36
+  }
+  // No dot, no comma: plain integer string
+  return parseFloat(s) || 0;
 }
 
 function toDate(s) { return s ? new Date(s) : null; }
@@ -1660,7 +1873,28 @@ function cotacoesData() {
     const vendedor =
       /felipe/i.test(vendedorRaw)  ? 'Felipe Torqueiro'    :
       /gabriel/i.test(vendedorRaw) ? 'Gabriel Granatowicz' : '';
-    return { ...c, valor, motivo, fase, aprovada, reprovada, mes: m, vendedor };
+    // Timing / tracking
+    const dataEnvio  = fieldVal(c, 'cotação enviada') || fieldVal(c, 'data de envio') || fieldVal(c, 'data do envio') || null;
+    const nfCot      = fieldVal(c, 'nº da nf') || fieldVal(c, 'n° da nf') || fieldVal(c, 'nota fiscal') || null;
+
+    // Product / supply fields
+    const produtos    = fieldVal(c, 'produto') || fieldVal(c, 'produtos') || fieldVal(c, 'itens da cotação') || fieldVal(c, 'itens') || '';
+    const marca       = parseSelectVal(fieldVal(c, 'marca') || fieldVal(c, 'fabricante') || '');
+    const fornecedor  = parseSelectVal(fieldVal(c, 'fornecedor') || '');
+
+    // Payment / delivery
+    const formaPag    = parseSelectVal(fieldVal(c, 'forma de pagamento') || fieldVal(c, 'forma pagamento') || '');
+    const condPag     = parseSelectVal(fieldVal(c, 'condição de pagamento') || fieldVal(c, 'condicao de pagamento') || fieldVal(c, 'prazo de pagamento') || '');
+    const metodoEnvio = parseSelectVal(fieldVal(c, 'método de envio') || fieldVal(c, 'meio de envio') || fieldVal(c, 'envio da cotação') || '');
+
+    // Boolean / select
+    const temLpu    = parseSelectVal(fieldValExact(c, 'tem lpu') || fieldVal(c, 'lpu') || fieldVal(c, 'preço fixo') || '');
+    const precisaOc = parseSelectVal(fieldVal(c, 'precisa de ordem de compra') || fieldVal(c, 'ordem de compra') || fieldVal(c, 'precisa oc') || '');
+    const retorno   = parseSelectVal(fieldVal(c, 'retorno do cliente') || fieldVal(c, 'decisão do cliente') || '');
+
+    return { ...c, valor, motivo, fase, aprovada, reprovada, mes: m, vendedor,
+             dataEnvio, nfCot, produtos, marca, fornecedor,
+             formaPag, condPag, metodoEnvio, temLpu, precisaOc, retorno };
   });
 }
 
@@ -2027,8 +2261,10 @@ function renderComercial() {
   const cotsParaGraficos = cotsParaFase; // gráficos usam o mesmo filtro de fase
 
   // Filtro de vendedor (para toda a aba: gráficos + tabela)
-  const cotsParaTabela    = comissaoFiltroVendedor === 'all' ? cotsParaFase
-    : cotsParaFase.filter(c => (c.vendedor || 'Be You') === comissaoFiltroVendedor);
+  // Relatório de comissão: apenas cotações com Nº NF preenchido
+  const cotsComNF = cotsParaFase.filter(c => !!c.nfCot);
+  const cotsParaTabela    = comissaoFiltroVendedor === 'all' ? cotsComNF
+    : cotsComNF.filter(c => (c.vendedor || 'Be You') === comissaoFiltroVendedor);
   const cotsParaGraficosV = comissaoFiltroVendedor === 'all' ? cotsParaGraficos
     : cotsParaGraficos.filter(c => (c.vendedor || 'Be You') === comissaoFiltroVendedor);
 
@@ -2435,8 +2671,8 @@ function renderGeral() {
   const entConcl  = logs.filter(c => c.current_phase?.name?.toLowerCase().includes('concluíd')).length;
 
   const reprov = cots.filter(c => c.reprovada);
-  const ticketCotVal   = finalized.reduce((s,c) => s + (c.valor||0), 0);
-  const ticketCotMedio = finalized.length > 0 ? ticketCotVal / finalized.length : 0;
+  const ticketCotVal   = aprov.reduce((s,c) => s + (c.valor||0), 0);
+  const ticketCotMedio = aprov.length > 0 ? ticketCotVal / aprov.length : 0;
 
   el('gmCotRec').textContent        = cots.length;
   el('gmCotRecDelta').textContent   = activePeriod.label === 'Ano' ? 'em 2026' : 'no período';
@@ -2447,7 +2683,7 @@ function renderGeral() {
   el('gmConv').textContent          = fmtPct(conv);
   el('gmConvDelta').textContent     = `${aprov.length} aprova. / ${finalized.length} finaliz.`;
   el('gmTicketCot').textContent     = fmtBRL(ticketCotMedio);
-  el('gmTicketCotDelta').textContent = `${finalized.length} cotação${finalized.length !== 1 ? 'ões' : ''} fechada${finalized.length !== 1 ? 's' : ''}`;
+  el('gmTicketCotDelta').textContent = `${aprov.length} cotaç${aprov.length !== 1 ? 'ões' : 'ão'} aprovada${aprov.length !== 1 ? 's' : ''}`;
   const compsConcluidas = comps.filter(c =>
     (c.current_phase?.name || '').toLowerCase().includes('concluíd') ||
     (c.current_phase?.name || '').toLowerCase().includes('concluida')
@@ -2459,6 +2695,35 @@ function renderGeral() {
   el('gmEntregas').textContent      = entConcl;
   el('gmTicket').textContent        = fmtBRL(ticketMedio);
   el('gmTicketDelta').textContent   = `${compsConcluidas.length} compra${compsConcluidas.length !== 1 ? 's' : ''} concluída${compsConcluidas.length !== 1 ? 's' : ''}`;
+
+  // ── Tempo médio por pipe ──
+  // Cotações: do created_at até finished_at (finalizadas)
+  const cotFinalizadas = cots.filter(c => !isOpen(c) && c.finished_at && c.created_at);
+  const tmCotDias = cotFinalizadas.length > 0
+    ? cotFinalizadas.reduce((s,c) => s + daysDiff(c.created_at, c.finished_at), 0) / cotFinalizadas.length
+    : null;
+  if (el('gmTMCot')) el('gmTMCot').textContent = tmCotDias !== null ? tmCotDias.toFixed(1) + 'd' : '—';
+
+  // Compras: do created_at até finished_at (concluídas)
+  const compFinalizadas = compsConcluidas.filter(c => c.finished_at && c.created_at);
+  const tmCompDias = compFinalizadas.length > 0
+    ? compFinalizadas.reduce((s,c) => s + daysDiff(c.created_at, c.finished_at), 0) / compFinalizadas.length
+    : null;
+  if (el('gmTMComp')) el('gmTMComp').textContent = tmCompDias !== null ? tmCompDias.toFixed(1) + 'd' : '—';
+
+  // Logística: do created_at até finished_at (concluídas)
+  const logConcl = logs.filter(c =>
+    c.current_phase?.name?.toLowerCase().includes('concluíd') && c.finished_at && c.created_at
+  );
+  const tmLogiDias = logConcl.length > 0
+    ? logConcl.reduce((s,c) => s + daysDiff(c.created_at, c.finished_at), 0) / logConcl.length
+    : null;
+  if (el('gmTMLogi')) el('gmTMLogi').textContent = tmLogiDias !== null ? tmLogiDias.toFixed(1) + 'd' : '—';
+
+  // Jornada total: soma das médias das 3 etapas (apenas quando todas disponíveis)
+  const partes = [tmCotDias, tmCompDias, tmLogiDias].filter(v => v !== null);
+  const tmTotal = partes.length > 0 ? partes.reduce((a,b) => a + b, 0) : null;
+  if (el('gmTMTotal')) el('gmTMTotal').textContent = tmTotal !== null ? tmTotal.toFixed(1) + 'd' : '—';
 
   const openCots = cots.filter(c => isOpen(c));
   el('gmOpen').textContent      = openCots.length;
@@ -3087,30 +3352,51 @@ function updateMetaAnual(val) {
 //  COTAÇÕES
 // ============================================================
 function renderCotacoes() {
-  const cots = cotacoesData();
+  const cots     = cotacoesData();
   const finalized = cots.filter(c => !isOpen(c));
-  const aprov   = cots.filter(c => c.aprovada);
-  const reprov  = cots.filter(c => c.reprovada);
-  const open    = cots.filter(c => isOpen(c));
+  const aprov    = cots.filter(c => c.aprovada);
+  const reprov   = cots.filter(c => c.reprovada);
+  const open     = cots.filter(c => isOpen(c));
+  const today    = new Date();
 
-  el('ctTotal').textContent    = cots.length;
-  el('ctAprov').textContent    = aprov.length;
-  el('ctAprovPct').textContent = fmtPct(finalized.length > 0 ? aprov.length/finalized.length : 0) + ' conv.';
-  el('ctReprov').textContent   = reprov.length;
-  el('ctReprovPct').textContent= fmtPct(finalized.length > 0 ? reprov.length/finalized.length : 0);
-  el('ctOpen').textContent     = open.length;
+  // ── Métricas principais ──
+  el('ctTotal').textContent     = cots.length;
+  el('ctAprov').textContent     = aprov.length;
+  el('ctAprovPct').textContent  = fmtPct(finalized.length > 0 ? aprov.length/finalized.length : 0) + ' conv.';
+  el('ctReprov').textContent    = reprov.length;
+  el('ctReprovPct').textContent = fmtPct(finalized.length > 0 ? reprov.length/finalized.length : 0);
+  el('ctOpen').textContent      = open.length;
 
-  // Tempos médios
-  const temposEnvio = cots.filter(c => c.created_at && c.fields).map(c => {
-    const envio = fieldVal(c, 'cotação enviada') || c.updated_at;
-    return daysDiff(c.created_at, envio);
-  }).filter(v => v !== null && v >= 0 && v <= 30);
-  el('ctTMEnvio').textContent = temposEnvio.length > 0 ? fmtDays(temposEnvio.reduce((a,b)=>a+b,0)/temposEnvio.length) : '—';
+  // Atrasadas: abertas sem data de envio e criadas há mais de 2 dias
+  const atrasadas = open.filter(c => !c.dataEnvio && c.created_at && daysDiff(c.created_at, today) > 2);
+  // Vencidas: abertas com data de envio há mais de 7 dias sem retorno
+  const vencidas  = open.filter(c => c.dataEnvio && daysDiff(c.dataEnvio, today) > 7);
+  if (el('ctAtrasadas')) el('ctAtrasadas').textContent = atrasadas.length;
+  if (el('ctVencidas'))  el('ctVencidas').textContent  = vencidas.length;
 
-  const temposDecisao = aprov.map(c => daysDiff(c.created_at, c.finished_at)).filter(v => v !== null && v >= 0 && v <= 60);
-  el('ctTMDecisao').textContent = temposDecisao.length > 0 ? fmtDays(temposDecisao.reduce((a,b)=>a+b,0)/temposDecisao.length) : '—';
+  // Aprovadas sem NF
+  const semNF = aprov.filter(c => !c.nfCot);
+  if (el('ctSemNF')) el('ctSemNF').textContent = semNF.length;
 
-  // Chart Volume por mês
+  // ── Tempos médios ──
+  const temposEnvio = cots.filter(c => c.dataEnvio && c.created_at)
+    .map(c => daysDiff(c.created_at, c.dataEnvio))
+    .filter(v => v !== null && v >= 0 && v <= 30);
+  if (el('ctTMEnvio')) el('ctTMEnvio').textContent = temposEnvio.length > 0 ? fmtDays(temposEnvio.reduce((a,b)=>a+b,0)/temposEnvio.length) : '—';
+
+  // Decisão: data envio → aprovação
+  const temposDecisao = aprov.filter(c => c.dataEnvio && c.finished_at)
+    .map(c => daysDiff(c.dataEnvio, c.finished_at))
+    .filter(v => v !== null && v >= 0 && v <= 60);
+  if (el('ctTMDecisao')) el('ctTMDecisao').textContent = temposDecisao.length > 0 ? fmtDays(temposDecisao.reduce((a,b)=>a+b,0)/temposDecisao.length) : '—';
+
+  // Total: criação → conclusão
+  const temposTotal = finalized.filter(c => c.created_at && c.finished_at)
+    .map(c => daysDiff(c.created_at, c.finished_at))
+    .filter(v => v !== null && v >= 0 && v <= 90);
+  if (el('ctTMTotal')) el('ctTMTotal').textContent = temposTotal.length > 0 ? fmtDays(temposTotal.reduce((a,b)=>a+b,0)/temposTotal.length) : '—';
+
+  // ── Gráfico: Volume por mês ──
   const volByM = Array(12).fill(0);
   cots.forEach(c => { if (c.mes >= 0) volByM[c.mes]++; });
   mkBar('chartCotVol', activeMonths, sliceM(volByM), {
@@ -3118,22 +3404,22 @@ function renderCotacoes() {
     onClick: ({ index, label }) => openReport('cotacoes_mes', { monthIndex: MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index, monthLabel: label })
   });
 
-  // Chart status
+  // ── Gráfico: Status ──
   const aprovByM = Array(12).fill(0), reprovByM = Array(12).fill(0);
   aprov.forEach(c => { if (c.mes >= 0) aprovByM[c.mes]++; });
   reprov.forEach(c => { if (c.mes >= 0) reprovByM[c.mes]++; });
   mkStackedBar('chartCotStatus', activeMonths, [
-    { label:'Aprovadas', data: sliceM(aprovByM), color:'rgba(16,185,129,0.8)' },
-    { label:'Reprovadas', data: sliceM(reprovByM), color:'rgba(239,68,68,0.7)' },
+    { label:'Aprovadas',  data: sliceM(aprovByM),  color:'rgba(16,185,129,0.8)' },
+    { label:'Reprovadas', data: sliceM(reprovByM), color:'rgba(239,68,68,0.7)'  },
   ], ({ index, label, datasetLabel }) => {
-    const mi = MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index;
+    const mi  = MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index;
     const cat = datasetLabel.toLowerCase().includes('aprov') ? 'aprovadas' : 'reprovadas';
     openReport('cotacoes_status', { monthIndex: mi, monthLabel: label, categoria: cat });
   });
 
-  // Chart taxa conversão mensal
+  // ── Gráfico: Taxa de Conversão Mensal ──
   const convByM = MONTHS.map((_, i) => {
-    const fin = (aprovByM[i] + reprovByM[i]);
+    const fin = aprovByM[i] + reprovByM[i];
     return fin > 0 ? +(aprovByM[i]/fin*100).toFixed(1) : null;
   });
   mkLine('chartCotConv', activeMonths, sliceM(convByM), {
@@ -3141,37 +3427,181 @@ function renderCotacoes() {
     onClick: ({ index, label }) => openReport('cotacoes_mes', { monthIndex: MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index, monthLabel: label })
   });
 
-  // Motivos reprovação
+  // ── Gráfico: Tempo Médio Mensal (criação → conclusão) ──
+  const tempoMedByM = MONTHS.map((_, i) => {
+    const subset = finalized.filter(c => c.mes === i && c.created_at && c.finished_at)
+      .map(c => daysDiff(c.created_at, c.finished_at))
+      .filter(v => v >= 0 && v <= 90);
+    return subset.length > 0 ? +(subset.reduce((a,b)=>a+b,0)/subset.length).toFixed(1) : null;
+  });
+  mkLine('chartCotTempoMensal', activeMonths, sliceM(tempoMedByM), {
+    label:'Dias médios', color:'rgba(245,158,11,0.9)'
+  });
+
+  // ── Gráfico: Motivos de Reprovação (inclui sem motivo) ──
   const motivosMap = {};
   reprov.forEach(c => {
-    const m = c.motivo || 'Não informado';
+    const m = (c.motivo && c.motivo.trim()) ? c.motivo.trim() : 'Sem motivo informado';
     motivosMap[m] = (motivosMap[m] || 0) + 1;
   });
   mkDoughnut('chartCotMotivo', Object.keys(motivosMap), Object.values(motivosMap), undefined,
     ({ label }) => openReport('cotacoes_motivo', { motivo: label }));
 
-  // Tabela clientes — % calculado APENAS sobre cotações finalizadas (exclui em andamento)
+  // ── Gráfico: Retorno do Cliente ──
+  const retornoMap = {};
+  cots.forEach(c => {
+    const r = c.retorno && c.retorno.trim() ? c.retorno.trim() : 'Sem Retorno';
+    retornoMap[r] = (retornoMap[r] || 0) + 1;
+  });
+  mkDoughnut('chartCotRetorno', Object.keys(retornoMap), Object.values(retornoMap),
+    ['rgba(16,185,129,0.8)','rgba(239,68,68,0.8)','rgba(156,163,175,0.7)','rgba(245,158,11,0.8)']);
+
+  // ── Gráfico: Precisa de OC ──
+  const ocMap = {};
+  cots.forEach(c => { const v = c.precisaOc || 'Não informado'; ocMap[v] = (ocMap[v]||0)+1; });
+  mkDoughnut('chartCotOC', Object.keys(ocMap), Object.values(ocMap),
+    ['rgba(59,130,246,0.8)','rgba(156,163,175,0.7)','rgba(245,158,11,0.8)']);
+
+  // ── Gráfico: Tem LPU ──
+  const lpuMap = {};
+  cots.forEach(c => { const v = c.temLpu || 'Não informado'; lpuMap[v] = (lpuMap[v]||0)+1; });
+  mkDoughnut('chartCotLPU', Object.keys(lpuMap), Object.values(lpuMap),
+    ['rgba(124,58,237,0.8)','rgba(156,163,175,0.7)','rgba(245,158,11,0.8)']);
+
+  // ── Gráfico: Forma de Pagamento ──
+  const formaPagMap = {};
+  cots.forEach(c => { const v = c.formaPag || 'Não informado'; formaPagMap[v] = (formaPagMap[v]||0)+1; });
+  mkDoughnut('chartCotFormaPag', Object.keys(formaPagMap), Object.values(formaPagMap));
+
+  // ── Gráfico: Condição de Pagamento ──
+  const condPagMap = {};
+  cots.forEach(c => { const v = c.condPag || 'Não informado'; condPagMap[v] = (condPagMap[v]||0)+1; });
+  mkDoughnut('chartCotCondPag', Object.keys(condPagMap), Object.values(condPagMap));
+
+  // ── Gráfico: Método de Envio ──
+  const envioMap = {};
+  cots.forEach(c => { const v = c.metodoEnvio || 'Não informado'; envioMap[v] = (envioMap[v]||0)+1; });
+  mkDoughnut('chartCotMetodoEnvio', Object.keys(envioMap), Object.values(envioMap),
+    ['rgba(99,102,241,0.8)','rgba(16,185,129,0.8)','rgba(245,158,11,0.8)','rgba(239,68,68,0.8)','rgba(156,163,175,0.7)']);
+
+  // ── Produtos mais solicitados ──
+  const prodMap = {};
+  cots.forEach(c => {
+    if (!c.produtos) return;
+    c.produtos.split(/[,;\n]+/).map(p => p.trim()).filter(p => p.length > 2 && p.length < 100)
+      .forEach(p => { prodMap[p] = (prodMap[p]||0)+1; });
+  });
+  const prodTop = Object.entries(prodMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if (prodTop.length > 0) {
+    mkHorizontalBar('chartCotProdutos', prodTop.map(e=>e[0]), prodTop.map(e=>e[1]), 'rgba(124,58,237,0.75)');
+  } else {
+    destroyChart('chartCotProdutos');
+  }
+
+  // ── Marcas mais solicitadas ──
+  const marcaMap = {};
+  cots.forEach(c => { if (c.marca) marcaMap[c.marca] = (marcaMap[c.marca]||0)+1; });
+  const marcaTop = Object.entries(marcaMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if (marcaTop.length > 0) {
+    mkHorizontalBar('chartCotMarcas', marcaTop.map(e=>e[0]), marcaTop.map(e=>e[1]), 'rgba(16,185,129,0.75)');
+  } else {
+    destroyChart('chartCotMarcas');
+  }
+
+  // ── Fornecedores mais cotados ──
+  const fornMap = {};
+  cots.forEach(c => { if (c.fornecedor) fornMap[c.fornecedor] = (fornMap[c.fornecedor]||0)+1; });
+  const fornTop = Object.entries(fornMap).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if (fornTop.length > 0) {
+    mkHorizontalBar('chartCotFornecedores', fornTop.map(e=>e[0]), fornTop.map(e=>e[1]), 'rgba(245,158,11,0.75)');
+  } else {
+    destroyChart('chartCotFornecedores');
+  }
+
+  // ── Lista: Atrasadas ──
+  const tbAtras = el('ctAtrasadaBody');
+  if (el('ctAtrasadaBadge')) el('ctAtrasadaBadge').textContent = atrasadas.length;
+  if (tbAtras) {
+    tbAtras.innerHTML = '';
+    if (atrasadas.length === 0) {
+      tbAtras.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:14px">Nenhuma cotação atrasada ✅</td></tr>';
+    } else {
+      atrasadas.sort((a,b) => new Date(a.created_at)-new Date(b.created_at)).forEach(c => {
+        const dias = daysDiff(c.created_at, today);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><strong>${clientName(c.title)}</strong></td>
+          <td style="color:var(--muted)">${c.created_at ? new Date(c.created_at).toLocaleDateString('pt-BR') : '—'}</td>
+          <td><span class="tag tag-yellow">${dias} dias</span></td>
+          <td>${cardLink(c)}</td>`;
+        tbAtras.appendChild(tr);
+      });
+    }
+  }
+
+  // ── Lista: Vencidas ──
+  const tbVenc = el('ctVencidaBody');
+  if (el('ctVencidaBadge')) el('ctVencidaBadge').textContent = vencidas.length;
+  if (tbVenc) {
+    tbVenc.innerHTML = '';
+    if (vencidas.length === 0) {
+      tbVenc.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:14px">Nenhuma cotação vencida ✅</td></tr>';
+    } else {
+      vencidas.sort((a,b) => new Date(a.dataEnvio)-new Date(b.dataEnvio)).forEach(c => {
+        const dias = daysDiff(c.dataEnvio, today);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><strong>${clientName(c.title)}</strong></td>
+          <td style="color:var(--muted)">${c.dataEnvio ? new Date(c.dataEnvio).toLocaleDateString('pt-BR') : '—'}</td>
+          <td><span class="tag tag-red">${dias} dias</span></td>
+          <td style="text-align:right">${fmtBRL(c.valor)}</td>
+          <td>${cardLink(c)}</td>`;
+        tbVenc.appendChild(tr);
+      });
+    }
+  }
+
+  // ── Lista: Aprovadas sem NF ──
+  const tbSemNF = el('ctSemNFBody');
+  if (el('ctSemNFBadge')) el('ctSemNFBadge').textContent = semNF.length;
+  if (tbSemNF) {
+    tbSemNF.innerHTML = '';
+    if (semNF.length === 0) {
+      tbSemNF.innerHTML = '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:14px">Todas as aprovadas têm NF registrada ✅</td></tr>';
+    } else {
+      semNF.sort((a,b) => (b.valor||0)-(a.valor||0)).forEach(c => {
+        const dataAprov = c.finished_at ? new Date(c.finished_at).toLocaleDateString('pt-BR') : '—';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><strong>${clientName(c.title)}</strong></td>
+          <td style="color:var(--muted)">${dataAprov}</td>
+          <td style="text-align:right;font-weight:600">${fmtBRL(c.valor)}</td>
+          <td style="color:var(--muted)">${c.vendedor || 'Be You'}</td>
+          <td>${cardLink(c)}</td>`;
+        tbSemNF.appendChild(tr);
+      });
+    }
+  }
+
+  // ── Ranking de clientes ──
   const clientMap = {};
   cots.forEach(c => {
     const name = clientName(c.title);
     if (!name || name === '—') return;
     if (!clientMap[name]) clientMap[name] = { aprov:0, reprov:0, open:0, valor:0 };
-    if (c.aprovada)       { clientMap[name].aprov++;  clientMap[name].valor += c.valor; }
-    else if (c.reprovada)   clientMap[name].reprov++;
-    else                    clientMap[name].open++;
+    if (c.aprovada)      { clientMap[name].aprov++;  clientMap[name].valor += c.valor; }
+    else if (c.reprovada)  clientMap[name].reprov++;
+    else                   clientMap[name].open++;
   });
-  const sorted = Object.entries(clientMap).sort((a,b) => b[1].valor - a[1].valor || b[1].aprov - a[1].aprov);
+  const sortedC = Object.entries(clientMap).sort((a,b) => b[1].valor - a[1].valor || b[1].aprov - a[1].aprov);
   const tbody = el('cotClientesBody');
   tbody.innerHTML = '';
-  sorted.forEach(([name, d], idx) => {
-    const finalized = d.aprov + d.reprov;        // exclui em andamento
-    const conv = finalized > 0 ? d.aprov/finalized : null;
-    const pctText = conv !== null ? fmtPct(conv) : '—';
+  sortedC.forEach(([name, d]) => {
+    const fin = d.aprov + d.reprov;
+    const conv = fin > 0 ? d.aprov/fin : null;
+    const pctText  = conv !== null ? fmtPct(conv) : '—';
     const pctClass = conv === null ? 'tag-gray' : conv >= 0.5 ? 'tag-green' : conv >= 0.25 ? 'tag-yellow' : 'tag-red';
     const tr = document.createElement('tr');
     tr.innerHTML = `<td><strong>${name}</strong></td>
       <td>${d.aprov}</td><td>${d.reprov}</td>
-      <td>${finalized + d.open} <small style="color:var(--muted)">(${d.open} em andam.)</small></td>
+      <td>${fin + d.open} <small style="color:var(--muted)">(${d.open} em andam.)</small></td>
       <td><span class="tag ${pctClass}">${pctText}</span></td>
       <td>${fmtBRL(d.valor)}</td>
       <td><span class="tag ${d.aprov > 0 ? 'tag-blue' : 'tag-gray'}">${d.aprov > 0 ? 'Ativo' : 'Sem aprovação'}</span></td>`;
@@ -3184,21 +3614,22 @@ function renderCotacoes() {
 // ============================================================
 function renderCompras() {
   const comps = comprasData();
+  const cots  = cotacoesData();
   const concluidas = comps.filter(c => c.current_phase?.name?.toLowerCase().includes('concluíd'));
   const open       = comps.filter(c => isOpen(c));
 
-  const total   = concluidas.reduce((s,c) => s + c.valor, 0);
-  const ticket  = concluidas.length > 0 ? total / concluidas.length : 0;
+  const total  = concluidas.reduce((s,c) => s + c.valor, 0);
+  const ticket = concluidas.length > 0 ? total / concluidas.length : 0;
 
   el('cpTotal').textContent  = concluidas.length;
   el('cpVolume').textContent = fmtBRL(total);
   el('cpTicket').textContent = fmtBRL(ticket);
   el('cpOpen').textContent   = open.length;
 
-  // SLA: cards com tempo ≤ 1 dia
+  // SLA
   const tempos = concluidas.map(c => daysDiff(c.created_at, c.finished_at)).filter(v => v !== null);
   const slaCump = tempos.filter(t => t <= 1).length;
-  el('cpSLA').textContent  = `${slaCump}/${concluidas.length}`;
+  el('cpSLA').textContent   = `${slaCump}/${concluidas.length}`;
   el('cpTempo').textContent = tempos.length > 0 ? fmtDays(tempos.reduce((a,b)=>a+b,0)/tempos.length) : '—';
 
   const valorByM = Array(12).fill(0), qtdByM = Array(12).fill(0);
@@ -3212,7 +3643,99 @@ function renderCompras() {
     onClick: ({ index, label }) => openReport('compras_mes', { monthIndex: MONTHS.indexOf(label) !== -1 ? MONTHS.indexOf(label) : index, monthLabel: label })
   });
 
-  // Tabela clientes
+  // ── Compras vs Cotação ──
+  // Monta lookup cotações aprovadas: normalNF(nf) → cot e normalNF(cotNum) → cot
+  const cotByNF  = {};
+  const cotByNum = {};
+  cots.filter(c => c.aprovada).forEach(c => {
+    if (c.nfCot) {
+      const k = String(c.nfCot).trim().toLowerCase();
+      const kn = normalNF(c.nfCot);
+      cotByNF[k]  = c;
+      if (kn) cotByNF[kn] = c;
+    }
+    const cn = cotNum(c);
+    if (cn) {
+      const k  = String(cn).trim().toLowerCase();
+      const kn = normalNF(cn);
+      cotByNum[k]  = c;
+      if (kn) cotByNum[kn] = c;
+    }
+  });
+
+  const findCot = comp => {
+    const nfStr = comp.nf ? String(comp.nf).trim().toLowerCase() : '';
+    const nfN   = normalNF(comp.nf);
+    const cnStr = comp.cotacaoNum ? String(comp.cotacaoNum).trim().toLowerCase() : '';
+    const cnN   = normalNF(comp.cotacaoNum);
+    return (nfStr && cotByNF[nfStr])  ||
+           (nfN   && cotByNF[nfN])    ||
+           (cnStr && cotByNum[cnStr]) ||
+           (cnN   && cotByNum[cnN])   || null;
+  };
+
+  const tbVs = el('cpVsCotBody');
+  if (tbVs) {
+    tbVs.innerHTML = '';
+    let alertCount = 0;
+    const rows = concluidas
+      .map(c => ({ comp: c, cot: findCot(c) }))
+      .filter(r => r.cot)
+      .sort((a,b) => {
+        // Sort by alert severity first
+        const mA = a.cot.valor > 0 ? (a.cot.valor - a.comp.valor) / a.cot.valor : 1;
+        const mB = b.cot.valor > 0 ? (b.cot.valor - b.comp.valor) / b.cot.valor : 1;
+        return mA - mB;
+      });
+
+    if (rows.length === 0) {
+      tbVs.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:14px">Nenhuma compra vinculada a cotação encontrada (verifique o campo Nº da cotação)</td></tr>';
+    } else {
+      rows.forEach(({ comp, cot }) => {
+        const valorCot = cot.valor || 0;
+        const valorComp = comp.valor || 0;
+        const lucro = valorCot - valorComp;
+        const margem = valorCot > 0 ? lucro / valorCot : null;
+
+        // Alert: compra ≥ cotação (sem lucro) = perigo; margem < 10% = atenção
+        let rowStyle = '';
+        let statusTag = '<span class="tag tag-green">OK</span>';
+        if (valorComp >= valorCot) {
+          rowStyle = 'background:rgba(239,68,68,0.08)';
+          statusTag = '<span class="tag tag-red">🚨 Sem Lucro</span>';
+          alertCount++;
+        } else if (margem !== null && margem < 0.10) {
+          rowStyle = 'background:rgba(245,158,11,0.08)';
+          statusTag = '<span class="tag tag-yellow">⚠️ Margem Baixa</span>';
+          alertCount++;
+        }
+
+        const lucroColor = lucro >= 0 ? 'var(--green-d)' : 'var(--red-d)';
+        const margemTxt  = margem !== null ? fmtPct(margem) : '—';
+        const margemColor = margem === null ? '' : margem < 0 ? 'color:var(--red-d)' : margem < 0.10 ? 'color:var(--yellow)' : 'color:var(--green-d)';
+
+        const tr = document.createElement('tr');
+        tr.style.cssText = rowStyle;
+        tr.innerHTML = `
+          <td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${clientName(comp.title)}"><strong>${clientName(comp.title)}</strong></td>
+          <td style="text-align:right;white-space:nowrap">${fmtBRL(valorCot)}</td>
+          <td style="text-align:right;white-space:nowrap">${fmtBRL(valorComp)}</td>
+          <td style="text-align:right;white-space:nowrap;font-weight:700;color:${lucroColor}">${fmtBRL(lucro)}</td>
+          <td style="text-align:right;white-space:nowrap;font-weight:700;${margemColor}">${margemTxt}</td>
+          <td style="text-align:center;white-space:nowrap;color:var(--muted)">${comp.nf || '—'}</td>
+          <td style="text-align:center">${statusTag}</td>
+          <td style="text-align:center">${cardLink(comp)}</td>`;
+        tbVs.appendChild(tr);
+      });
+    }
+    const badge = el('cpAlertBadge');
+    if (badge) {
+      badge.style.display = alertCount > 0 ? 'inline-flex' : 'none';
+      badge.textContent = alertCount + (alertCount === 1 ? ' alerta' : ' alertas');
+    }
+  }
+
+  // ── Tabela clientes ──
   const map = {};
   concluidas.forEach(c => {
     const name = clientName(c.title);
@@ -3803,6 +4326,25 @@ function mkBar(id, labels, data, { label='', color='rgba(37,99,235,0.8)', onClic
   });
 }
 
+function mkHorizontalBar(id, labels, data, color='rgba(124,58,237,0.8)') {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  charts[id] = new Chart(ctx, {
+    type:'bar',
+    data:{ labels, datasets:[{ data, backgroundColor:color, borderRadius:4 }] },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{ display:false },
+        datalabels:{ anchor:'end', align:'right', formatter:v=>v>0?v:'', font:{size:10,weight:'600'},
+          color: ()=> document.documentElement.classList.contains('light-mode')?'rgba(30,41,59,0.8)':'rgba(255,255,255,0.85)' }
+      },
+      scales:{ x:{ beginAtZero:true, ticks:{ callback:v=>Number.isInteger(v)?v:'' } }, y:{ ticks:{ font:{size:11} } } }
+    }
+  });
+}
+
 function mkLine(id, labels, data, { label='', color='rgba(37,99,235,0.9)', onClick=null } = {}) {
   destroyChart(id);
   const ctx = document.getElementById(id);
@@ -3938,7 +4480,7 @@ function el(id) { return document.getElementById(id); }
 function switchTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  const idx = ['geral','crm','faturamento','cotacoes','compras','logistica','clientes'].indexOf(name);
+  const idx = ['geral','crm','cotacoes','compras','logistica','faturamento','clientes'].indexOf(name);
   document.querySelectorAll('.tab')[idx]?.classList.add('active');
   el('tab-' + name)?.classList.add('active');
 }
