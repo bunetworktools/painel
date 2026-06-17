@@ -1,26 +1,13 @@
 name: Sync Pipefy Data
 
-# Sync INCREMENTAL: roda 2x/dia buscando só fases ativas.
-# Cards que saem de fases ativas são preservados do data.json (mergeCards corrigido).
-#
-# Sync FULL (recuperação): busca TODAS as fases (ativas + finalizadas).
-# Usar quando o data.json estiver incompleto ou após falha de bootstrap.
-# Rodar via: Actions → "Sync Pipefy Data" → Run workflow → marcar "Full sync"
+# Sempre busca TODAS as fases (ativas + finalizadas) para garantir
+# que cotações aprovadas/reprovadas nunca fiquem de fora do painel.
 
 on:
   schedule:
     - cron: '0 11 * * 1-5'   # 08h Brasília (UTC-3), seg-sex
     - cron: '0 17 * * 1-5'   # 14h Brasília (UTC-3), seg-sex
-  workflow_dispatch:
-    inputs:
-      full_sync:
-        description: 'Full sync — busca TODAS as fases (use para recuperar dados ausentes)'
-        required: false
-        default: 'false'
-        type: choice
-        options:
-          - 'false'
-          - 'true'
+  workflow_dispatch:           # disparo manual pelo GitHub Actions
 
 permissions:
   contents: write
@@ -44,25 +31,17 @@ jobs:
           PIPE_COTACOES_ID:  ${{ secrets.PIPE_COTACOES_ID }}
           PIPE_COMPRAS_ID:   ${{ secrets.PIPE_COMPRAS_ID }}
           PIPE_LOGISTICA_ID: ${{ secrets.PIPE_LOGISTICA_ID }}
-          FULL_SYNC:         ${{ github.event.inputs.full_sync || 'false' }}
         run: node fetch-data.js
 
       - name: Commit e push do data.json
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git stash
-          git pull --rebase
-          git stash pop
           git add data.json
           if git diff --staged --quiet; then
-            echo "Sem mudancas, nenhum commit necessario."
+            echo "Sem mudanças, nenhum commit necessário."
           else
-            MODO="${{ github.event.inputs.full_sync == 'true' && 'full-sync' || 'sync' }}"
-            git commit -m "chore: $MODO Pipefy $(date -u '+%Y-%m-%d %H:%M UTC')"
-            for attempt in 1 2 3; do
-              git pull --rebase && git push && break
-              echo "Push rejeitado (tentativa $attempt/3), aguardando..."
-              sleep $((attempt * 5))
-            done
+            git commit -m "chore: sync Pipefy $(date -u '+%Y-%m-%d %H:%M UTC')"
+            # Push com force-with-lease: seguro para data.json gerado sempre do zero
+            git push --force-with-lease
           fi

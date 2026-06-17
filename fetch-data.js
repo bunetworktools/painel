@@ -1,17 +1,9 @@
 // fetch-data.js — Busca dados do Pipefy e gera data.json
-// Executado pelo GitHub Actions 2x/dia (08h e 14h Brasília)
+// Executado pelo GitHub Actions a cada 4h (seg-sex)
 // Requer Node.js 22+ (usa fetch nativo)
 //
-// MODOS DE OPERAÇÃO:
-//   Normal  → busca fases ATIVAS + preserva histórico do data.json
-//   Full    → busca TODAS as fases (ativas + finalizadas); use para recuperação
-//             Ativar via: env FULL_SYNC=true  ou  node fetch-data.js --full
-//
-// BUG CORRIGIDO (v2):
-//   mergeCards() antes filtrava existingCards por c.finished_at !== null.
-//   Isso descartava cards que transitaram de ativo→finalizado entre dois syncs
-//   (pois no cache ainda tinham finished_at=null). Agora preserva TODOS os cards
-//   que não estão na lista de frescos da API.
+// Sempre busca TODAS as fases (ativas + finalizadas) para garantir que
+// cotações aprovadas, reprovadas e compras concluídas nunca fiquem de fora.
 
 const fs = require('fs');
 
@@ -19,16 +11,10 @@ const TOKEN           = process.env.PIPEFY_TOKEN;
 const PIPE_COTACOES   = process.env.PIPE_COTACOES_ID;
 const PIPE_COMPRAS    = process.env.PIPE_COMPRAS_ID;
 const PIPE_LOGISTICA  = process.env.PIPE_LOGISTICA_ID;
-const FULL_SYNC       = process.env.FULL_SYNC === 'true' || process.argv.includes('--full');
 
 if (!TOKEN) {
   console.error('❌ PIPEFY_TOKEN não definido. Configure o secret no GitHub.');
   process.exit(1);
-}
-
-if (FULL_SYNC) {
-  console.log('🔁 Modo FULL SYNC ativado — buscando TODAS as fases (ativas + finalizadas).');
-  console.log('   Use este modo para recuperar histórico ou corrigir dados ausentes.\n');
 }
 
 const CARD_FIELDS = `
@@ -124,20 +110,7 @@ function mergeCards(freshCards, existingCards) {
 }
 
 async function main() {
-  const modo = FULL_SYNC ? 'FULL SYNC (todas as fases)' : 'INCREMENTAL (fases ativas)';
-  console.log(`🔄 Sincronizando com Pipefy — modo: ${modo}\n`);
-
-  let existing = { cotacoes: [], compras: [], logistica: [] };
-  if (fs.existsSync('data.json')) {
-    try {
-      existing = JSON.parse(fs.readFileSync('data.json', 'utf-8'));
-      const tot  = (existing.cotacoes||[]).length + (existing.compras||[]).length + (existing.logistica||[]).length;
-      const done = [...(existing.cotacoes||[]),...(existing.compras||[]),...(existing.logistica||[])].filter(c=>c.finished_at).length;
-      console.log(`📂 data.json carregado — ${tot} cards (${done} com finished_at).\n`);
-    } catch {
-      console.warn('⚠️  data.json não pôde ser lido. Iniciando do zero.\n');
-    }
-  }
+  console.log(`🔄 Sincronizando com Pipefy — todas as fases (ativas + finalizadas)\n`);
 
   const state = {
     cotacoes:  [],
@@ -147,28 +120,25 @@ async function main() {
   };
 
   if (PIPE_COTACOES) {
-    console.log('📋 Buscando cotações...');
-    const fresh = await fetchPipeCards(PIPE_COTACOES, 'Cotações', FULL_SYNC);
-    state.cotacoes = FULL_SYNC ? fresh : mergeCards(fresh, existing.cotacoes);
-    console.log(`  ✅ ${fresh.length} frescos + ${state.cotacoes.length - fresh.length} preservados = ${state.cotacoes.length} total\n`);
+    console.log('📋 Buscando cotações (todas as fases)...');
+    state.cotacoes = await fetchPipeCards(PIPE_COTACOES, 'Cotações', true);
+    console.log(`  ✅ ${state.cotacoes.length} cards total\n`);
   } else {
     console.warn('  ⚠️  PIPE_COTACOES_ID não definido — pulando\n');
   }
 
   if (PIPE_COMPRAS) {
-    console.log('🛒 Buscando compras...');
-    const fresh = await fetchPipeCards(PIPE_COMPRAS, 'Compras', FULL_SYNC);
-    state.compras = FULL_SYNC ? fresh : mergeCards(fresh, existing.compras);
-    console.log(`  ✅ ${fresh.length} frescos + ${state.compras.length - fresh.length} preservados = ${state.compras.length} total\n`);
+    console.log('🛒 Buscando compras (todas as fases)...');
+    state.compras = await fetchPipeCards(PIPE_COMPRAS, 'Compras', true);
+    console.log(`  ✅ ${state.compras.length} cards total\n`);
   } else {
     console.warn('  ⚠️  PIPE_COMPRAS_ID não definido — pulando\n');
   }
 
   if (PIPE_LOGISTICA) {
-    console.log('🚚 Buscando logística...');
-    const fresh = await fetchPipeCards(PIPE_LOGISTICA, 'Logística', FULL_SYNC);
-    state.logistica = FULL_SYNC ? fresh : mergeCards(fresh, existing.logistica);
-    console.log(`  ✅ ${fresh.length} frescos + ${state.logistica.length - fresh.length} preservados = ${state.logistica.length} total\n`);
+    console.log('🚚 Buscando logística (todas as fases)...');
+    state.logistica = await fetchPipeCards(PIPE_LOGISTICA, 'Logística', true);
+    console.log(`  ✅ ${state.logistica.length} cards total\n`);
   } else {
     console.warn('  ⚠️  PIPE_LOGISTICA_ID não definido — pulando\n');
   }
@@ -181,11 +151,6 @@ async function main() {
 
   console.log(`✅ data.json salvo — ${totalActive} ativos + ${totalDone} finalizados = ${allCards.length} cards`);
   console.log(`   Sincronizado em: ${new Date(state.syncedAt).toLocaleString('pt-BR')}`);
-
-  if (FULL_SYNC) {
-    console.log(`\n🎯 Full sync concluído. Histórico completo recuperado.`);
-    console.log(`   Próximos syncs incrementais preservarão este histórico corretamente.`);
-  }
 }
 
 main().catch(e => {
