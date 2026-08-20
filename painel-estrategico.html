@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Be You — Painel Operacional</title>
+<title>Be You — Painel Estratégico</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%237c3aed'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Arial Black,sans-serif' font-weight='900' font-size='20' fill='white'%3Eb%3C/text%3E%3C/svg%3E">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
@@ -387,7 +387,7 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
 
   <!-- Title centered -->
   <div style="position:absolute;left:50%;transform:translateX(-50%);text-align:center;white-space:nowrap">
-    <div class="panel-title" style="font-size:26px;font-weight:800;letter-spacing:-0.5px;line-height:1.1">Painel Operacional</div>
+    <div class="panel-title" style="font-size:26px;font-weight:800;letter-spacing:-0.5px;line-height:1.1">Painel Estratégico</div>
 
   </div>
 
@@ -435,11 +435,11 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
   <!-- TABS -->
   <div class="tabs">
     <div class="tab active" onclick="switchTab('geral')">🏠 Visão Geral</div>
+    <div class="tab" onclick="switchTab('crm')">💼 Comercial</div>
     
-    <div class="tab" onclick="switchTab('cotacoes')">📋 Cotações</div>
-    <div class="tab" onclick="switchTab('compras')">🛒 Compras</div>
-    <div class="tab" onclick="switchTab('logistica')">🚚 Logística</div>
-    <div class="tab" onclick="switchTab('faturamento')">💰 Faturamento</div>
+    
+    
+    
     <div class="tab" onclick="switchTab('clientes')">🔄 Reativação de Clientes</div>
   </div>
 
@@ -567,7 +567,7 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
     </div>
 
     <!-- Linha 2: Compras -->
-    <div class="charts" style="grid-template-columns:1fr 1fr;margin-bottom:40px">
+    <div class="charts" style="grid-template-columns:1fr 1fr 1fr;margin-bottom:40px">
       <div class="chart-card">
         <div class="chart-title">📦 Status das Compras por Mês
           <span class="chart-subtitle">Concluída vs outras etapas</span>
@@ -580,7 +580,12 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
         </div>
         <div class="chart-wrap xl"><canvas id="chartGeralComp"></canvas></div>
       </div>
-      
+      <div class="chart-card">
+        <div class="chart-title">📊 Lucro Operacional (R$)
+          <span class="chart-subtitle">Cotações aprovadas − Compras − Frete</span>
+        </div>
+        <div class="chart-wrap xl"><canvas id="chartGeralLucro"></canvas></div>
+      </div>
     </div>
 
     <!-- Ranking 1: por Faturamento -->
@@ -654,473 +659,16 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
   </div>
 
   <!-- TAB: FATURAMENTO -->
-  <div class="tab-panel" id="tab-faturamento">
-    <div class="alert alert-blue" id="fatAlert">
-      📂 <strong>Dados de faturamento:</strong> Se a sincronização automática com a Omie não trouxer as NF-es, importe o relatório <em>Faturamento por MêsAno</em> exportado pela Omie (Excel) usando o botão abaixo. Os totais serão carregados automaticamente.
-    </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px">
-      <div class="upload-zone" id="fatUploadZone" onclick="document.getElementById('fatFileInput').click()" ondragover="dragOver(event,'fatUploadZone')" ondragleave="dragLeave('fatUploadZone')" ondrop="dropFile(event,'fatFileInput')">
-        <div class="upload-icon">📊</div>
-        <div class="upload-text">Importar Relatório de Faturamento Omie</div>
-        <div class="upload-hint">Omie → Relatórios → Faturamento por MêsAno → Exportar Excel</div>
-        <input type="file" id="fatFileInput" accept=".xlsx,.xls,.csv" onchange="handleFatFile(this)">
-      </div>
-      <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;display:flex;flex-direction:column;gap:8px">
-        <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text)">Meta Anual de Faturamento</div>
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-          <input class="form-input" type="number" id="metaAnualInput" placeholder="10000000" style="flex:1;background:#1a1a2e" oninput="updateMetaAnual(this.value)">
-          <button class="btn btn-primary btn-sm" onclick="updateMetaAnual(document.getElementById('metaAnualInput').value)">✓</button>
-        </div>
-        <div id="fatMetaStatus" style="font-size:12px;color:var(--muted)">Defina a meta para ver o progresso</div>
-      </div>
-    </div>
-    <div class="metrics" id="fatMetrics">
-      <div class="metric"><div class="metric-label">Faturamento YTD</div><div class="metric-value" id="fmYTD">—</div><div class="metric-delta">2026 acumulado</div></div>
-      <div class="metric"><div class="metric-label">Custo de Compras YTD</div><div class="metric-value" id="fmCusto">—</div><div class="metric-delta">2026 acumulado</div></div>
-      <div class="metric"><div class="metric-label">Frete YTD</div><div class="metric-value" id="fmFrete">—</div><div class="metric-delta">2026 acumulado</div></div>
-      <div class="metric"><div class="metric-label">Lucro Bruto Estimado</div><div class="metric-value" id="fmLucro">—</div><div class="metric-delta">Fat - Custo - Frete</div></div>
-      <div class="metric"><div class="metric-label">Ticket Médio</div><div class="metric-value" id="fmTicket">—</div><div class="metric-delta">Por cotação aprovada</div></div>
-      <div class="metric"><div class="metric-label">Margem Estimada</div><div class="metric-value" id="fmMargem">—</div><div class="metric-delta">Lucro / Faturamento</div></div>
-    </div>
-    <div class="charts">
-      <div class="chart-card" style="grid-column:1/-1">
-        <div class="chart-title">Faturamento × Meta Mensal <span class="chart-subtitle">R$</span></div>
-        <div class="chart-wrap tall"><canvas id="chartFatMensal"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Faturamento vs Custo <span class="chart-subtitle">R$ por mês</span></div>
-        <div class="chart-wrap"><canvas id="chartFatCusto"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Acumulado 2026 <span class="chart-subtitle">Progresso da meta</span></div>
-        <div class="chart-wrap"><canvas id="chartFatAcum"></canvas></div>
-      </div>
-    </div>
-    <div class="table-card">
-      <div class="table-header">📅 Breakdown Mensal</div>
-      <table><thead><tr>
-        <th>Mês</th><th>Faturamento</th><th>Custo Compras</th><th>Frete</th><th>Lucro Estimado</th><th>Margem</th><th>Cotações Aprova.</th>
-      </tr></thead><tbody id="fatTableBody"></tbody></table>
-    </div>
-
-    <!-- NF-e detalhadas do Omie -->
-    <div class="table-card" id="fatNFesWrap" style="display:none">
-      <div class="table-header">🧾 NF-e Emitidas — Omie <span class="tag tag-green" id="fatNFesCount" style="margin-left:8px"></span></div>
-      <table><thead><tr>
-        <th>NF</th><th>Data</th><th>Cliente</th><th>Valor Total</th>
-      </tr></thead><tbody id="fatNFesBody"></tbody></table>
-    </div>
-  </div>
+  
 
   <!-- TAB: COTAÇÕES -->
-  <div class="tab-panel" id="tab-cotacoes">
-    <!-- Métricas principais -->
-    <div class="metrics">
-      <div class="metric"><div class="metric-label">Total Recebidas</div><div class="metric-value" id="ctTotal">—</div><div class="metric-delta">2026</div></div>
-      <div class="metric"><div class="metric-label">Aprovadas</div><div class="metric-value" id="ctAprov">—</div><div class="metric-delta" id="ctAprovPct">—</div></div>
-      <div class="metric"><div class="metric-label">Reprovadas</div><div class="metric-value" id="ctReprov">—</div><div class="metric-delta" id="ctReprovPct">—</div></div>
-      <div class="metric"><div class="metric-label">Em Andamento</div><div class="metric-value" id="ctOpen">—</div><div class="metric-delta">Abertas agora</div></div>
-      <div class="metric" style="border-left:3px solid var(--yellow)"><div class="metric-label">⚠️ Atrasadas</div><div class="metric-value" id="ctAtrasadas" style="color:var(--yellow)">—</div><div class="metric-delta">Abertas sem envio &gt;2 dias</div></div>
-      <div class="metric" style="border-left:3px solid var(--red)"><div class="metric-label">🔴 Vencidas</div><div class="metric-value" id="ctVencidas" style="color:var(--red-d)">—</div><div class="metric-delta">Enviadas sem retorno &gt;7 dias</div></div>
-    </div>
-    <div class="metrics" style="margin-top:-8px">
-      <div class="metric"><div class="metric-label">Tempo Médio Envio</div><div class="metric-value" id="ctTMEnvio">—</div><div class="metric-delta">Solicitação → Enviada</div></div>
-      <div class="metric"><div class="metric-label">Tempo Médio Decisão</div><div class="metric-value" id="ctTMDecisao">—</div><div class="metric-delta">Enviada → Aprovada</div></div>
-      <div class="metric"><div class="metric-label">Tempo Médio Total</div><div class="metric-value" id="ctTMTotal">—</div><div class="metric-delta">Criação → Conclusão</div></div>
-      <div class="metric" style="border-left:3px solid var(--orange,#f97316)"><div class="metric-label">📋 Aprovadas sem NF</div><div class="metric-value" id="ctSemNF" style="color:var(--orange,#f97316)">—</div><div class="metric-delta">NF não registrada</div></div>
-    </div>
-
-    <!-- Charts: Volume / Status / Conversão / Tempo Médio -->
-    <div class="charts">
-      <div class="chart-card">
-        <div class="chart-title">📦 Volume por Mês</div>
-        <div class="chart-wrap"><canvas id="chartCotVol"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">✅ Aprovadas × Reprovadas</div>
-        <div class="chart-wrap"><canvas id="chartCotStatus"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">📈 Taxa de Conversão Mensal</div>
-        <div class="chart-wrap"><canvas id="chartCotConv"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">⏱ Tempo Médio Mensal <span class="chart-subtitle">dias criação → conclusão</span></div>
-        <div class="chart-wrap"><canvas id="chartCotTempoMensal"></canvas></div>
-      </div>
-    </div>
-
-    <!-- Charts: Motivos / Retorno / OC / LPU -->
-    <div class="charts">
-      <div class="chart-card">
-        <div class="chart-title">❌ Motivos de Reprovação</div>
-        <div class="chart-wrap"><canvas id="chartCotMotivo"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">🔄 Retorno do Cliente <span class="chart-subtitle">Aprovado / Reprovado / Sem retorno</span></div>
-        <div class="chart-wrap"><canvas id="chartCotRetorno"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">📝 Precisa de OC? <span class="chart-subtitle">Ordem de compra</span></div>
-        <div class="chart-wrap"><canvas id="chartCotOC"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">🏷️ Tem LPU? <span class="chart-subtitle">Preço fixo</span></div>
-        <div class="chart-wrap"><canvas id="chartCotLPU"></canvas></div>
-      </div>
-    </div>
-
-    <!-- Charts: Pagamento / Envio -->
-    <div class="charts" style="grid-template-columns:1fr 1fr 1fr">
-      <div class="chart-card">
-        <div class="chart-title">💳 Forma de Pagamento</div>
-        <div class="chart-wrap"><canvas id="chartCotFormaPag"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">📅 Condição de Pagamento</div>
-        <div class="chart-wrap"><canvas id="chartCotCondPag"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">📤 Método de Envio da Cotação</div>
-        <div class="chart-wrap"><canvas id="chartCotMetodoEnvio"></canvas></div>
-      </div>
-    </div>
-
-    <!-- Rankings horizontais: Produtos / Marcas / Fornecedores -->
-    <div class="charts" style="grid-template-columns:1fr 1fr 1fr">
-      <div class="chart-card">
-        <div class="chart-title">🛒 Produtos Mais Solicitados <span class="chart-subtitle">Top 8</span></div>
-        <div class="chart-wrap tall"><canvas id="chartCotProdutos"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">🏭 Marcas Mais Solicitadas <span class="chart-subtitle">Top 8</span></div>
-        <div class="chart-wrap tall"><canvas id="chartCotMarcas"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">🤝 Fornecedores Mais Cotados <span class="chart-subtitle">Top 8</span></div>
-        <div class="chart-wrap tall"><canvas id="chartCotFornecedores"></canvas></div>
-      </div>
-    </div>
-
-    <!-- Alertas: Atrasadas + Vencidas -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
-      <div class="table-card" style="border-left:3px solid var(--yellow)">
-        <div class="table-header" style="color:var(--yellow)">
-          ⚠️ Cotações Atrasadas
-          <span id="ctAtrasadaBadge" class="tag tag-yellow" style="font-size:11px">0</span>
-        </div>
-        <div style="overflow-x:auto">
-          <table style="font-size:11px"><thead><tr>
-            <th>Cliente</th><th>Criada em</th><th>Dias em Aberto</th><th>Link</th>
-          </tr></thead><tbody id="ctAtrasadaBody"></tbody></table>
-        </div>
-      </div>
-      <div class="table-card" style="border-left:3px solid var(--red)">
-        <div class="table-header" style="color:var(--red-d)">
-          🔴 Cotações Vencidas
-          <span id="ctVencidaBadge" class="tag tag-red" style="font-size:11px">0</span>
-        </div>
-        <div style="overflow-x:auto">
-          <table style="font-size:11px"><thead><tr>
-            <th>Cliente</th><th>Enviada em</th><th>Dias sem Retorno</th><th>Valor</th><th>Link</th>
-          </tr></thead><tbody id="ctVencidaBody"></tbody></table>
-        </div>
-      </div>
-    </div>
-
-    <!-- Aprovadas sem NF -->
-    <div class="table-card" style="margin-bottom:20px;border-left:3px solid var(--orange,#f97316)">
-      <div class="table-header">
-        📋 Aprovadas sem NF
-        <span id="ctSemNFBadge" class="tag tag-yellow" style="font-size:11px">0</span>
-      </div>
-      <div style="overflow-x:auto">
-        <table style="font-size:11px"><thead><tr>
-          <th>Cliente</th><th>Data Aprovação</th><th>Valor Cotação</th><th>Vendedor</th><th>Link</th>
-        </tr></thead><tbody id="ctSemNFBody"></tbody></table>
-      </div>
-    </div>
-
-    <!-- Ranking de Clientes -->
-    <div class="table-card">
-      <div class="table-header">🏆 Ranking de Clientes — Cotações (Pipefy)</div>
-      <table><thead><tr>
-        <th>Cliente</th><th>Aprovadas</th><th>Reprovadas</th><th>Total</th><th>Conversão</th><th>Valor Aprovado</th><th>Status</th>
-      </tr></thead><tbody id="cotClientesBody"></tbody></table>
-    </div>
-
-    <!-- OMIE: Pedidos de Venda / Cotações -->
-    <div id="omiePedidosWrap" style="display:none">
-      <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:24px 0 12px;display:flex;align-items:center;gap:8px">
-        🟠 Omie — Pedidos de Venda <span class="tag tag-yellow" style="font-size:11px;text-transform:none;letter-spacing:0">Integrado</span>
-      </div>
-      <div class="metrics" id="omiePedidosMetrics" style="margin-bottom:20px"></div>
-      <div class="table-card">
-        <div class="table-header">📄 Pedidos de Venda — Omie (últimos 50)</div>
-        <table><thead><tr>
-          <th>Nº Pedido</th><th>Cliente</th><th>Data</th><th>Valor</th><th>Etapa</th>
-        </tr></thead><tbody id="omiePedidosBody"></tbody></table>
-      </div>
-    </div>
-  </div>
+  
 
   <!-- TAB: COMPRAS -->
-  <div class="tab-panel" id="tab-compras">
-    <!-- Métricas (filtradas por período) -->
-    <div class="metrics">
-      <div class="metric"><div class="metric-label">Compras no Período</div><div class="metric-value" id="cpTotal">—</div><div class="metric-delta" id="cpTotalDelta">concluídas</div></div>
-      <div class="metric"><div class="metric-label">Volume do Período</div><div class="metric-value" id="cpVolume">—</div><div class="metric-delta" id="cpVolumeDelta">valor total</div></div>
-      <div class="metric"><div class="metric-label">Ticket Médio</div><div class="metric-value" id="cpTicket">—</div><div class="metric-delta">Por compra</div></div>
-      <div class="metric"><div class="metric-label">Compras no Prazo</div><div class="metric-value" id="cpSLA">—</div><div class="metric-delta">SLA ≤ 1 dia útil</div></div>
-      <div class="metric"><div class="metric-label">Tempo Médio</div><div class="metric-value" id="cpTempo">—</div><div class="metric-delta">Criação → Conclusão</div></div>
-      <div class="metric"><div class="metric-label">Em Andamento</div><div class="metric-value" id="cpOpen">—</div><div class="metric-delta">Compras pendentes</div></div>
-    </div>
-
-    <!-- Gráficos: tempo médio, motivos de pendência, ranking fornecedores -->
-    <div class="charts" style="grid-template-columns:2fr 1fr 1fr">
-      <div class="chart-card">
-        <div class="chart-title">Tempo Médio Mensal <span class="chart-subtitle">criação → conclusão (dias)</span></div>
-        <div class="chart-wrap"><canvas id="chartCpTempo"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Motivos de Pendência</div>
-        <div class="chart-wrap"><canvas id="chartCpMotivos"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Top Fornecedores <span class="chart-subtitle">mais utilizados</span></div>
-        <div class="chart-wrap"><canvas id="chartCpFornecedor"></canvas></div>
-      </div>
-    </div>
-
-    <!-- Gráficos: volume mensal + quantidade -->
-    <div class="charts">
-      <div class="chart-card">
-        <div class="chart-title">Volume de Compras Mensal <span class="chart-subtitle">R$</span></div>
-        <div class="chart-wrap"><canvas id="chartCpMensal"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Quantidade por Mês</div>
-        <div class="chart-wrap"><canvas id="chartCpQtd"></canvas></div>
-      </div>
-    </div>
-
-    <!-- 🛒 Compras Pendentes do Dia -->
-    <div class="table-card" style="margin-bottom:20px">
-      <div class="table-header">
-        🛒 Compras Pendentes — O que comprar agora
-        <span id="cpPendBadge" class="tag tag-blue" style="font-size:11px">0</span>
-      </div>
-      <div style="overflow-x:auto">
-        <table style="font-size:11px;width:100%">
-          <thead><tr>
-            <th>Cliente</th>
-            <th>Produto</th>
-            <th style="text-align:right">Valor Est.</th>
-            <th>Pendência</th>
-            <th style="text-align:center">Dias Aberto</th>
-            <th>Data Limite</th>
-            <th style="text-align:center">🔗</th>
-          </tr></thead>
-          <tbody id="cpPendBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 🚨 Data Limite Vencida ou Próxima (<7 dias) -->
-    <div class="table-card" style="margin-bottom:20px">
-      <div class="table-header">
-        🚨 Data Limite Vencida ou Próxima
-        <span style="font-size:11px;color:var(--muted);font-weight:400">vencidas ou menos de 7 dias</span>
-        <span id="cpDeadlineBadge" class="tag tag-red" style="font-size:11px;display:none">0 alertas</span>
-      </div>
-      <div style="overflow-x:auto">
-        <table style="font-size:11px;width:100%">
-          <thead><tr>
-            <th>Cliente</th>
-            <th>Produto</th>
-            <th style="text-align:right">Valor</th>
-            <th>Data Limite</th>
-            <th style="text-align:center">Dias Restantes</th>
-            <th>Fase</th>
-            <th style="text-align:center">🔗</th>
-          </tr></thead>
-          <tbody id="cpDeadlineBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ⏰ Demandas com +7 dias sem compra efetuada -->
-    <div class="table-card" style="margin-bottom:20px">
-      <div class="table-header">
-        ⏰ Demandas com +7 dias sem compra efetuada
-        <span id="cpAtrasoBadge" class="tag tag-yellow" style="font-size:11px;display:none">0</span>
-      </div>
-      <div style="overflow-x:auto">
-        <table style="font-size:11px;width:100%">
-          <thead><tr>
-            <th>Cliente</th>
-            <th>Produto</th>
-            <th style="text-align:right">Valor</th>
-            <th style="text-align:center">Dias em Aberto</th>
-            <th>Pendência</th>
-            <th>Fase</th>
-            <th style="text-align:center">🔗</th>
-          </tr></thead>
-          <tbody id="cpAtrasoBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 🔗 Produtos Iguais em Aberto -->
-    <div class="table-card" style="margin-bottom:20px">
-      <div class="table-header">
-        🔗 Produtos Iguais em Aberto — Oportunidade de Compra Conjunta
-        <span id="cpProdDupBadge" class="tag tag-purple" style="font-size:11px;display:none">0 grupos</span>
-      </div>
-      <div style="overflow-x:auto">
-        <table style="font-size:11px;width:100%">
-          <thead><tr>
-            <th>Produto</th>
-            <th style="text-align:center">Qtd Pedidos</th>
-            <th style="text-align:right">Valor Total Est.</th>
-            <th>Clientes</th>
-          </tr></thead>
-          <tbody id="cpProdDupBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ⚠️ Compras Pendentes sem Campo Pendência -->
-    <div class="table-card" style="margin-bottom:20px">
-      <div class="table-header">
-        ⚠️ Compras Pendentes sem Pendência Informada
-        <span id="cpSemPendBadge" class="tag tag-yellow" style="font-size:11px;display:none">0</span>
-      </div>
-      <div style="overflow-x:auto">
-        <table style="font-size:11px;width:100%">
-          <thead><tr>
-            <th>Cliente</th>
-            <th>Produto</th>
-            <th style="text-align:right">Valor</th>
-            <th>Fase Atual</th>
-            <th style="text-align:center">Dias em Aberto</th>
-            <th style="text-align:center">🔗</th>
-          </tr></thead>
-          <tbody id="cpSemPendBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ❌ Compra Concluída sem Demanda de Logística -->
-    <div class="table-card" style="margin-bottom:20px">
-      <div class="table-header">
-        ❌ Compras Concluídas sem Demanda de Logística
-        <span id="cpSemLogBadge" class="tag tag-red" style="font-size:11px;display:none">0</span>
-      </div>
-      <div style="overflow-x:auto">
-        <table style="font-size:11px;width:100%">
-          <thead><tr>
-            <th>Cliente</th>
-            <th style="text-align:right">Valor Compra</th>
-            <th style="text-align:center">NF</th>
-            <th>Concluída em</th>
-            <th style="text-align:center">🔗</th>
-          </tr></thead>
-          <tbody id="cpSemLogBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- 💰 Valores Incorretos / Abaixo de R$50 -->
-    <div class="table-card" style="margin-bottom:20px">
-      <div class="table-header">
-        💰 Relatório de Valores Incorretos
-        <span style="font-size:11px;color:var(--muted);font-weight:400">valor R$0, em branco ou &lt; R$50</span>
-        <span id="cpValIncBadge" class="tag tag-yellow" style="font-size:11px;display:none">0</span>
-      </div>
-      <div style="overflow-x:auto">
-        <table style="font-size:11px;width:100%">
-          <thead><tr>
-            <th>Cliente</th>
-            <th style="text-align:right">Valor</th>
-            <th>Problema</th>
-            <th>Fase</th>
-            <th style="text-align:center">🔗</th>
-          </tr></thead>
-          <tbody id="cpValIncBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- ⚠️ Compras vs Cotação: alertas de margem -->
-    <div class="table-card" style="margin-bottom:20px">
-      <div class="table-header">
-        ⚠️ Compras vs Cotação — Análise de Margem
-        <span id="cpAlertBadge" class="tag tag-red" style="font-size:11px;display:none">0 alertas</span>
-      </div>
-      <div style="overflow-x:auto">
-        <table id="cpVsCotTable" style="font-size:11px;width:100%;table-layout:fixed">
-          <colgroup>
-            <col style="width:22%"><col style="width:10%"><col style="width:10%"><col style="width:10%"><col style="width:8%"><col style="width:8%"><col style="width:8%"><col style="width:5%">
-          </colgroup>
-          <thead><tr>
-            <th>Cliente</th>
-            <th style="text-align:right">Val. Cotação</th>
-            <th style="text-align:right">Val. Compra</th>
-            <th style="text-align:right">Lucro Op.</th>
-            <th style="text-align:right">Margem</th>
-            <th style="text-align:center">NF</th>
-            <th style="text-align:center">Status</th>
-            <th style="text-align:center">🔗</th>
-          </tr></thead>
-          <tbody id="cpVsCotBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="table-card">
-      <div class="table-header">📋 Compras por Cliente — 2026</div>
-      <table><thead><tr>
-        <th>Cliente</th><th>Qtd Compras</th><th>Valor Total</th><th>Ticket Médio</th><th>Último NF</th>
-      </tr></thead><tbody id="cpClientesBody"></tbody></table>
-    </div>
-  </div>
+  
 
   <!-- TAB: LOGÍSTICA -->
-  <div class="tab-panel" id="tab-logistica">
-    <div class="metrics">
-      <div class="metric"><div class="metric-label">Total de Entregas</div><div class="metric-value" id="lgTotal">—</div><div class="metric-delta">2026</div></div>
-      <div class="metric"><div class="metric-label">Entregas no Prazo</div><div class="metric-value" id="lgNoPrazo">—</div><div class="metric-delta" id="lgNoPrazoPct">—</div></div>
-      <div class="metric"><div class="metric-label">Com Atraso</div><div class="metric-value" id="lgAtraso">—</div><div class="metric-delta" id="lgAtrasoPct">—</div></div>
-      <div class="metric"><div class="metric-label">Entregas Totais</div><div class="metric-value" id="lgTotal2">—</div><div class="metric-delta">vs Parciais</div></div>
-      <div class="metric"><div class="metric-label">Frete Total</div><div class="metric-value" id="lgFrete">—</div><div class="metric-delta">Custo de logística</div></div>
-      <div class="metric"><div class="metric-label">Tempo Médio</div><div class="metric-value" id="lgTempo">—</div><div class="metric-delta">Abertura → Conclusão</div></div>
-    </div>
-    <div class="charts">
-      <div class="chart-card">
-        <div class="chart-title">Entregas por Mês</div>
-        <div class="chart-wrap"><canvas id="chartLgMensal"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Status das Entregas</div>
-        <div class="chart-wrap"><canvas id="chartLgStatus"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Tipo de Entrega</div>
-        <div class="chart-wrap"><canvas id="chartLgTipo"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Frete por Mês <span class="chart-subtitle">R$</span></div>
-        <div class="chart-wrap"><canvas id="chartLgFrete"></canvas></div>
-      </div>
-    </div>
-    <div class="table-card">
-      <div class="table-header">📦 Entregas Recentes</div>
-      <table><thead><tr>
-        <th>Cliente</th><th>NF</th><th>Tipo</th><th>Entrega</th><th>Atraso?</th><th>Frete</th><th>Status</th>
-      </tr></thead><tbody id="lgRecentBody"></tbody></table>
-    </div>
-  </div>
+  
 
   <!-- TAB: CLIENTES INATIVOS -->
   <div class="tab-panel" id="tab-clientes">
@@ -1234,7 +782,198 @@ html.light-mode .rank-filter-btn:hover:not(.active){background:#f1f5f9 !importan
   </div>
 
   <!-- TAB: COMERCIAL -->
-  
+  <div class="tab-panel" id="tab-crm">
+
+    <!-- ── SEÇÃO 1: Comissão de Vendas ── -->
+    <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:8px">
+      💼 Comissão de Vendas
+    </div>
+
+    <!-- Métricas de comissão -->
+    <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px">
+      <div class="metric" style="border-left:3px solid var(--green)">
+        <div class="metric-label">💰 Cotações Comissionadas</div>
+        <div class="metric-value" id="comTotal" style="font-size:24px">—</div>
+        <div class="metric-delta" id="comTotalDelta">cotações no período</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--blue)">
+        <div class="metric-label">📈 Lucro Operacional Total</div>
+        <div class="metric-value" id="comLucroTotal" style="font-size:20px">—</div>
+        <div class="metric-delta">cotação − compra − frete − impostos</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--purple)">
+        <div class="metric-label">🎯 Total de Comissões</div>
+        <div class="metric-value" id="comComissaoTotal" style="font-size:20px">—</div>
+        <div class="metric-delta">50% do lucro operacional</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--yellow)">
+        <div class="metric-label">✅ % Comissionadas</div>
+        <div class="metric-value" id="comPctComissionadas" style="font-size:24px">—</div>
+        <div class="metric-delta" id="comPctDelta">das cotações aprovadas</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--green)">
+        <div class="metric-label">📊 Taxa de Conversão (Com.)</div>
+        <div class="metric-value" id="comTaxaConv" style="font-size:24px">—</div>
+        <div class="metric-delta" id="comTaxaConvDelta">comissionadas / total período</div>
+      </div>
+    </div>
+
+    <!-- ── SEÇÃO: Análise por Vendedor ── -->
+    <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:24px">
+      👤 Análise por Vendedor
+    </div>
+    <div class="charts" style="grid-template-columns:1fr 1fr;margin-bottom:20px">
+      <div class="chart-card">
+        <div class="chart-title">📋 Cotações Abertas por Vendedor
+          <span class="chart-subtitle">Total criadas no período</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartVendAbertas"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">✅ Cotações Aprovadas por Vendedor
+          <span class="chart-subtitle">Total aprovadas no período</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartVendAprovadas"></canvas></div>
+      </div>
+    </div>
+    <div class="charts" style="grid-template-columns:1fr 1fr;margin-bottom:32px">
+      <div class="chart-card">
+        <div class="chart-title">📊 Abertas vs Aprovadas por Vendedor
+          <span class="chart-subtitle">Qtd + % conversão</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartVendBarConv"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">💰 Valor Aprovado por Mês e Vendedor
+          <span class="chart-subtitle">R$ total das cotações aprovadas</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartVendValorMes"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ── Filtros do Relatório de Comissão ── -->
+    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:12px;padding:10px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px">
+      <span style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px">🔎 Filtros</span>
+      <div style="display:flex;align-items:center;gap:6px">
+        <label style="font-size:12px;color:var(--muted);white-space:nowrap" for="selFaseCompra">Fase Compra</label>
+        <select id="selFaseCompra" onchange="setComissaoFaseFilter(this.value)"
+          style="font-size:12px;border:1px solid var(--border);border-radius:6px;padding:4px 8px;background:var(--card);color:var(--text);cursor:pointer;outline:none">
+          <option value="all">Todas</option>
+          <option value="concluida">Compra Concluída</option>
+          <option value="andamento">Em Andamento</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <label style="font-size:12px;color:var(--muted);white-space:nowrap" for="selComissionado">Comissionado</label>
+        <select id="selComissionado" onchange="setComissaoFilter(this.value)"
+          style="font-size:12px;border:1px solid var(--border);border-radius:6px;padding:4px 8px;background:var(--card);color:var(--text);cursor:pointer;outline:none">
+          <option value="all">Todos</option>
+          <option value="sim" selected>Sim</option>
+          <option value="nao">Não</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <label style="font-size:12px;color:var(--muted);white-space:nowrap" for="selVendedor">Vendedor</label>
+        <select id="selVendedor" onchange="setComissaoVendedorFilter(this.value)"
+          style="font-size:12px;border:1px solid var(--border);border-radius:6px;padding:4px 8px;background:var(--card);color:var(--text);cursor:pointer;outline:none">
+          <option value="all">Todos</option>
+        </select>
+      </div>
+      <span id="comissaoCount" class="rank-active-count" style="margin-left:auto"></span>
+    </div>
+
+    <!-- Tabela de comissão -->
+    <div class="table-card" style="margin-bottom:32px">
+      <div class="table-header" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+          <span>💼 Relatório de Comissão de Vendas</span>
+          <span id="comissaoHeaderStats" style="font-size:12px;font-weight:400;color:var(--muted)"></span>
+        </div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-sm" onclick="exportComissaoExcel()" title="Exportar Excel">⬇️ Excel</button>
+          <button class="btn btn-secondary btn-sm" onclick="exportComissaoPDF()" title="Imprimir / Salvar PDF">🖨️ PDF</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table id="comissaoTable" style="font-size:11px;width:100%;table-layout:fixed">
+          <colgroup>
+            <col style="width:17%"><!-- Cliente -->
+            <col style="width:8%"> <!-- Vendedor -->
+            <col style="width:5%"> <!-- Nº NF -->
+            <col style="width:6%"> <!-- Data -->
+            <col style="width:8%"> <!-- Cotação -->
+            <col style="width:8%"> <!-- Compra -->
+            <col style="width:6%"> <!-- Frete -->
+            <col style="width:7%"> <!-- Imp. Venda -->
+            <col style="width:7%"> <!-- Imp. NF -->
+            <col style="width:5%"> <!-- Comis. -->
+            <col style="width:9%"> <!-- Lucro Op. -->
+            <col style="width:8%"> <!-- Comissão -->
+            <col style="width:3%"> <!-- Link -->
+          </colgroup>
+          <thead><tr>
+            <th style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Cliente</th>
+            <th style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Vendedor</th>
+            <th style="text-align:center;white-space:nowrap">Nº NF</th>
+            <th style="white-space:nowrap">Data</th>
+            <th style="text-align:right;white-space:nowrap">Cotação</th>
+            <th style="text-align:right;white-space:nowrap">Compra</th>
+            <th style="text-align:right;white-space:nowrap">Frete</th>
+            <th style="text-align:right;white-space:nowrap">Imp. Venda</th>
+            <th style="text-align:right;white-space:nowrap">Imp. NF</th>
+            <th style="text-align:center;white-space:nowrap">Comis.?</th>
+            <th style="text-align:right;white-space:nowrap">Lucro Op.</th>
+            <th style="text-align:right;white-space:nowrap">Comissão</th>
+            <th style="text-align:center">🔗</th>
+          </tr></thead>
+          <tbody id="comissaoBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ── SEÇÃO 2: CRM — Pipeline de Oportunidades ── -->
+    <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border);padding-top:24px">
+      📊 CRM — Pipeline de Oportunidades
+      <span id="crmEmptyBadge" class="tag tag-yellow" style="font-size:11px;text-transform:none;letter-spacing:0;display:none">Configure o Pipe CRM nas configurações</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px">
+      <div class="metric" style="border-left:3px solid var(--blue)">
+        <div class="metric-label">💼 Pipeline em Aberto (R$)</div>
+        <div class="metric-value" id="crmPipeline" style="font-size:24px">—</div>
+        <div class="metric-delta" id="crmAbertoDelta">oportunidades abertas</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--green)">
+        <div class="metric-label">✅ Taxa de Conversão</div>
+        <div class="metric-value" id="crmConversao" style="font-size:24px">—</div>
+        <div class="metric-delta" id="crmConvDelta">ganhas / finalizadas</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--purple)">
+        <div class="metric-label">🏆 Oportunidades Ganhas</div>
+        <div class="metric-value" id="crmGanhas" style="font-size:24px">—</div>
+        <div class="metric-delta" id="crmGanhasDelta">no período</div>
+      </div>
+      <div class="metric" style="border-left:3px solid var(--yellow)">
+        <div class="metric-label">⏳ Em Negociação</div>
+        <div class="metric-value" id="crmAberto" style="font-size:24px">—</div>
+        <div class="metric-delta">oportunidades abertas agora</div>
+      </div>
+    </div>
+    <div class="charts" style="grid-template-columns:1fr 1fr;margin-bottom:32px">
+      <div class="chart-card">
+        <div class="chart-title">🏗️ Funil de Oportunidades
+          <span class="chart-subtitle">Qtd. por fase</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartCRMFunil"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">💰 Valor do Pipeline por Fase
+          <span class="chart-subtitle">R$ em aberto por etapa</span>
+        </div>
+        <div class="chart-wrap tall"><canvas id="chartCRMValor"></canvas></div>
+      </div>
+    </div>
+
+  </div>
 
 </div><!-- /main -->
 
@@ -4774,7 +4513,7 @@ function el(id) { return document.getElementById(id); }
 function switchTab(name) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  const idx = ['geral','cotacoes','compras','logistica','faturamento','clientes'].indexOf(name);
+  const idx = ['geral','crm','clientes'].indexOf(name);
   document.querySelectorAll('.tab')[idx]?.classList.add('active');
   el('tab-' + name)?.classList.add('active');
 }
