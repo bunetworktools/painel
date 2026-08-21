@@ -1372,7 +1372,7 @@ async function syncAll() {
   setLoading(true, 'Carregando dados do Pipefy…');
   try {
     // Tenta buscar data.json sincronizado pelo GitHub Actions
-    const res = await fetch('../data.json?t=' + Date.now());
+    const res = await fetch('./data.json?t=' + Date.now());
     if (!res.ok) throw new Error('Arquivo data.json não encontrado (HTTP ' + res.status + '). Verifique se o GitHub Actions já rodou.');
     const json = await res.json();
     if (json.cotacoes)   state.cotacoes   = json.cotacoes;
@@ -5034,7 +5034,7 @@ const rl = el('periodRangeLabel');
 if (rl) { const y = new Date().getFullYear(); rl.textContent = '01/01 – 31/12 (' + y + ')'; }
 
 // Tenta carregar data.json (modo GitHub Pages — sem configuração manual)
-fetch('../data.json?v=' + Date.now())
+fetch('data.json?v=' + Date.now())
   .then(r => { if (!r.ok) throw new Error('no data.json'); return r.json(); })
   .then(data => {
     state = { ...state, cotacoes: data.cotacoes || [], compras: data.compras || [], logistica: data.logistica || [], crm: data.crm || [], reativacao: data.reativacao || [] };
