@@ -2998,6 +2998,7 @@ function renderGeralRanking() {
 //  FATURAMENTO
 // ============================================================
 function renderFaturamento() {
+    if (!document.getElementById("fatTotal")) return;
   // Faturamento real: Omie NF-e tem prioridade; fallback para cotações aprovadas do Pipefy
   const cots = cotacoesData().filter(c => c.aprovada);
   const comps = comprasData().filter(c => isAprovada(c) || c.current_phase?.name?.toLowerCase().includes('concluíd'));
@@ -3103,6 +3104,7 @@ function updateMetaAnual(val) {
 //  COTAÇÕES
 // ============================================================
 function renderCotacoes() {
+    if (!document.getElementById("cotTotal")) return;
   const cots     = cotacoesData();
   const finalized = cots.filter(c => !isOpen(c));
   const aprov    = cots.filter(c => c.aprovada);
@@ -3364,6 +3366,7 @@ function renderCotacoes() {
 //  COMPRAS
 // ============================================================
 function renderCompras() {
+    if (!document.getElementById("cpTotal")) return;
   const comps = comprasData();
   const cots  = cotacoesData();
   const logis = logisticaData();
@@ -3792,6 +3795,7 @@ function renderCompras() {
 //  LOGÍSTICA
 // ============================================================
 function renderLogistica() {
+    if (!document.getElementById("logTotal")) return;
   const logs = logisticaData();
   const concluidas = logs.filter(c => c.current_phase?.name?.toLowerCase().includes('concluíd'));
   const comAtraso  = concluidas.filter(c => c.atraso);
